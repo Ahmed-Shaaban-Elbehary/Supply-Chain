@@ -56,7 +56,7 @@ namespace SupplyChain.Infrastructure.Repositories
 
             if (orderSelector != null)
             {
-                query = ascendingOrder ? query.OrderBy(orderSelector) : query.OrderByDescending(orderSelector);
+                query = (IQueryable<T>)(ascendingOrder ? query.OrderBy(orderSelector) : query.OrderByDescending(orderSelector));
             }
 
             return await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
@@ -93,7 +93,7 @@ namespace SupplyChain.Infrastructure.Repositories
 
             if (orderSelector != null)
             {
-                query = ascendingOrder ? query.OrderBy(orderSelector) : query.OrderByDescending(orderSelector);
+                query = (IQueryable<T>)(ascendingOrder ? query.OrderBy(orderSelector) : query.OrderByDescending(orderSelector));
             }
 
             return await query.FirstOrDefaultAsync();
@@ -110,7 +110,7 @@ namespace SupplyChain.Infrastructure.Repositories
 
             if (orderSelector != null)
             {
-                query = ascendingOrder ? query.OrderBy(orderSelector) : query.OrderByDescending(orderSelector);
+                query = (IQueryable<T>)(ascendingOrder ? query.OrderBy(orderSelector) : query.OrderByDescending(orderSelector));
             }
 
             return await query.SingleOrDefaultAsync();
