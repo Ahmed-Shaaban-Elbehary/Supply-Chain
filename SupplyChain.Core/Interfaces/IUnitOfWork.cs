@@ -1,0 +1,17 @@
+﻿using SupplyChain.Core.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SupplyChain.Core.Interfaces
+{
+    public interface IUnitOfWork : IDisposable
+    {
+        IGenericRepository<Product> ProductRepository { get; }
+        IGenericRepository<Cart> CartRepository { get; }
+        void Commit();
+        void Rollback();
+    }
+}
