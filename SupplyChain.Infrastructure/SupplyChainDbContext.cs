@@ -18,55 +18,149 @@ namespace SupplyChain.Infrastructure
         public DbSet<ProductComponent> ProductComponents { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Configure the ProductCategory entity
-            modelBuilder.Entity<ProductCategory>()
-                .HasMany(pc => pc.Subcategories)
-                .WithOne(pc => pc.ParentCategory)
-                .HasForeignKey(pc => pc.ParentCategoryId);
+            // Define the Product entity
+            modelBuilder.Entity<Product>()
+                .HasKey(p => p.Id);
+            modelBuilder.Entity<Product>()
+                .Property(p => p.Name)
+                .HasMaxLength(50);
+            modelBuilder.Entity<Product>()
+                .Property(p => p.Description)
+                .HasMaxLength(200);
+            modelBuilder.Entity<Product>()
+                .Property(p => p.Price)
+                .HasColumnType("decimal(18,2)");
+            modelBuilder.Entity<Product>()
+                .Property(p => p.ImageUrl)
+                .HasMaxLength(200);
+            modelBuilder.Entity<Product>()
+                .Property(p => p.ProductionDate)
+                .HasColumnType("datetime2");
+            modelBuilder.Entity<Product>()
+                .Property(p => p.ExpirationDate)
+                .HasColumnType("datetime2");
+            modelBuilder.Entity<Product>()
+                .Property(p => p.CountryOfOrigin)
+                .HasMaxLength(50);
 
-            modelBuilder.Entity<ProductCategory>()
-                .HasMany(pc => pc.Products)
-                .WithOne(p => p.Category)
-                .HasForeignKey(p => p.CategoryId);
+            // Define the foreign key constraint for the manufacturer
+            modelBuilder.Entity<Product>()
+                .HasOne(p => p.Manufacturer)
+                .WithMany(m => m.Products)
+                .HasForeignKey(p => p.ManufacturerId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            // Configure the CartItem entity
-            modelBuilder.Entity<CartItem>()
-                .HasOne(sci => sci.Product)
-                .WithMany()
-                .HasForeignKey(sci => sci.ProductId);
+            // Define the foreign key constraint for the product category
+            modelBuilder.Entity<Product>()
+                .HasOne(p => p.Category)
+                .WithMany(c => c.Products)
+                .HasForeignKey(p => p.CategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<CartItem>()
-                .HasOne(sci => sci.SourceWarehouse)
-                .WithMany(w => w.OutgoingItems)
-                .HasForeignKey(sci => sci.SourceWarehouseId);
-
-            modelBuilder.Entity<CartItem>()
-                .HasOne(sci => sci.DestinationWarehouse)
-                .WithMany(w => w.IncomingItems)
-                .HasForeignKey(sci => sci.DestinationWarehouseId);
-
-            // Configure the Cart entity
-            modelBuilder.Entity<Cart>()
-                .HasOne(sc => sc.User)
-                .WithMany(u => u.Carts)
-                .HasForeignKey(sc => sc.UserId);
-
-            // Configure the ProductComponent entity
+            // Define the many-to-many relationship between products and components
+            modelBuilder.Entity<ProductComponent>()
+                .HasKey(pc => new { pc.ProductId, pc.ComponentId });
             modelBuilder.Entity<ProductComponent>()
                 .HasOne(pc => pc.Product)
                 .WithMany(p => p.Components)
-                .HasForeignKey(pc => pc.ProductId);
-
+                .HasForeignKey(pc => pc.ProductId)
+                .OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<ProductComponent>()
                 .HasOne(pc => pc.Component)
                 .WithMany()
-                .HasForeignKey(pc => pc.ComponentId);
+                .HasForeignKey(pc => pc.ComponentId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            // Configure the Manufacturer entity
+            // Define the ProductCategory entity
+            modelBuilder.Entity<ProductCategory>()
+                .HasKey(c => c.Id);
+            modelBuilder.Entity<ProductCategory>()
+                .Property(c => c.Name)
+                .HasMaxLength(50);
+            modelBuilder.Entity<ProductCategory>()
+                .HasOne(c => c.ParentCategory)
+                .WithMany(pc => pc.Subcategories)
+                .HasForeignKey(c => c.ParentCategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Define the ShoppingCart entity
+            modelBuilder.Entity<Cart>()
+                .HasKey(sc => sc.Id);
+            modelBuilder.Entity<Cart>()
+                .HasOne(sc => sc.User)
+                .WithMany(u => u.Carts)
+                .HasForeignKey(sc => sc.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Cart>()
+                .Property(sc => sc.ShippingMethod)
+                .HasMaxLength(50);
+            modelBuilder.Entity<Cart>()
+                .Property(sc => sc.ShippingAddress)
+                .HasMaxLength(200);
+
+            // Define the CartItem entity
+            modelBuilder.Entity<CartItem>()
+                .HasKey(sci => sci.Id);
+            modelBuilder.Entity<CartItem>()
+                .HasOne(sci => sci.Product)
+                .WithMany()
+                .HasForeignKey(sci => sci.ProductId)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<CartItem>()
+                .HasOne(sci => sci.SourceWarehouse)
+                .WithMany(w => w.OutgoingItems)
+                .HasForeignKey(sci => sci.SourceWarehouseId)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<CartItem>()
+                .HasOne(sci => sci.DestinationWarehouse)
+                .WithMany(w => w.IncomingItems)
+                .HasForeignKey(sci => sci.DestinationWarehouseId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Define the Manufacturer entity
             modelBuilder.Entity<Manufacturer>()
-                .HasMany(m => m.Products)
-                .WithOne(p => p.Manufacturer)
-                .HasForeignKey(p => p.ManufacturerId);
+                .HasKey(m => m.Id);
+            modelBuilder.Entity<Manufacturer>()
+                .Property(m => m.Name)
+                .HasMaxLength(50);
+            modelBuilder.Entity<Manufacturer>()
+                .Property(m => m.Address)
+                .HasMaxLength(200);
+            modelBuilder.Entity<Manufacturer>()
+                .Property(m => m.ContactName)
+                .HasMaxLength(50);
+            modelBuilder.Entity<Manufacturer>()
+                .Property(m => m.ContactEmail)
+                .HasMaxLength(50);
+            modelBuilder.Entity<Manufacturer>()
+                .Property(m => m.ContactPhone)
+                .HasMaxLength(50);
+
+            // Define the Warehouse entity
+            modelBuilder.Entity<Warehouse>()
+                .HasKey(w => w.Id);
+            modelBuilder.Entity<Warehouse>()
+                .Property(w => w.Name)
+                .HasMaxLength(50);
+            modelBuilder.Entity<Warehouse>()
+                .Property(w => w.Address)
+                .HasMaxLength(200);
+
+            // Define the User entity
+            modelBuilder.Entity<User>()
+                .HasKey(u => u.Id);
+            modelBuilder.Entity<User>()
+                .Property(u => u.Name)
+                .HasMaxLength(50);
+            modelBuilder.Entity<User>()
+                .Property(u => u.Address)
+                .HasMaxLength(200);
+            modelBuilder.Entity<User>()
+                .Property(u => u.Email)
+                .HasMaxLength(50);
+            modelBuilder.Entity<User>()
+                .Property(u => u.Phone)
+                .HasMaxLength(20);
         }
     }
 }
