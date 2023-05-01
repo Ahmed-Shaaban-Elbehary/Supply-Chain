@@ -8,49 +8,45 @@ namespace SupplyChain.Infrastructure.Repositories
     public class UnitOfWork : IUnitOfWork
     {
         private readonly SupplyChainDbContext _context;
-        private readonly IDbContextTransaction _transaction;
+        private readonly IGenericRepository<Product> _productRepository;
+        private readonly IGenericRepository<Cart> _cartRepository;
+
         public UnitOfWork(SupplyChainDbContext context)
         {
             _context = context;
-            ProductRepository = new GenericRepository<Product>(_context);
-            CartRepository = new GenericRepository<Cart>(_context);
-            _transaction = _context.Database.BeginTransaction();
+            _productRepository = new GenericRepository<Product>(_context);
+            _cartRepository = new GenericRepository<Cart>(_context);
         }
 
-        public IGenericRepository<Product> ProductRepository { get; private set; }
+        public IGenericRepository<Product> ProductRepository => _productRepository;
 
-        public IGenericRepository<Cart> CartRepository { get; private set; }
+        public IGenericRepository<Cart> CartRepository => _cartRepository;
 
-        public void Commit()
+        public async Task CommitAsync()
         {
-            try
-            {
-                _context.SaveChanges();
-                _transaction.Commit();
-            }
-            catch
-            {
-                _transaction.Rollback();
-                throw;
-            }
+            await _context.SaveChangesAsync();
         }
 
-        public void Rollback()
+        public async Task RollbackAsync()
         {
-            _transaction.Rollback();
+            foreach (var entry in _context.ChangeTracker.Entries().Where(e => e.State != EntityState.Unchanged))
+            {
+                switch (entry.State)
+                {
+                    case EntityState.Added:
+                        entry.State = EntityState.Detached;
+                        break;
+                    case EntityState.Modified:
+                    case EntityState.Deleted:
+                        await entry.ReloadAsync();
+                        break;
+                }
+            }
         }
 
         public void Dispose()
         {
-            if (_transaction != null)
-            {
-                _transaction.Dispose();
-            }
-
-            if (_context != null)
-            {
-                _context.Dispose();
-            }
+            _context.Dispose();
         }
     }
 }

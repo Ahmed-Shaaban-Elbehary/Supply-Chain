@@ -1,6 +1,6 @@
 ﻿using SupplyChain.Core.Interfaces;
 using SupplyChain.Core.Models;
-using SupplyChain.Services.Interfaces;
+using SupplyChain.Services.Contracts;
 
 namespace SupplyChain.Services
 {
@@ -26,20 +26,20 @@ namespace SupplyChain.Services
         public async Task CreateProductAsync(Product product)
         {
             await _unitOfWork.ProductRepository.AddAsync(product);
-            _unitOfWork.Commit();
+            await _unitOfWork.CommitAsync();
 
         }
 
         public async Task UpdateProductAsync(Product product)
         {
-            await _unitOfWork.ProductRepository.Update(product);
-            _unitOfWork.Commit();
+            await _unitOfWork.ProductRepository.UpdateAsync(product);
+            await _unitOfWork.CommitAsync();
         }
 
         public async Task DeleteProductAsync(Product product)
         {
-            await _unitOfWork.ProductRepository.Remove(product);
-            _unitOfWork.Commit();
+            await _unitOfWork.ProductRepository.RemoveAsync(product);
+            await _unitOfWork.CommitAsync();
         }
     }
 }
