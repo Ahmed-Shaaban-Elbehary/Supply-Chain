@@ -6,9 +6,9 @@ using SupplyChain.Infrastructure.Repositories;
 
 namespace SupplyChain.Infrastructure
 {
-    public static class ServiceExtension
+    public static class InfrastructureServicesExtension
     {
-        public static IServiceCollection AddDIServices(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection InfrastructureServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<SupplyChainDbContext>(options =>
             {

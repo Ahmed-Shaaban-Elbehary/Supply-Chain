@@ -27,7 +27,6 @@ namespace SupplyChain.Services
         {
             await _unitOfWork.ProductRepository.AddAsync(product);
             await _unitOfWork.CommitAsync();
-
         }
 
         public async Task UpdateProductAsync(Product product)

@@ -1,10 +1,23 @@
+using SupplyChain.App.Mapper;
+using SupplyChain.App.Mapper.Contracts;
+using SupplyChain.App.Utils;
+using SupplyChain.App.Utils.Contracts;
 using SupplyChain.Infrastructure;
+using SupplyChain.Services;
+using SupplyChain.Services.Contracts;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddDIServices(builder.Configuration);
+
+//Infrastructure Services
+builder.Services.InfrastructureServices(builder.Configuration);
+
+builder.Services.AddScoped<IProductService, ProductService>();
+
+builder.Services.AddScoped<IProductMapper, ProductMapper>();
+builder.Services.AddScoped<IUploadFile, UploadFile>();
 
 var app = builder.Build();
 
@@ -21,6 +34,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Product}/{action=Index}/{id?}");
 
 app.Run();
