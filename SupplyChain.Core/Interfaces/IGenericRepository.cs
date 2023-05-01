@@ -23,8 +23,8 @@ namespace SupplyChain.Core.Interfaces
         Task<T> GetSingleAsync(Expression<Func<T, bool>> predicate, Func<T, object> orderSelector, bool ascendingOrder = true);
         Task AddAsync(T entity);
         Task AddRangeAsync(IEnumerable<T> entities);
-        void Update(T entity);
-        void Remove(T entity);
-        void RemoveRange(IEnumerable<T> entities);
+        Task Update(T entity);
+        Task Remove(T entity);
+        Task RemoveRange(IEnumerable<T> entities);
     }
 }

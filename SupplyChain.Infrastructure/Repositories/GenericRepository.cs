@@ -126,9 +126,9 @@ namespace SupplyChain.Infrastructure.Repositories
             await _set.AddRangeAsync(entities);
         }
 
-        public void Update(T entity)
+        public async Task Update(T entity)
         {
-            _set.Update(entity);
+            await _set.Update(entity);
         }
 
         public void Remove(T entity)
