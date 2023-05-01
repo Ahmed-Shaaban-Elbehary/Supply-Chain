@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using SupplyChain.Core.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace SupplyChain.App.ViewModels
 {
@@ -18,5 +19,13 @@ namespace SupplyChain.App.ViewModels
         [Required(ErrorMessage = "You Should Enter Product Quantity")]
         [Range(0, 9999)]
         public decimal Quantity { get; set; }
+
+        [DataType(DataType.Date)]
+        public DateTime ProductionDate { get; set; }
+
+        [DataType(DataType.Date)]
+        public DateTime ExpirationDate { get; set; }
+
+        public string CountryOfOrigin { get; set; } = string.Empty;
     }
 }
