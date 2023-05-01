@@ -26,5 +26,6 @@ namespace SupplyChain.Core.Interfaces
         Task Update(T entity);
         Task Remove(T entity);
         Task RemoveRange(IEnumerable<T> entities);
+        Task ExecuteSqlCommand(string sql, params object[] parameters);
     }
 }

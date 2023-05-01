@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using SupplyChain.Core.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -6,114 +7,19 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace SupplyChain.Infrastructure.Repositories
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
-        private readonly DbContext _context;
+        private readonly SupplyChainDbContext _context;
         private readonly DbSet<T> _set;
 
-        public GenericRepository(DbContext context)
+        public GenericRepository(SupplyChainDbContext context)
         {
             _context = context;
             _set = _context.Set<T>();
-        }
-
-        public async Task<T> GetByIdAsync(int id)
-        {
-            return await _set.FindAsync(id);
-        }
-
-        public async Task<IEnumerable<T>> GetAllAsync()
-        {
-            return await _set.ToListAsync();
-        }
-
-        public IQueryable<T> GetAllQueryable()
-        {
-            return _set.AsQueryable();
-        }
-
-        public async Task<IEnumerable<T>> GetWhereAsync(Expression<Func<T, bool>> predicate)
-        {
-            return await _set.Where(predicate).ToListAsync();
-        }
-
-        public IQueryable<T> GetWhereQueryable(Expression<Func<T, bool>> predicate)
-        {
-            return _set.Where(predicate).AsQueryable();
-        }
-
-        public async Task<IEnumerable<T>> GetPagedAsync(int page, int pageSize, Expression<Func<T, bool>> predicate = null, Func<T, object> orderSelector = null, bool ascendingOrder = true)
-        {
-            var query = _set.AsQueryable();
-
-            if (predicate != null)
-            {
-                query = query.Where(predicate);
-            }
-
-            if (orderSelector != null)
-            {
-                query = (IQueryable<T>)(ascendingOrder ? query.OrderBy(orderSelector) : query.OrderByDescending(orderSelector));
-            }
-
-            return await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
-        }
-
-        public async Task<int> CountAsync(Expression<Func<T, bool>> predicate = null)
-        {
-            if (predicate != null)
-            {
-                return await _set.CountAsync(predicate);
-            }
-
-            return await _set.CountAsync();
-        }
-
-        public async Task<bool> AnyAsync(Expression<Func<T, bool>> predicate = null)
-        {
-            if (predicate != null)
-            {
-                return await _set.AnyAsync(predicate);
-            }
-
-            return await _set.AnyAsync();
-        }
-
-        public async Task<T> GetFirstAsync(Expression<Func<T, bool>> predicate)
-        {
-            return await _set.FirstOrDefaultAsync(predicate);
-        }
-
-        public async Task<T> GetFirstAsync(Expression<Func<T, bool>> predicate, Func<T, object> orderSelector, bool ascendingOrder = true)
-        {
-            var query = _set.Where(predicate);
-
-            if (orderSelector != null)
-            {
-                query = (IQueryable<T>)(ascendingOrder ? query.OrderBy(orderSelector) : query.OrderByDescending(orderSelector));
-            }
-
-            return await query.FirstOrDefaultAsync();
-        }
-
-        public async Task<T> GetSingleAsync(Expression<Func<T, bool>> predicate)
-        {
-            return await _set.SingleOrDefaultAsync(predicate);
-        }
-
-        public async Task<T> GetSingleAsync(Expression<Func<T, bool>> predicate, Func<T, object> orderSelector, bool ascendingOrder = true)
-        {
-            var query = _set.Where(predicate);
-
-            if (orderSelector != null)
-            {
-                query = (IQueryable<T>)(ascendingOrder ? query.OrderBy(orderSelector) : query.OrderByDescending(orderSelector));
-            }
-
-            return await query.SingleOrDefaultAsync();
         }
 
         public async Task AddAsync(T entity)
@@ -126,19 +32,146 @@ namespace SupplyChain.Infrastructure.Repositories
             await _set.AddRangeAsync(entities);
         }
 
-        public async Task Update(T entity)
+        public async Task<bool> AnyAsync(Expression<Func<T, bool>>? predicate = null)
         {
-            await _set.u(entity);
+            return await (predicate != null ? _set.AnyAsync(predicate) : _set.AnyAsync());
         }
 
-        public void Remove(T entity)
+        public async Task<int> CountAsync(Expression<Func<T, bool>>? predicate = null)
+        {
+            return await (predicate != null ? _set.CountAsync(predicate) : _set.CountAsync());
+        }
+
+        public async Task ExecuteSqlCommand(string sql, params object[] parameters)
+        {
+            await _context.Database.ExecuteSqlRawAsync(sql, parameters);
+        }
+
+        public async Task<IEnumerable<T>> GetAllAsync()
+        {
+            return await _set.ToListAsync();
+        }
+
+        public IQueryable<T> GetAllQueryable()
+        {
+            return _set.AsQueryable();
+        }
+
+        public async Task<T> GetByIdAsync(int id)
+        {
+            var result = await _set.FindAsync(id);
+            if (result == null)
+                throw new InvalidOperationException("No matching element was found.");
+
+            return result;
+        }
+
+        public async Task<T> GetFirstAsync(Expression<Func<T, bool>> predicate)
+        {
+            var result = await _set.FirstOrDefaultAsync(predicate);
+            if (result == null)
+                throw new InvalidOperationException("No matching element was found.");
+
+            return result;
+        }
+
+        public async Task<T> GetFirstAsync(Expression<Func<T, bool>> predicate, Func<T, object> orderSelector, bool ascendingOrder = true)
+        {
+            var query = _set.AsQueryable().Where(predicate);
+
+            if (ascendingOrder)
+            {
+                query = query.OrderBy(orderSelector).AsQueryable();
+            }
+            else
+            {
+                query = query.OrderByDescending(orderSelector).AsQueryable();
+            }
+
+            var result = await query.FirstOrDefaultAsync();
+
+            if (result == null)
+                throw new InvalidOperationException("No matching element was found.");
+
+            return result;
+        }
+
+        public async Task<IEnumerable<T>> GetPagedAsync(int page, int pageSize, Expression<Func<T, bool>>? predicate = null, Func<T, object>? orderSelector = null, bool ascendingOrder = true)
+        {
+            var query = _set.AsQueryable();
+
+            if (predicate != null)
+            {
+                query = query.Where(predicate);
+            }
+
+            if (orderSelector != null)
+            {
+                query = ascendingOrder ? query.OrderBy(orderSelector).AsQueryable() : query.OrderByDescending(orderSelector).AsQueryable();
+            }
+
+            return await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+        }
+
+        public async Task<T> GetSingleAsync(Expression<Func<T, bool>> predicate)
+        {
+            var query = _set.AsQueryable().Where(predicate);
+
+            var result = await query.SingleOrDefaultAsync();
+
+            if (result == null)
+                throw new InvalidOperationException("No matching element was found.");
+
+            return result;
+        }
+
+        public async Task<T> GetSingleAsync(Expression<Func<T, bool>> predicate, Func<T, object> orderSelector, bool ascendingOrder = true)
+        {
+            var query = _set.AsQueryable().Where(predicate);
+
+            if (ascendingOrder)
+            {
+                query = query.OrderBy(orderSelector).AsQueryable();
+            }
+            else
+            {
+                query = query.OrderByDescending(orderSelector).AsQueryable();
+            }
+
+            var result = await query.SingleOrDefaultAsync();
+
+            if (result == null)
+                throw new InvalidOperationException("No matching element was found.");
+
+            return result;
+        }
+
+        public async Task<IEnumerable<T>> GetWhereAsync(Expression<Func<T, bool>> predicate)
+        {
+            return await _set.Where(predicate).ToListAsync();
+        }
+
+        public IQueryable<T> GetWhereQueryable(Expression<Func<T, bool>> predicate)
+        {
+            return _set.Where(predicate);
+        }
+
+        public async Task Remove(T entity)
         {
             _set.Remove(entity);
+            await _context.SaveChangesAsync();
         }
 
-        public void RemoveRange(IEnumerable<T> entities)
+        public async Task RemoveRange(IEnumerable<T> entities)
         {
             _set.RemoveRange(entities);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task Update(T entity)
+        {
+            _set.Update(entity);
+            await _context.SaveChangesAsync();
         }
     }
 }
