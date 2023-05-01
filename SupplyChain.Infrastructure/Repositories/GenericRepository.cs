@@ -128,7 +128,7 @@ namespace SupplyChain.Infrastructure.Repositories
 
         public async Task Update(T entity)
         {
-            await _set.Update(entity);
+            await _set.u(entity);
         }
 
         public void Remove(T entity)

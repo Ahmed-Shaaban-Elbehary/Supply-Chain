@@ -42,7 +42,7 @@ namespace SupplyChain.Services
         {
             try
             {
-                _unitOfWork.ProductRepository.Update(product);
+                await _unitOfWork.ProductRepository.Update(product);
                 _unitOfWork.Commit();
             }
             catch
