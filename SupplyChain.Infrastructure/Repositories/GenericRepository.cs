@@ -156,22 +156,19 @@ namespace SupplyChain.Infrastructure.Repositories
             return _set.Where(predicate);
         }
 
-        public async Task Remove(T entity)
+        public void Remove(T entity)
         {
             _set.Remove(entity);
-            await _context.SaveChangesAsync();
         }
 
-        public async Task RemoveRange(IEnumerable<T> entities)
+        public void RemoveRange(IEnumerable<T> entities)
         {
             _set.RemoveRange(entities);
-            await _context.SaveChangesAsync();
         }
 
-        public async Task Update(T entity)
+        public void Update(T entity)
         {
             _set.Update(entity);
-            await _context.SaveChangesAsync();
         }
     }
 }
