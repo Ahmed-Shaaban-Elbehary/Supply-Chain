@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using SupplyChain.App.Profiles.Contracts;
 using SupplyChain.App.Utils.Contracts;
 using SupplyChain.App.ViewModels;
+using SupplyChain.Core.Models;
 using SupplyChain.Services.Contracts;
 
 namespace SupplyChain.App.Controllers
@@ -53,9 +54,10 @@ namespace SupplyChain.App.Controllers
             {
                 return BadRequest("Invalid file type.");
             }
-            var product = _productMapper.MapToProduct(vm);
+            var product = new Product();
             product.ImageUrl = await _uploadFile.UploadImage(file);
             product.Description.Trim();
+
             await _productService.CreateProductAsync(product);
             return RedirectToAction(nameof(Index));
         }

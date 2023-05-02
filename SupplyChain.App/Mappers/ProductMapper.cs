@@ -6,22 +6,24 @@ namespace SupplyChain.App.Profiles
 {
     public class ProductMapper : IProductMapper
     {
-        public Product MapToProduct(ProductViewModel vm)
+        public Product MapToProduct(ProductViewModel viewModel)
         {
-            return new Product()
+            var product = new Product
             {
-                Id = vm.Id,
-                Name = vm.Name,
-                ImageUrl = vm.ImageUrl,
-                CategoryId = vm.CategoryId,
-                CountryOfOriginCode = vm.CountryOfOriginCode,
-                ManufacturerId = vm.ManufacturerId,
-                Price = vm.Price,
-                Quantity = vm.Quantity,
-                ExpirationDate = vm.ExpirationDate.Date,
-                ProductionDate = vm.ProductionDate.Date,
-                Description = vm.Description
+                Id = viewModel.Id,
+                Name = viewModel.Name,
+                Description = viewModel.Description,
+                Price = viewModel.Price,
+                Quantity = viewModel.Quantity,
+                ImageUrl = viewModel.ImageUrl,
+                ProductionDate = viewModel.ProductionDate.Date,
+                ExpirationDate = viewModel.ExpirationDate.Date,
+                CountryOfOriginCode = viewModel.CountryOfOriginCode,
+                ManufacturerId = viewModel.ManufacturerId,
+                CategoryId = viewModel.CategoryId
             };
+
+            return product;
         }
 
         public ProductViewModel MapToProductViewModel(Product product)
