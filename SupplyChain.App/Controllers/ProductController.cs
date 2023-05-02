@@ -54,11 +54,10 @@ namespace SupplyChain.App.Controllers
             {
                 return BadRequest("Invalid file type.");
             }
-            var product = new Product();
-            product.ImageUrl = await _uploadFile.UploadImage(file);
-            product.Description.Trim();
-
-            await _productService.CreateProductAsync(product);
+            vm.ImageUrl = await _uploadFile.UploadImage(file);
+            vm.Description.Trim();
+            vm.Name.Trim();
+            await _productService.CreateProductAsync(_productMapper.MapToProduct(vm));
             return RedirectToAction(nameof(Index));
         }
     }

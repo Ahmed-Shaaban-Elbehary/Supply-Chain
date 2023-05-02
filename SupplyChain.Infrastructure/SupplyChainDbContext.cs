@@ -26,7 +26,7 @@ namespace SupplyChain.Infrastructure
                 .HasMaxLength(50);
             modelBuilder.Entity<Product>()
                 .Property(p => p.Description)
-                .HasMaxLength(200);
+                .HasMaxLength(500);
             modelBuilder.Entity<Product>()
                 .Property(p => p.Price)
                 .HasColumnType("decimal(18,2)");
@@ -42,6 +42,9 @@ namespace SupplyChain.Infrastructure
             modelBuilder.Entity<Product>()
                 .Property(p => p.CountryOfOriginCode)
                 .HasMaxLength(4);
+            modelBuilder.Entity<Product>()
+                .Property(p => p.Quantity)
+                .HasColumnType("decimal(18,2)");
 
             // Define the foreign key constraint for the manufacturer
             modelBuilder.Entity<Product>()
@@ -82,8 +85,11 @@ namespace SupplyChain.Infrastructure
                 .WithMany(pc => pc.Subcategories)
                 .HasForeignKey(c => c.ParentCategoryId)
                 .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<ProductComponent>()
+                .Property(pc => pc.Quantity)
+                .HasColumnType("decimal(18,2)");
 
-            // Define the ShoppingCart entity
+            // Define the Cart entity
             modelBuilder.Entity<Cart>()
                 .HasKey(sc => sc.Id);
             modelBuilder.Entity<Cart>()
@@ -116,6 +122,9 @@ namespace SupplyChain.Infrastructure
                 .WithMany(w => w.IncomingItems)
                 .HasForeignKey(sci => sci.DestinationWarehouseId)
                 .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<CartItem>()
+                .Property(c => c.Quantity)
+                .HasColumnType("decimal(18,2)");
 
             // Define the Manufacturer entity
             modelBuilder.Entity<Manufacturer>()

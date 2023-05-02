@@ -8,6 +8,6 @@
         public string ContactName { get; set; } = string.Empty;
         public string ContactEmail { get; set; } = string.Empty;
         public string ContactPhone { get; set; } = string.Empty;
-        public virtual List<Product> Products { get; set; } = new List<Product>();
+        public virtual List<Product> Products { get; set; }
     }
 }

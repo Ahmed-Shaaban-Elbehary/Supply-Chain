@@ -14,8 +14,10 @@ namespace SupplyChain.Infrastructure
             {
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
             });
+
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<IProductRepository, ProductRepository>();
+
+            services.AddTransient<IProductRepository, ProductRepository>();
 
             return services;
         }

@@ -15,13 +15,13 @@ builder.Services.AddMvc();
 //Infrastructure Services
 builder.Services.InfrastructureServices(builder.Configuration);
 
-builder.Services.AddScoped<IProductService, ProductService>();
-
 builder.Services.AddScoped<IProductMapper, ProductMapper>();
+
+builder.Services.AddScoped<IProductService, ProductService>();
 
 builder.Services.AddScoped<IUploadFile, UploadFile>();
 
-builder.Services.AddScoped<ILookUp, Lookups>();
+builder.Services.AddSingleton<ILookUp, Lookups>();
 
 var app = builder.Build();
 

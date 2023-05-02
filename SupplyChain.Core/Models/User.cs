@@ -7,6 +7,6 @@
         public string Address { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string Phone { get; set; } = string.Empty;
-        public virtual List<Cart> Carts { get; set; } = new List<Cart>();
+        public virtual List<Cart> Carts { get; set; }
     }
 }

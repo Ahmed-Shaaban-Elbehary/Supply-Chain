@@ -12,9 +12,9 @@
         public DateTime ExpirationDate { get; set; }
         public string CountryOfOriginCode { get; set; } = string.Empty;
         public int ManufacturerId { get; set; }
-        public virtual Manufacturer Manufacturer { get; set; } = new Manufacturer();
+        public virtual Manufacturer Manufacturer { get; set; }
         public int CategoryId { get; set; }
-        public virtual ProductCategory Category { get; set; } = new ProductCategory();
-        public virtual List<ProductComponent> Components { get; set; } = new List<ProductComponent>();
+        public virtual ProductCategory Category { get; set; }
+        public virtual List<ProductComponent> Components { get; set; }
     }
 }
