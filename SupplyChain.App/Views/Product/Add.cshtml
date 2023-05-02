@@ -16,6 +16,7 @@
                     <label>Upload Image</label>
                     <div class="input-group">
                         <div class="custom-file">
+                            <span asp-validation-for="ImageUrl" class="text-danger"></span>
                             <input type="file" class="custom-file-input rounded-0" name="file" accept="image/*" required />
                             <label class="custom-file-label">Choose Image</label>
                         </div>
@@ -32,6 +33,7 @@
             <div class="form-group">
                 <label asp-for="Description">Description</label>
                 <textarea asp-for="Description" class="form-control rounded-0" rows="3"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <div class="col">
@@ -49,9 +51,9 @@
 
             </div>
             <div class="form-group">
-                @Html.DropDownListFor(m => m.CountryOfOrigin,
-                (IEnumerable<SelectListItem>)ViewBag.Countries, "Select a country",
-                new { @class = "form-control rounded-0" })
+                <label asp-for="CountryOfOriginId" class="control-label"></label>
+                @Html.DropDownListFor(m => m.CountryOfOriginId, Model.CountryOfOriginList, "-- Select Country of Origin --", new { @class = "form-control" })
+                <span asp-validation-for="CountryOfOriginId" class="text-danger"></span>
             </div>
         </div>
         <div class="card-footer">

@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Cors.Infrastructure;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using SupplyChain.App.Mapper;
-using SupplyChain.App.Mapper.Contracts;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using SupplyChain.App.Utils.Contracts;
 using SupplyChain.App.ViewModels;
 using SupplyChain.Core.Models;
@@ -13,33 +12,37 @@ namespace SupplyChain.App.Controllers
     public class ProductController : Controller
     {
         private readonly IProductService _productService;
-        private readonly IProductMapper _productMapper;
         private readonly IUploadFile _uploadFile;
+        private readonly ILookUp _lookUp;
+        private readonly IMapper _mapper;
 
-        public ProductController(IProductService productService, 
-            IProductMapper productMapper, IUploadFile uploadFile)
+        public ProductController(
+            IProductService productService,
+            IUploadFile uploadFile,
+            ILookUp lookUp,
+            IMapper mapper)
         {
             _productService = productService;
-            _productMapper = productMapper;
             _uploadFile = uploadFile;
+            _lookUp = lookUp;
+            _mapper = mapper;
         }
 
         public async Task<ActionResult<IEnumerable<ProductViewModel>>> Index()
         {
             var products = await _productService.GetAllProductsAsync();
-            if (products == null)
-            {
-                return NotFound();
-            }
-            var vm = _productMapper.MapToViewModel(products);
-            ViewBag.Countries = Countries.GetCountries();
+            var vm = products.Count() > 0 ? _mapper.Map<IEnumerable<ProductViewModel>>(products) : new List<ProductViewModel>();
             return View(vm);
         }
 
         [HttpGet]
         public IActionResult Add()
         {
-            return View();
+            var vm = new ProductViewModel();
+            vm.CountryOfOriginList = new SelectList(_lookUp.Countries, "Code", "Name");
+            vm.ManufacturerList = new SelectList(_lookUp.Manufacturers, "Id", "Name");
+            vm.CategoryList = new SelectList(_lookUp.Categories, "Id", "Name");
+            return View(vm);
         }
 
         [HttpPost]
@@ -55,7 +58,7 @@ namespace SupplyChain.App.Controllers
             {
                 return BadRequest("Invalid file type.");
             }
-            var product = _productMapper.MapToModel(vm);
+            var product = _mapper.Map<Product>(vm);
             product.ImageUrl = await _uploadFile.UploadImage(file);
             product.Description.Trim();
             await _productService.CreateProductAsync(product);

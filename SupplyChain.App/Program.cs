@@ -1,5 +1,4 @@
-using SupplyChain.App.Mapper;
-using SupplyChain.App.Mapper.Contracts;
+using SupplyChain.App.Profiles;
 using SupplyChain.App.Utils;
 using SupplyChain.App.Utils.Contracts;
 using SupplyChain.Infrastructure;
@@ -10,14 +9,18 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddMvc();
 
 //Infrastructure Services
 builder.Services.InfrastructureServices(builder.Configuration);
 
 builder.Services.AddScoped<IProductService, ProductService>();
 
-builder.Services.AddScoped<IProductMapper, ProductMapper>();
+builder.Services.AddAutoMapper(typeof(MappingProfile));
+
 builder.Services.AddScoped<IUploadFile, UploadFile>();
+
+builder.Services.AddScoped<ILookUp, Lookups>();
 
 var app = builder.Build();
 
