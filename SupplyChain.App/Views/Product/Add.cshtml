@@ -36,24 +36,53 @@
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <div class="col">
-                    <label asp-for="Quantity">Quantity</label>
-                    <input type="number" asp-for="Quantity" class="form-control rounded-0"
-                           data-val="true" data-val-number="Please Enter Numbers Only!" />
-                    <span asp-validation-for="Quantity" class="text-danger"></span>
+                <div class="row">
+                    <div class="col-md-6 col-sm-12">
+                        <label asp-for="Quantity">Quantity</label>
+                        <input type="number" asp-for="Quantity" class="form-control rounded-0"
+                               data-val="true" data-val-number="Please Enter Numbers Only!" />
+                        <span asp-validation-for="Quantity" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                        <label asp-for="Price">Price / Roll</label>
+                        <input asp-for="Price" type="number" class="form-control rounded-0"
+                               data-val="true" data-val-number="Please Enter Numbers Only!" />
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
                 </div>
-                <div class="col">
-                    <label asp-for="Price">Price / Roll</label>
-                    <input asp-for="Price" type="number" class="form-control rounded-0"
-                           data-val="true" data-val-number="Please Enter Numbers Only!" />
-                    <span asp-validation-for="Price" class="text-danger"></span>
-                </div>
-
             </div>
             <div class="form-group">
-                <label asp-for="CountryOfOriginId" class="control-label"></label>
-                @Html.DropDownListFor(m => m.CountryOfOriginId, Model.CountryOfOriginList, "-- Select Country of Origin --", new { @class = "form-control" })
-                <span asp-validation-for="CountryOfOriginId" class="text-danger"></span>
+                <div class="row">
+                    <div class="col-md-6 col-sm-12">
+                        <label asp-for="ProductionDate"></label>
+                        <input asp-for="ProductionDate" class="form-control" type="datetime-local" value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
+                        <span asp-validation-for="ProductionDate"></span>
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                        <label asp-for="ExpirationDate"></label>
+                        <input asp-for="ExpirationDate" class="form-control" type="datetime-local" value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
+                        <span asp-validation-for="ExpirationDate"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-md-4 col-sm-12">
+                        <label asp-for="ManufacturerId" class="control-label"></label>
+                        @Html.DropDownListFor(m => m.ManufacturerId, Model.ManufacturerList, "-- Select Manufacturer --", new { @class = "form-control" })
+                        <span asp-validation-for="ManufacturerId" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label asp-for="CountryOfOriginCode" class="control-label"></label>
+                        @Html.DropDownListFor(m => m.CountryOfOriginCode, Model.CountryOfOriginList, "-- Select Country of Origin --", new { @class = "form-control" })
+                        <span asp-validation-for="CountryOfOriginCode" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label asp-for="CategoryId" class="control-label"></label>
+                        @Html.DropDownListFor(m => m.CategoryId, Model.CategoryList, "-- Select Category --", new { @class = "form-control" })
+                        <span asp-validation-for="CategoryId" class="text-danger"></span>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="card-footer">

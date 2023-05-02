@@ -1,4 +1,5 @@
 using SupplyChain.App.Profiles;
+using SupplyChain.App.Profiles.Contracts;
 using SupplyChain.App.Utils;
 using SupplyChain.App.Utils.Contracts;
 using SupplyChain.Infrastructure;
@@ -16,7 +17,7 @@ builder.Services.InfrastructureServices(builder.Configuration);
 
 builder.Services.AddScoped<IProductService, ProductService>();
 
-builder.Services.AddAutoMapper(typeof(MappingProfile));
+builder.Services.AddScoped<IProductMapper, ProductMapper>();
 
 builder.Services.AddScoped<IUploadFile, UploadFile>();
 

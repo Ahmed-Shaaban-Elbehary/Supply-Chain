@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using SupplyChain.App.Utils.Validations;
+using SupplyChain.Core.Models;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace SupplyChain.App.ViewModels
@@ -21,9 +23,7 @@ namespace SupplyChain.App.ViewModels
         [Required(ErrorMessage = "The Quantity field is required.")]
         [Range(0, int.MaxValue, ErrorMessage = "The Quantity field must be greater than or equal to 0.")]
         public decimal Quantity { get; set; }
-
-        [Required(ErrorMessage = "The ImageUrl field is required.")]
-        [Url(ErrorMessage = "The ImageUrl field must be a valid URL.")]
+        
         public string ImageUrl { get; set; }
 
         [Required(ErrorMessage = "The Production Date field is required.")]
@@ -34,16 +34,19 @@ namespace SupplyChain.App.ViewModels
         public DateTime ExpirationDate { get; set; }
 
         [Required(ErrorMessage = "The Country of Origin field is required.")]
-        public int CountryOfOriginId { get; set; }
+        [DisplayName("Country")]
+        public string CountryOfOriginCode { get; set; }
 
         public SelectList CountryOfOriginList { get; set; }
 
         [Required(ErrorMessage = "The Manufacturer field is required.")]
+        [DisplayName("Manufacturer")]
         public int ManufacturerId { get; set; }
 
         public SelectList ManufacturerList { get; set; }
 
         [Required(ErrorMessage = "The Category field is required.")]
+        [DisplayName("Category")]
         public int CategoryId { get; set; }
 
         public SelectList CategoryList { get; set; }

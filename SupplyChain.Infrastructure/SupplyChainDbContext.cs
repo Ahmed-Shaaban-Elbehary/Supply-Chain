@@ -40,8 +40,8 @@ namespace SupplyChain.Infrastructure
                 .Property(p => p.ExpirationDate)
                 .HasColumnType("datetime2");
             modelBuilder.Entity<Product>()
-                .Property(p => p.CountryOfOrigin)
-                .HasMaxLength(50);
+                .Property(p => p.CountryOfOriginCode)
+                .HasMaxLength(4);
 
             // Define the foreign key constraint for the manufacturer
             modelBuilder.Entity<Product>()
