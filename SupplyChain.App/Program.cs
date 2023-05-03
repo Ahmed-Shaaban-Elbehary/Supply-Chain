@@ -1,3 +1,5 @@
+using SupplyChain.App.Mappers;
+using SupplyChain.App.Mappers.Contracts;
 using SupplyChain.App.Profiles;
 using SupplyChain.App.Profiles.Contracts;
 using SupplyChain.App.Utils;
@@ -15,13 +17,20 @@ builder.Services.AddMvc();
 //Infrastructure Services
 builder.Services.InfrastructureServices(builder.Configuration);
 
+#region Mappers
 builder.Services.AddScoped<IProductMapper, ProductMapper>();
+builder.Services.AddScoped<IProductCategoryMapper, ProductCategoryMapper>();
+#endregion
 
+#region Services
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IProductCategoryService, ProductCategoryService>();
+#endregion
 
+#region Utils
 builder.Services.AddScoped<IUploadFile, UploadFile>();
-
 builder.Services.AddSingleton<ILookUp, Lookups>();
+#endregion
 
 var app = builder.Build();
 

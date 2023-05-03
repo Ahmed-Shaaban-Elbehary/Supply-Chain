@@ -18,7 +18,7 @@ namespace SupplyChain.Infrastructure
         public DbSet<ProductComponent> ProductComponents { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Define the Product entity
+            #region Define the Product entity
             modelBuilder.Entity<Product>()
                 .HasKey(p => p.Id);
             modelBuilder.Entity<Product>()
@@ -45,22 +45,25 @@ namespace SupplyChain.Infrastructure
             modelBuilder.Entity<Product>()
                 .Property(p => p.Quantity)
                 .HasColumnType("decimal(18,2)");
+            #endregion
 
-            // Define the foreign key constraint for the manufacturer
+            #region Define the foreign key constraint for the manufacturer
             modelBuilder.Entity<Product>()
                 .HasOne(p => p.Manufacturer)
                 .WithMany(m => m.Products)
                 .HasForeignKey(p => p.ManufacturerId)
                 .OnDelete(DeleteBehavior.Restrict);
+            #endregion
 
-            // Define the foreign key constraint for the product category
+            #region Define the foreign key constraint for the product category
             modelBuilder.Entity<Product>()
                 .HasOne(p => p.Category)
                 .WithMany(c => c.Products)
                 .HasForeignKey(p => p.CategoryId)
                 .OnDelete(DeleteBehavior.Restrict);
+            #endregion
 
-            // Define the many-to-many relationship between products and components
+            #region Define the many-to-many relationship between products and components
             modelBuilder.Entity<ProductComponent>()
                 .HasKey(pc => new { pc.ProductId, pc.ComponentId });
             modelBuilder.Entity<ProductComponent>()
@@ -73,8 +76,9 @@ namespace SupplyChain.Infrastructure
                 .WithMany()
                 .HasForeignKey(pc => pc.ComponentId)
                 .OnDelete(DeleteBehavior.Restrict);
+            #endregion
 
-            // Define the ProductCategory entity
+            #region Define the ProductCategory entity
             modelBuilder.Entity<ProductCategory>()
                 .HasKey(c => c.Id);
             modelBuilder.Entity<ProductCategory>()
@@ -89,7 +93,9 @@ namespace SupplyChain.Infrastructure
                 .Property(pc => pc.Quantity)
                 .HasColumnType("decimal(18,2)");
 
-            // Define the Cart entity
+            #endregion
+
+            #region Define the Cart entity
             modelBuilder.Entity<Cart>()
                 .HasKey(sc => sc.Id);
             modelBuilder.Entity<Cart>()
@@ -103,8 +109,9 @@ namespace SupplyChain.Infrastructure
             modelBuilder.Entity<Cart>()
                 .Property(sc => sc.ShippingAddress)
                 .HasMaxLength(200);
+            #endregion
 
-            // Define the CartItem entity
+            #region Define the CartItem entity
             modelBuilder.Entity<CartItem>()
                 .HasKey(sci => sci.Id);
             modelBuilder.Entity<CartItem>()
@@ -125,8 +132,9 @@ namespace SupplyChain.Infrastructure
             modelBuilder.Entity<CartItem>()
                 .Property(c => c.Quantity)
                 .HasColumnType("decimal(18,2)");
+            #endregion
 
-            // Define the Manufacturer entity
+            #region Define the Manufacturer entity
             modelBuilder.Entity<Manufacturer>()
                 .HasKey(m => m.Id);
             modelBuilder.Entity<Manufacturer>()
@@ -144,8 +152,9 @@ namespace SupplyChain.Infrastructure
             modelBuilder.Entity<Manufacturer>()
                 .Property(m => m.ContactPhone)
                 .HasMaxLength(50);
+            #endregion
 
-            // Define the Warehouse entity
+            #region Define the Warehouse entity
             modelBuilder.Entity<Warehouse>()
                 .HasKey(w => w.Id);
             modelBuilder.Entity<Warehouse>()
@@ -154,8 +163,9 @@ namespace SupplyChain.Infrastructure
             modelBuilder.Entity<Warehouse>()
                 .Property(w => w.Address)
                 .HasMaxLength(200);
+            #endregion
 
-            // Define the User entity
+            #region Define the User entity
             modelBuilder.Entity<User>()
                 .HasKey(u => u.Id);
             modelBuilder.Entity<User>()
@@ -170,6 +180,8 @@ namespace SupplyChain.Infrastructure
             modelBuilder.Entity<User>()
                 .Property(u => u.Phone)
                 .HasMaxLength(20);
+            #endregion
+            
         }
     }
 }

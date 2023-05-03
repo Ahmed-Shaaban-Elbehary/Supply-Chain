@@ -1,29 +1,36 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using SupplyChain.App.Mappers;
+using SupplyChain.App.Mappers.Contracts;
 using SupplyChain.App.Utils.Contracts;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
+using SupplyChain.App.ViewModels;
+using SupplyChain.Services.Contracts;
 
 namespace SupplyChain.App.Utils
 {
     public class Lookups : ILookUp
     {
         private IWebHostEnvironment _webHostEnvironment;
+        private readonly IProductCategoryService _productCategoryService;
+        private readonly IProductCategoryMapper _productCategoryMapper;
 
-        public Lookups(IWebHostEnvironment webHostEnvironment)
+        public Lookups(IWebHostEnvironment webHostEnvironment, 
+            IProductCategoryService productCategoryService,
+            IProductCategoryMapper productCategoryMapper
+            )
         {
             _webHostEnvironment = webHostEnvironment;
+            _productCategoryService = productCategoryService;
+            _productCategoryMapper = productCategoryMapper;
             Countries = GetCountries();
             Manufacturers = GetManufacturers();
-            Categories = new List<SelectList> { new SelectList { Id = 1, Name = "Fabric" } };
+            Categories = GetCategories().Result.ToList();
         }
 
         public List<Country> Countries { get; private set; }
 
         public List<SelectList> Manufacturers { get; private set; }
 
-        public List<SelectList> Categories { get; private set; }
+        public List<ProductCategoryViewModel> Categories { get; private set; }
 
         public List<Country> GetCountries()
         {
@@ -46,6 +53,12 @@ namespace SupplyChain.App.Utils
                 new SelectList { Id = 4, Name = "El-Mahalla El-Kubra Spinning and Weaving Company"},
                 new SelectList { Id = 5, Name = "Alexandria Spinning and Weaving Company"},
             };
+        }
+
+        public async Task<IEnumerable<ProductCategoryViewModel>> GetCategories()
+        {
+            var result = await _productCategoryService.GetAllProductCategoriesAsync();
+            return _productCategoryMapper.MapProductCategoryToViewModel(result);
         }
 
         public class Country

@@ -9,17 +9,19 @@ namespace SupplyChain.Infrastructure.Repositories
     {
         private readonly SupplyChainDbContext _context;
         private readonly IGenericRepository<Product> _productRepository;
+        private readonly IGenericRepository<ProductCategory> _productCategoryRepository;
         private readonly IGenericRepository<Cart> _cartRepository;
 
         public UnitOfWork(SupplyChainDbContext context)
         {
             _context = context;
             _productRepository = new GenericRepository<Product>(_context);
+            _productCategoryRepository = new GenericRepository<ProductCategory>(_context);
             _cartRepository = new GenericRepository<Cart>(_context);
         }
 
         public IGenericRepository<Product> ProductRepository => _productRepository;
-
+        public IGenericRepository<ProductCategory> ProductCategoryRepository => _productCategoryRepository;
         public IGenericRepository<Cart> CartRepository => _cartRepository;
 
         public async Task CommitAsync()

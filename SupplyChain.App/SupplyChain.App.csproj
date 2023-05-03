@@ -24,4 +24,8 @@
     <ProjectReference Include="..\SupplyChain.Services\SupplyChain.Services.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\images\Products\" />
+  </ItemGroup>
+
 </Project>

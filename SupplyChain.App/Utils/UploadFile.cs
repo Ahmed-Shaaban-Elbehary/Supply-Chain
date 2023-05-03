@@ -35,13 +35,12 @@ namespace SupplyChain.App.Utils
                 await file.CopyToAsync(memoryStream);
                 byte[] imageData = memoryStream.ToArray();
                 byte[] croppedImageData = await CropImageAsync(imageData, width, height);
-                string extension = Path.GetExtension(file.FileName).ToLowerInvariant();
                 string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, @"images\products");
                 if (!Directory.Exists(uploadsFolder))
                 {
                     Directory.CreateDirectory(uploadsFolder);
                 }
-                string fileName = file.FileName + extension;
+                string fileName = file.FileName;
                 filePath = Path.Combine(uploadsFolder, fileName);
 
                 using (FileStream fileStream = new FileStream(filePath, FileMode.Create))

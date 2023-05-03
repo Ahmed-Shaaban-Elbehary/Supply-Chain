@@ -10,6 +10,7 @@ namespace SupplyChain.Core.Interfaces
     public interface IUnitOfWork : IDisposable
     {
         IGenericRepository<Product> ProductRepository { get; }
+        IGenericRepository<ProductCategory> ProductCategoryRepository { get; }
         IGenericRepository<Cart> CartRepository { get; }
         Task CommitAsync();
         Task RollbackAsync();

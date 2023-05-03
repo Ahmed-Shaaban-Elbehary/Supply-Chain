@@ -10,7 +10,7 @@
         public string ImageUrl { get; set; } = string.Empty;
         public DateTime ProductionDate { get; set; }
         public DateTime ExpirationDate { get; set; }
-        public string CountryOfOriginCode { get; set; } = string.Empty;
+        public string CountryOfOriginCode { get; set; }
         public int ManufacturerId { get; set; }
         public virtual Manufacturer Manufacturer { get; set; }
         public int CategoryId { get; set; }

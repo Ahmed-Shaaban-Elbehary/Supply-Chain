@@ -1,0 +1,27 @@
+﻿@{
+    ViewData["Title"] = "Setup";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section Styles{
+    <style>
+        .setup-btn {
+            min-width: 100%;
+            min-height: 100%;
+        }
+    </style>
+}
+<div class="row">
+    <div class="col-md-2">
+        <a asp-action="Manufacturer" class="btn btn-outline-success btn-lg setup-btn">
+            <i class="fas fa-industry pt-3"></i>
+            <p>Add Manufacturer</p>
+        </a>
+    </div>
+    <div class="col-md-2">
+        <a asp-action="Category" class="btn btn-outline-success btn-lg setup-btn">
+            <i class="fas fa-sitemap pt-3"></i>
+            <p>Add Category</p>
+        </a>
+    </div>
+</div>
+

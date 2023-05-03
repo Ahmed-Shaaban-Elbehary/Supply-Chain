@@ -1,19 +1,20 @@
-﻿using static SupplyChain.App.Utils.Lookups;
+﻿using SupplyChain.App.ViewModels;
+using static SupplyChain.App.Utils.Lookups;
 
 namespace SupplyChain.App.Utils.Contracts
 {
     public interface ILookUp
     {
-        public List<Country> Countries { get; }
+        List<Country> Countries { get; }
 
-        public List<SelectList> Manufacturers { get; }
+        List<SelectList> Manufacturers { get; }
 
-        public List<SelectList> Categories { get; }
+        List<ProductCategoryViewModel> Categories { get; }
 
-        public List<Country> GetCountries();
+        List<Country> GetCountries();
 
-        public List<SelectList> GetManufacturers();
+        List<SelectList> GetManufacturers();
 
-        //public List<SelectList> GetCategories();
+        Task<IEnumerable<ProductCategoryViewModel>> GetCategories();
     }
 }

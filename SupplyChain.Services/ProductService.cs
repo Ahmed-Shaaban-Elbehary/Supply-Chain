@@ -6,7 +6,7 @@ namespace SupplyChain.Services
 {
     public class ProductService : IProductService
     {
-        public IUnitOfWork _unitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
 
         public ProductService(IUnitOfWork unitOfWork)
         {
