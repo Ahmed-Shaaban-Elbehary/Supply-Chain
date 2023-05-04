@@ -29,7 +29,7 @@ builder.Services.AddScoped<IProductCategoryService, ProductCategoryService>();
 
 #region Utils
 builder.Services.AddScoped<IUploadFile, UploadFile>();
-builder.Services.AddSingleton<ILookUp, Lookups>();
+builder.Services.AddScoped<ILookUp, Lookups>();
 #endregion
 
 var app = builder.Build();

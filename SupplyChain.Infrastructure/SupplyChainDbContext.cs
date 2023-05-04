@@ -76,23 +76,22 @@ namespace SupplyChain.Infrastructure
                 .WithMany()
                 .HasForeignKey(pc => pc.ComponentId)
                 .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<ProductComponent>()
+                .Property(pc => pc.Quantity)
+                .HasColumnType("decimal(18,2)");
             #endregion
 
             #region Define the ProductCategory entity
             modelBuilder.Entity<ProductCategory>()
                 .HasKey(c => c.Id);
             modelBuilder.Entity<ProductCategory>()
-                .Property(c => c.Name)
-                .HasMaxLength(50);
-            modelBuilder.Entity<ProductCategory>()
-                .HasOne(c => c.ParentCategory)
-                .WithMany(pc => pc.Subcategories)
-                .HasForeignKey(c => c.ParentCategoryId)
-                .OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<ProductComponent>()
-                .Property(pc => pc.Quantity)
-                .HasColumnType("decimal(18,2)");
-
+                .Property(p => p.Name)
+                .HasMaxLength(100)
+                .IsRequired();
+            modelBuilder.Entity<ProductCategory>(e =>
+            {
+                e.HasIndex(pc => pc.Name).IsUnique();
+            });
             #endregion
 
             #region Define the Cart entity
@@ -181,7 +180,7 @@ namespace SupplyChain.Infrastructure
                 .Property(u => u.Phone)
                 .HasMaxLength(20);
             #endregion
-            
+
         }
     }
 }
