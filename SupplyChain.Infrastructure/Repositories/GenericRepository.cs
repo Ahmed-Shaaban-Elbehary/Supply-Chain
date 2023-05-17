@@ -96,7 +96,8 @@ namespace SupplyChain.Infrastructure.Repositories
             return result;
         }
 
-        public async Task<IEnumerable<T>> GetPagedAsync(int page, int pageSize, Expression<Func<T, bool>>? predicate = null, Func<T, object>? orderSelector = null, bool ascendingOrder = true)
+        public async Task<IEnumerable<T>> GetPagedAsync(int page, int pageSize, Expression<Func<T, bool>>? predicate = null,
+            Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null, bool ascendingOrder = true)
         {
             var query = _set.AsQueryable();
 
@@ -105,12 +106,13 @@ namespace SupplyChain.Infrastructure.Repositories
                 query = query.Where(predicate);
             }
 
-            if (orderSelector != null)
+            if (orderBy != null)
             {
-                query = ascendingOrder ? query.OrderBy(orderSelector).AsQueryable() : query.OrderByDescending(orderSelector).AsQueryable();
+                query = orderBy(query);
             }
 
-            return await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+            var result = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+            return result;
         }
 
         public async Task<T> GetSingleAsync(Expression<Func<T, bool>> predicate)

@@ -1,24 +1,40 @@
 ﻿@using SupplyChain.App.ViewModels;
-@model ProductCategoryViewModel
+@model PagedViewModel<ProductCategoryViewModel>
 @{
     ViewData["Title"] = "Category";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="card card-primary">
+<div class="card">
     <div class="card-header">
-        <h3 class="card-title">Add Parent Category</h3>
+        <h3 class="card-title">Products Categories</h3>
+        <a @Url.Action("") class="btn btn-outline-success btn-sm float-right">Add NEW</a>
     </div>
+
     <div class="card-body">
-        <form class="AddCategory">
-            <div class="form-group">
-                <label asp-for="Name">Category Name</label>
-                <input asp-for="Name" class="form-control rounded-0" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-        </form>
+        <div id="page-content">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var category in Model.Model)
+                    {
+                        <tr>
+                            <td>@category.Id</td>
+                            <td>@category.Name</td>
+                        </tr>
+                    }
+                    </>
+                </tbody>
+            </table>
+        </div>
     </div>
-    <div class="card-footer">
-        <button type="button" class="btn btn-block btn-outline-primary">Save</button>
+
+    <div class="card-footer clearfix">
+        @await Html.PartialAsync("_Pager", Model)
     </div>
 </div>

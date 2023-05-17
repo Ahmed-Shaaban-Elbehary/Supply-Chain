@@ -14,9 +14,10 @@ namespace SupplyChain.Core.Interfaces
         IQueryable<T> GetAllQueryable();
         Task<IEnumerable<T>> GetWhereAsync(Expression<Func<T, bool>> predicate);
         IQueryable<T> GetWhereQueryable(Expression<Func<T, bool>> predicate);
-        Task<IEnumerable<T>> GetPagedAsync(int page, int pageSize, Expression<Func<T, bool>>? predicate = null, Func<T, object>? orderSelector = null, bool ascendingOrder = true);
-        Task<int> CountAsync(Expression<Func<T, bool>>? predicate = null);
-        Task<bool> AnyAsync(Expression<Func<T, bool>>? predicate = null);
+        Task<IEnumerable<T>> GetPagedAsync(int page, int pageSize, Expression<Func<T, bool>> predicate = null,
+            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, bool ascendingOrder = true);
+        Task<int> CountAsync(Expression<Func<T, bool>> predicate = null);
+        Task<bool> AnyAsync(Expression<Func<T, bool>> predicate = null);
         Task<T> GetFirstAsync(Expression<Func<T, bool>> predicate);
         Task<T> GetFirstAsync(Expression<Func<T, bool>> predicate, Func<T, object> orderSelector, bool ascendingOrder = true);
         Task<T> GetSingleAsync(Expression<Func<T, bool>> predicate);

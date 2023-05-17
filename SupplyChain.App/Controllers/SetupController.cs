@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using SupplyChain.App.Mappers.Contracts;
 using SupplyChain.App.ViewModels;
-using SupplyChain.Core.Models;
 using SupplyChain.Services.Contracts;
+using System.Drawing.Printing;
 
 namespace SupplyChain.App.Controllers
 {
@@ -23,11 +23,36 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> Category()
+        public async Task<ActionResult> Category(int page = 1, int pageSize = 10)
         {
-            var viewModel = new ProductCategoryViewModel();
-            ViewBag.Categories = await _productCategoryService.GetAllProductCategoriesAsync();
-            return View(viewModel);
+            int totalCount = await _productCategoryService.CountProductCategoryAsync();
+            int totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+            int currentPage = page;
+            int startPage = currentPage - 5 > 0 ? currentPage - 5 : 1;
+            int endPage = startPage + 9 < totalPages ? startPage + 9 : totalPages;
+
+            var categories = await _productCategoryService.GetAllPagedProductCategoriesAsync(currentPage, pageSize);
+
+            var vm = _productCategoryMapper.MapProductCategoryToViewModel(categories);
+
+            var pagedModel = new PagedViewModel<ProductCategoryViewModel>
+            {
+                Model = vm,
+                CurrentPage = currentPage,
+                StartPage = startPage,
+                EndPage = endPage,
+
+                TotalPages = totalPages
+            };
+
+            return View(pagedModel);
+        }
+
+        [HttpGet]
+        public IActionResult AddCategory()
+        {
+            var vm = new ProductCategoryViewModel();
+            return View(vm);
         }
 
         [HttpPost]
@@ -51,5 +76,32 @@ namespace SupplyChain.App.Controllers
         }
 
 
+        #region Methods
+        [HttpPost]
+        public async Task<PagedViewModel<ProductCategoryViewModel>> GetPagedProductCategory(int page = 1, int pageSize = 10)
+        {
+            int totalCount = await _productCategoryService.CountProductCategoryAsync();
+            int totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+            int currentPage = page;
+            int startPage = currentPage - 5 > 0 ? currentPage - 5 : 1;
+            int endPage = startPage + 9 < totalPages ? startPage + 9 : totalPages;
+
+            var categories = await _productCategoryService.GetAllPagedProductCategoriesAsync(currentPage, pageSize);
+
+            var vm = _productCategoryMapper.MapProductCategoryToViewModel(categories);
+
+            var pagedModel = new PagedViewModel<ProductCategoryViewModel>
+            {
+                Model = vm,
+                CurrentPage = currentPage,
+                StartPage = startPage,
+                EndPage = endPage,
+
+                TotalPages = totalPages
+            };
+
+            return pagedModel;
+        }
+        #endregion
     }
 }

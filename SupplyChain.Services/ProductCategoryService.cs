@@ -18,6 +18,11 @@ namespace SupplyChain.Services
             _unitOfWork = unitOfWork;
         }
 
+        public async Task<int> CountProductCategoryAsync()
+        {
+            return await _unitOfWork.ProductCategoryRepository.CountAsync();
+        }
+
         public async Task CreateProductCategoryAsync(ProductCategory productCategory)
         {
             await _unitOfWork.ProductCategoryRepository.AddAsync(productCategory);
@@ -44,6 +49,13 @@ namespace SupplyChain.Services
         {
             await _unitOfWork.ProductCategoryRepository.UpdateAsync(productCategory);
             await _unitOfWork.CommitAsync();
+        }
+
+        public async Task<IEnumerable<ProductCategory>> GetAllPagedProductCategoriesAsync(int page, int pageSize)
+        {
+            var result = await _unitOfWork.ProductCategoryRepository
+                .GetPagedAsync(page, pageSize, null, orderBy: q => q.OrderBy(p => p.Id), true);
+            return result;
         }
     }
 }
