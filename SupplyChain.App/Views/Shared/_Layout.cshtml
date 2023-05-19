@@ -20,6 +20,9 @@
         <!-- Preloader -->
         @await Html.PartialAsync("_Preloader")
 
+        <!-- Spinner -->
+        @await Html.PartialAsync("_Spinner")
+
         <!-- Navbar -->
         @await Html.PartialAsync("_Navbar")
 
@@ -37,14 +40,8 @@
         @await Html.PartialAsync("_Footer")
     </div>
     <!-- ./wrapper -->
-    <script src="~/adminlte/plugins/jquery/jquery.min.js"></script>
-    <script src="~/adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="~/adminlte/dist/js/adminlte.min.js"></script>
-
-    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
-    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
-    <script src="~/js/site.js"></script>
-    <script src="~/js/cart.js"></script>
+    <!-- Scritps -->
+    @await Html.PartialAsync("_Scripts")
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

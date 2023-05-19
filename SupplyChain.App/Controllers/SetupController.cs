@@ -25,44 +25,51 @@ namespace SupplyChain.App.Controllers
         [HttpGet]
         public async Task<ActionResult> Category(int page = 1, int pageSize = 10)
         {
-            int totalCount = await _productCategoryService.CountProductCategoryAsync();
-            int totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
-            int currentPage = page;
-            int startPage = currentPage - 5 > 0 ? currentPage - 5 : 1;
-            int endPage = startPage + 9 < totalPages ? startPage + 9 : totalPages;
-
-            var categories = await _productCategoryService.GetAllPagedProductCategoriesAsync(currentPage, pageSize);
-
+            var categories = await _productCategoryService.GetAllPagedProductCategoriesAsync(page, pageSize);
             var vm = _productCategoryMapper.MapProductCategoryToViewModel(categories);
 
             var pagedModel = new PagedViewModel<ProductCategoryViewModel>
             {
                 Model = vm,
-                CurrentPage = currentPage,
-                StartPage = startPage,
-                EndPage = endPage,
-
-                TotalPages = totalPages
+                CurrentPage = page,
+                PageSize = pageSize,
+                TotalItems = await _productCategoryService.CountProductCategoryAsync()
             };
 
             return View(pagedModel);
         }
 
         [HttpGet]
-        public IActionResult AddCategory()
+        public async Task<ActionResult> AddEditCategory(int id)
         {
             var vm = new ProductCategoryViewModel();
-            return View(vm);
+
+            if (id > 0)
+            {
+                var productCategory = await _productCategoryService.GetProductCategoryByIdAsync(id);
+                vm = _productCategoryMapper.MapProductCategoryToViewModel(productCategory);
+            }
+
+            return PartialView("~/Views/Setup/PartialViews/_AddEditCategoryForm.cshtml", vm);
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddCategory(ProductCategoryViewModel vm)
+        public async Task<ActionResult> AddEditCategory(ProductCategoryViewModel vm)
         {
             if (ModelState.IsValid)
             {
                 var category = _productCategoryMapper.MapViewModelToProductCategory(vm);
-                await _productCategoryService.CreateProductCategoryAsync(category);
-                return RedirectToAction(nameof(Index));
+
+                if (category.Id == 0) // Adding a new category
+                {
+                    await _productCategoryService.CreateProductCategoryAsync(category);
+                }
+                else // Editing an existing category
+                {
+                    await _productCategoryService.UpdateProductCategoryAsync(category);
+                }
+
+                return RedirectToAction(nameof(Category));
             }
 
             // If the model is not valid, redisplay the form with validation errors
@@ -70,38 +77,25 @@ namespace SupplyChain.App.Controllers
             return View(vm);
         }
 
+        [HttpDelete]
+        public async Task<JsonResult> DeleteCategory(int id)
+        {
+            if (id > 0)
+            {
+                var productCategory = await _productCategoryService.GetProductCategoryByIdAsync(id);
+                await _productCategoryService.DeleteProductCategoryAsync(productCategory);
+                return Json(new { success = true });
+            }
+            else
+            {
+                return Json(new { success = false });
+            }
+        }
+
+        [HttpGet]
         public IActionResult Manufacturer()
         {
             return View();
         }
-
-
-        #region Methods
-        [HttpPost]
-        public async Task<PagedViewModel<ProductCategoryViewModel>> GetPagedProductCategory(int page = 1, int pageSize = 10)
-        {
-            int totalCount = await _productCategoryService.CountProductCategoryAsync();
-            int totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
-            int currentPage = page;
-            int startPage = currentPage - 5 > 0 ? currentPage - 5 : 1;
-            int endPage = startPage + 9 < totalPages ? startPage + 9 : totalPages;
-
-            var categories = await _productCategoryService.GetAllPagedProductCategoriesAsync(currentPage, pageSize);
-
-            var vm = _productCategoryMapper.MapProductCategoryToViewModel(categories);
-
-            var pagedModel = new PagedViewModel<ProductCategoryViewModel>
-            {
-                Model = vm,
-                CurrentPage = currentPage,
-                StartPage = startPage,
-                EndPage = endPage,
-
-                TotalPages = totalPages
-            };
-
-            return pagedModel;
-        }
-        #endregion
     }
 }

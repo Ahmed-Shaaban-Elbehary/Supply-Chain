@@ -17,21 +17,3 @@
         }
     </ul>
 </div>
-@*
-<div>
-    <ul class="pagination pagination-sm m-0 float-right">
-        @if (Model.CurrentPage > 1)
-        {
-            <li class="page-item"><a class="page-link" href="#" onclick="prcategory.get.table(this)" data-page="1">First</a></li>
-        }
-        @for (int i = Model.StartPage; i <= Model.EndPage; i++)
-        {
-            <li class="page-item @((i == Model.CurrentPage) ? "active" : "")"><a onclick="prcategory.get.table(event)" class="page-link" href="#" data-page="@i">@i</a></li>
-        }
-        @if (Model.EndPage < Model.TotalPages)
-        {
-            <li class="page-item"><a class="page-link" onclick="prcategory.get.table" href="#" data-page="@Model.TotalPages">Last</a></li>
-        }
-    </ul>
-</div>
-*@
