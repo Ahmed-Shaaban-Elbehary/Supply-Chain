@@ -2,7 +2,8 @@
 ## It's a demo for a supply chain application.
 
 1- Using Clean Architecture.
-![Clean Arch](https://imgur.com/a/LCf9IfW "Clean Architecture UI")
+
+![Clean Arch]([https://imgur.com/a/LCf9IfW])
 
 2- Using Repository & UnitOfWork Design Pattern
 3- Using ASP.net MVC core technologies.
