@@ -3,7 +3,7 @@
 
 1- Using Clean Architecture.
 
-!["Clean Arch"](https://imgur.com/AOBgBd6)
+!(https://imgur.com/AOBgBd6)
 
 <br />
 2- Using Repository & UnitOfWork Design Pattern.
