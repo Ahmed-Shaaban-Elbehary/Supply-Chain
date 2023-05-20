@@ -79,14 +79,25 @@ app.ajax_delete_request = (_url) => {
 /**
  * Swal Callback Function, for alert successfull processes.
  * @param {string} msg
- * @returns alert
+ * @returns toast
  */
 app.SuccessAlertMessage = (msg) => {
-    return Swal.fire(
-        'Message',
-        '' + msg + '',
-        'success'
-    )
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 1500,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    })
+
+    return Toast.fire({
+        icon: 'success',
+        title: '' + msg + ''
+    })
 }
 /**
  * Swal Callback Function, for alert confirmation message before deleting action.
@@ -109,9 +120,20 @@ app.DeleteConfirmMessage = () => {
  * @returns alert
  */
 app.FailAlertMessage = (msg) => {
-    return Swal.fire({
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    })
+
+    return Toast.fire({
         icon: 'error',
-        title: 'Oops...',
-        text: '' + msg + '',
+        title: 'error: ' + msg + '',
     })
 }

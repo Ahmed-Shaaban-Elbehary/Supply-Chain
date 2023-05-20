@@ -22,6 +22,7 @@ namespace SupplyChain.App.Controllers
             return View();
         }
 
+        #region Category
         [HttpGet]
         public async Task<ActionResult> Category(int page = 1, int pageSize = 10)
         {
@@ -91,6 +92,8 @@ namespace SupplyChain.App.Controllers
                 return Json(new { success = false });
             }
         }
+        #endregion Category
+
 
         [HttpGet]
         public IActionResult Manufacturer()

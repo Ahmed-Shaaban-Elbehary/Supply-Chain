@@ -5,14 +5,20 @@
     }
 
     function DeleteSelectedItem(categoryId) {
+        
         let url = "/Setup/DeleteCategory/" + categoryId + "";
         app.DeleteConfirmMessage().then((result) => {
             if (result.isConfirmed) {
                 app.ajax_delete_request(url)
                     .then((resonse) => {
                         if (resonse.success == true) {
-                            app.SuccessAlertMessage('Delete Category Item Process Compeleted Successfully!');
-                            location.reload(true);
+                            app.SuccessAlertMessage('Delete Category Item Process Compeleted Successfully!')
+                                .then((result) => {
+                                if (result.dismiss === Swal.DismissReason.timer) {
+                                    // Reload the page after the Toast is closed
+                                    location.reload();
+                                }
+                            });
                         } else {
                             app.FailAlertMessage('Fail To Delete Item, Please Try Again!');
                         }
