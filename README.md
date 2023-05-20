@@ -1,9 +1,6 @@
 # Supply Chain
 ## It's a demo for a supply chain application.
-
-1- Using Clean Architecture.
-
-![](https://imgur.com/GVzrSsf)
+### Based On  [Clean Architecture](https://imgur.com/GVzrSsf)
 
 <br />
 2- Using Repository & UnitOfWork Design Pattern.
