@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SupplyChain.Core.Interfaces
 {
-    public interface IManufactureRepository : IGenericRepository<Manufacturer>
+    public interface IManufacturerRepository : IGenericRepository<Manufacturer>
     {
     }
 }

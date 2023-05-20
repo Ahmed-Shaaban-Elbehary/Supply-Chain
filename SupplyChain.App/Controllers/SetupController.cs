@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using SupplyChain.App.Mappers.Contracts;
 using SupplyChain.App.ViewModels;
 using SupplyChain.Services.Contracts;
-using System.Drawing.Printing;
 
 namespace SupplyChain.App.Controllers
 {

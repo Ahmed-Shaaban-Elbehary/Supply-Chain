@@ -1,13 +1,8 @@
 ﻿using SupplyChain.Core.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SupplyChain.Services.Contracts
 {
-    public interface IManufactureService
+    public interface IManufacturerService
     {
         Task<IEnumerable<Manufacturer>> GetAllManufacturerAsync();
         Task<IEnumerable<Manufacturer>> GetAllPagedManufacturerAsync(int page, int pageSize);

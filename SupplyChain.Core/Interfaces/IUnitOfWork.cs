@@ -11,7 +11,7 @@ namespace SupplyChain.Core.Interfaces
     {
         IGenericRepository<Product> ProductRepository { get; }
         IGenericRepository<ProductCategory> ProductCategoryRepository { get; }
-        IGenericRepository<Manufacturer> ManufactureRepository { get; }
+        IGenericRepository<Manufacturer> ManufacturerRepository { get; }
         IGenericRepository<Cart> CartRepository { get; }
         Task CommitAsync();
         Task RollbackAsync();

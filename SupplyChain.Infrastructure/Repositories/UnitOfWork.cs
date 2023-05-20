@@ -10,7 +10,7 @@ namespace SupplyChain.Infrastructure.Repositories
         private readonly SupplyChainDbContext _context;
         private readonly IGenericRepository<Product> _productRepository;
         private readonly IGenericRepository<ProductCategory> _productCategoryRepository;
-        private readonly IGenericRepository<Manufacturer> _manufactureRepository;
+        private readonly IGenericRepository<Manufacturer> _manufacturerRepository;
         private readonly IGenericRepository<Cart> _cartRepository;
 
         public UnitOfWork(SupplyChainDbContext context)
@@ -19,12 +19,12 @@ namespace SupplyChain.Infrastructure.Repositories
             _productRepository = new GenericRepository<Product>(_context);
             _productCategoryRepository = new GenericRepository<ProductCategory>(_context);
             _cartRepository = new GenericRepository<Cart>(_context);
-            _manufactureRepository = new GenericRepository<Manufacturer>(_context);
+            _manufacturerRepository = new GenericRepository<Manufacturer>(_context);
         }
 
         public IGenericRepository<Product> ProductRepository => _productRepository;
         public IGenericRepository<ProductCategory> ProductCategoryRepository => _productCategoryRepository;
-        public IGenericRepository<Manufacturer> ManufactureRepository => _manufactureRepository;
+        public IGenericRepository<Manufacturer> ManufacturerRepository => _manufacturerRepository;
         public IGenericRepository<Cart> CartRepository => _cartRepository;
 
         public async Task CommitAsync()

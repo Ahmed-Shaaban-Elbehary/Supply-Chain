@@ -1,19 +1,14 @@
 ﻿using SupplyChain.Core.Interfaces;
 using SupplyChain.Core.Models;
 using SupplyChain.Services.Contracts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SupplyChain.Services
 {
-    public class ManufactureService : IManufactureService
+    public class ManufacturerService : IManufacturerService
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public ManufactureService(IUnitOfWork unitOfWork)
+        public ManufacturerService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
