@@ -3,7 +3,7 @@
 
 1- Using Clean Architecture.
 
-![Clean Arch.] (https://imgur.com/AOBgBd6 "Optional title")
+!(https://imgur.com/AOBgBd6 "Optional title")
 
 2- Using Repository & UnitOfWork Design Pattern
 3- Using ASP.net MVC core technologies.
