@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using SupplyChain.App.Mappers.Contracts;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using SupplyChain.App.ViewModels;
+using SupplyChain.Core.Models;
 using SupplyChain.Services.Contracts;
 
 namespace SupplyChain.App.Controllers
@@ -8,12 +9,15 @@ namespace SupplyChain.App.Controllers
     public class SetupController : Controller
     {
         private readonly IProductCategoryService _productCategoryService;
-        private readonly IProductCategoryMapper _productCategoryMapper;
+        private readonly IManufacturerService _manufacturerService;
+        private readonly IMapper _mapper;
         public SetupController(IProductCategoryService productCategoryService,
-            IProductCategoryMapper productCategoryMapper)
+            IManufacturerService manufacturerService,
+            IMapper mapper)
         {
             _productCategoryService = productCategoryService;
-            _productCategoryMapper = productCategoryMapper;
+            _manufacturerService = manufacturerService;
+            _mapper = mapper;
         }
         public IActionResult Index()
         {
@@ -25,7 +29,7 @@ namespace SupplyChain.App.Controllers
         public async Task<ActionResult> Category(int page = 1, int pageSize = 10)
         {
             var categories = await _productCategoryService.GetAllPagedProductCategoriesAsync(page, pageSize);
-            var vm = _productCategoryMapper.MapProductCategoryToViewModel(categories);
+            var vm = _mapper.Map<List<ProductCategoryViewModel>>(categories);
 
             var pagedModel = new PagedViewModel<ProductCategoryViewModel>
             {
@@ -45,8 +49,8 @@ namespace SupplyChain.App.Controllers
 
             if (id > 0)
             {
-                var productCategory = await _productCategoryService.GetProductCategoryByIdAsync(id);
-                vm = _productCategoryMapper.MapProductCategoryToViewModel(productCategory);
+                var category = await _productCategoryService.GetProductCategoryByIdAsync(id);
+                vm = _mapper.Map<ProductCategoryViewModel>(category);
             }
 
             return PartialView("~/Views/Setup/PartialViews/_AddEditCategoryForm.cshtml", vm);
@@ -57,7 +61,7 @@ namespace SupplyChain.App.Controllers
         {
             if (ModelState.IsValid)
             {
-                var category = _productCategoryMapper.MapViewModelToProductCategory(vm);
+                var category = _mapper.Map<ProductCategory>(vm);
 
                 if (category.Id == 0) // Adding a new category
                 {
@@ -94,9 +98,20 @@ namespace SupplyChain.App.Controllers
 
 
         [HttpGet]
-        public IActionResult Manufacturer()
+        public async Task<IActionResult> Manufacturer(int page = 1, int pageSize = 10)
         {
-            return View();
+            var manufacturers = await _manufacturerService.GetAllPagedManufacturerAsync(page, pageSize);
+            var vm = _mapper.Map<List<ManufacturerViewModel>>(manufacturers);
+
+            var pagedModel = new PagedViewModel<ManufacturerViewModel>
+            {
+                Model = vm,
+                CurrentPage = page,
+                PageSize = pageSize,
+                TotalItems = await _productCategoryService.CountProductCategoryAsync()
+            };
+
+            return View(pagedModel);
         }
     }
 }

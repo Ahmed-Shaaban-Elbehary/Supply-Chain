@@ -1,8 +1,8 @@
-﻿using Newtonsoft.Json;
-using SupplyChain.App.Mappers;
-using SupplyChain.App.Mappers.Contracts;
+﻿using AutoMapper;
+using Newtonsoft.Json;
 using SupplyChain.App.Utils.Contracts;
 using SupplyChain.App.ViewModels;
+using SupplyChain.Core.Models;
 using SupplyChain.Services.Contracts;
 
 namespace SupplyChain.App.Utils
@@ -11,16 +11,16 @@ namespace SupplyChain.App.Utils
     {
         private IWebHostEnvironment _webHostEnvironment;
         private readonly IProductCategoryService _productCategoryService;
-        private readonly IProductCategoryMapper _productCategoryMapper;
+        private readonly IMapper _mapper;
 
         public Lookups(IWebHostEnvironment webHostEnvironment, 
             IProductCategoryService productCategoryService,
-            IProductCategoryMapper productCategoryMapper
+            IMapper mapper
             )
         {
             _webHostEnvironment = webHostEnvironment;
             _productCategoryService = productCategoryService;
-            _productCategoryMapper = productCategoryMapper;
+            _mapper = mapper;
             Countries = GetCountries();
             Manufacturers = GetManufacturers();
             Categories = GetCategories().Result.ToList();
@@ -58,7 +58,7 @@ namespace SupplyChain.App.Utils
         public async Task<IEnumerable<ProductCategoryViewModel>> GetCategories()
         {
             var result = await _productCategoryService.GetAllProductCategoriesAsync();
-            return _productCategoryMapper.MapProductCategoryToViewModel(result);
+            return _mapper.Map<IEnumerable<ProductCategoryViewModel>>(result);
         }
 
         public class Country

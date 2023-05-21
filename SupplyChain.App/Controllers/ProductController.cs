@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using SupplyChain.App.Profiles.Contracts;
 using SupplyChain.App.Utils.Contracts;
 using SupplyChain.App.ViewModels;
 using SupplyChain.Core.Models;
@@ -14,24 +14,24 @@ namespace SupplyChain.App.Controllers
         private readonly IProductService _productService;
         private readonly IUploadFile _uploadFile;
         private readonly ILookUp _lookUp;
-        private readonly IProductMapper _productMapper;
+        private readonly IMapper _mapper;
 
         public ProductController(
             IProductService productService,
             IUploadFile uploadFile,
             ILookUp lookUp,
-            IProductMapper productMapper)
+            IMapper mapper )
         {
             _productService = productService;
             _uploadFile = uploadFile;
             _lookUp = lookUp;
-            _productMapper = productMapper;
+            _mapper = mapper;
         }
 
         public async Task<ActionResult<IEnumerable<ProductViewModel>>> Index()
         {
             var products = await _productService.GetAllProductsAsync();
-            var vm = products.Count() > 0 ? _productMapper.MapToProductViewModel(products) : new List<ProductViewModel>();
+            var vm = products.Count() > 0 ? _mapper.Map<List<ProductViewModel>>(products) : new List<ProductViewModel>();
             return View(vm);
         }
 
@@ -57,7 +57,7 @@ namespace SupplyChain.App.Controllers
             vm.ImageUrl = await _uploadFile.UploadImage(file);
             vm.Description.Trim();
             vm.Name.Trim();
-            await _productService.CreateProductAsync(_productMapper.MapToProduct(vm));
+            await _productService.CreateProductAsync(_mapper.Map<Product>(vm));
             return RedirectToAction(nameof(Index));
         }
     }

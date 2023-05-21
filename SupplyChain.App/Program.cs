@@ -1,7 +1,4 @@
-using SupplyChain.App.Mappers;
-using SupplyChain.App.Mappers.Contracts;
 using SupplyChain.App.Profiles;
-using SupplyChain.App.Profiles.Contracts;
 using SupplyChain.App.Utils;
 using SupplyChain.App.Utils.Contracts;
 using SupplyChain.Infrastructure;
@@ -18,13 +15,14 @@ builder.Services.AddMvc();
 builder.Services.InfrastructureServices(builder.Configuration);
 
 #region Mappers
-builder.Services.AddScoped<IProductMapper, ProductMapper>();
-builder.Services.AddScoped<IProductCategoryMapper, ProductCategoryMapper>();
+// Configure AutoMapper
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 #endregion
 
 #region Services
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IProductCategoryService, ProductCategoryService>();
+builder.Services.AddScoped<IManufacturerService, ManufacturerService>();
 #endregion
 
 #region Utils
