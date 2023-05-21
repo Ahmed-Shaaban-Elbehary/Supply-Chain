@@ -5,9 +5,14 @@
  * @param {string} targetId
  */
 app.showloader = (targetId) => {
-
     // Get the target element by ID
     var target = document.getElementById(targetId);
+
+    // Set the position style of the target element to 'relative'
+    target.style.position = 'relative';
+
+    // Disable pointer events for the target element and its child elements
+    target.style.pointerEvents = 'none';
 
     // Create a new element to contain the spinner
     var spinnerContainer = document.createElement('div');
@@ -24,11 +29,12 @@ app.showloader = (targetId) => {
     // Show the spinner
     spinnerContainer.style.display = 'flex';
 
-    // Return a function to hide the spinner
+    // Return a function to hide the spinner and re-enable pointer events
     return () => {
         spinnerContainer.style.display = 'none';
+        target.style.pointerEvents = 'auto';
     };
-}
+};
 /**
  * 
  * @param {string} url

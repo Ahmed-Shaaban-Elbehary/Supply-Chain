@@ -5,20 +5,23 @@
     }
 
     function DeleteSelectedItem(categoryId) {
-        
+
         let url = "/Setup/DeleteCategory/" + categoryId + "";
         app.DeleteConfirmMessage().then((result) => {
+            const hideloader = app.showloader('page-content');
             if (result.isConfirmed) {
                 app.ajax_delete_request(url)
                     .then((resonse) => {
                         if (resonse.success == true) {
+
                             app.SuccessAlertMessage('Delete Category Item Process Compeleted Successfully!')
                                 .then((result) => {
-                                if (result.dismiss === Swal.DismissReason.timer) {
-                                    // Reload the page after the Toast is closed
-                                    location.reload();
-                                }
-                            });
+                                    if (result.dismiss === Swal.DismissReason.timer) {
+                                        setTimeout(() => { hideloader(); }, 2000);
+                                        // Reload the page after the Toast is closed
+                                        location.reload();
+                                    }
+                                });
                         } else {
                             app.FailAlertMessage('Fail To Delete Item, Please Try Again!');
                         }
