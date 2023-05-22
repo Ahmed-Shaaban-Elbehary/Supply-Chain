@@ -1,3 +1,4 @@
+using SupplyChain.App.App_Class;
 using SupplyChain.App.Profiles;
 using SupplyChain.App.Utils;
 using SupplyChain.App.Utils.Contracts;
@@ -23,6 +24,9 @@ builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IProductCategoryService, ProductCategoryService>();
 builder.Services.AddScoped<IManufacturerService, ManufacturerService>();
+
+/********* Dependencies Container ***************/
+builder.Services.AddScoped<DependencyContainer>();
 #endregion
 
 #region Utils

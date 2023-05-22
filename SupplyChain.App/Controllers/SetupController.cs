@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using SupplyChain.App.App_Class;
 using SupplyChain.App.ViewModels;
 using SupplyChain.Core.Models;
 using SupplyChain.Services.Contracts;
@@ -8,16 +9,10 @@ namespace SupplyChain.App.Controllers
 {
     public class SetupController : Controller
     {
-        private readonly IProductCategoryService _productCategoryService;
-        private readonly IManufacturerService _manufacturerService;
-        private readonly IMapper _mapper;
-        public SetupController(IProductCategoryService productCategoryService,
-            IManufacturerService manufacturerService,
-            IMapper mapper)
+        private readonly DependencyContainer container;
+        public SetupController(DependencyContainer dependencyContainer)
         {
-            _productCategoryService = productCategoryService;
-            _manufacturerService = manufacturerService;
-            _mapper = mapper;
+            container = dependencyContainer;
         }
         public IActionResult Index()
         {
@@ -28,15 +23,15 @@ namespace SupplyChain.App.Controllers
         [HttpGet]
         public async Task<ActionResult> Category(int page = 1, int pageSize = 10)
         {
-            var categories = await _productCategoryService.GetAllPagedProductCategoriesAsync(page, pageSize);
-            var vm = _mapper.Map<List<ProductCategoryViewModel>>(categories);
+            var categories = await container._productCategoryService.GetAllPagedProductCategoriesAsync(page, pageSize);
+            var vm = container._mapper.Map<List<ProductCategoryViewModel>>(categories);
 
             var pagedModel = new PagedViewModel<ProductCategoryViewModel>
             {
                 Model = vm,
                 CurrentPage = page,
                 PageSize = pageSize,
-                TotalItems = await _productCategoryService.CountProductCategoryAsync()
+                TotalItems = await container._productCategoryService.CountProductCategoryAsync()
             };
 
             return View(pagedModel);
@@ -49,8 +44,8 @@ namespace SupplyChain.App.Controllers
 
             if (id > 0)
             {
-                var category = await _productCategoryService.GetProductCategoryByIdAsync(id);
-                vm = _mapper.Map<ProductCategoryViewModel>(category);
+                var category = await container._productCategoryService.GetProductCategoryByIdAsync(id);
+                vm = container._mapper.Map<ProductCategoryViewModel>(category);
             }
 
             return PartialView("~/Views/Setup/PartialViews/_AddEditCategoryForm.cshtml", vm);
@@ -61,22 +56,22 @@ namespace SupplyChain.App.Controllers
         {
             if (ModelState.IsValid)
             {
-                var category = _mapper.Map<ProductCategory>(vm);
+                var category = container._mapper.Map<ProductCategory>(vm);
 
                 if (category.Id == 0) // Adding a new category
                 {
-                    await _productCategoryService.CreateProductCategoryAsync(category);
+                    await container._productCategoryService.CreateProductCategoryAsync(category);
                 }
                 else // Editing an existing category
                 {
-                    await _productCategoryService.UpdateProductCategoryAsync(category);
+                    await container._productCategoryService.UpdateProductCategoryAsync(category);
                 }
 
                 return RedirectToAction(nameof(Category));
             }
 
             // If the model is not valid, redisplay the form with validation errors
-            ViewBag.Categories = await _productCategoryService.GetAllProductCategoriesAsync();
+            ViewBag.Categories = await container._productCategoryService.GetAllProductCategoriesAsync();
             return View(vm);
         }
 
@@ -85,8 +80,8 @@ namespace SupplyChain.App.Controllers
         {
             if (id > 0)
             {
-                var productCategory = await _productCategoryService.GetProductCategoryByIdAsync(id);
-                await _productCategoryService.DeleteProductCategoryAsync(productCategory);
+                var productCategory = await container._productCategoryService.GetProductCategoryByIdAsync(id);
+                await container._productCategoryService.DeleteProductCategoryAsync(productCategory);
                 return Json(new { success = true });
             }
             else
@@ -100,15 +95,15 @@ namespace SupplyChain.App.Controllers
         [HttpGet]
         public async Task<IActionResult> Manufacturer(int page = 1, int pageSize = 10)
         {
-            var manufacturers = await _manufacturerService.GetAllPagedManufacturerAsync(page, pageSize);
-            var vm = _mapper.Map<List<ManufacturerViewModel>>(manufacturers);
+            var manufacturers = await container._manufacturerService.GetAllPagedManufacturerAsync(page, pageSize);
+            var vm = container._mapper.Map<List<ManufacturerViewModel>>(manufacturers);
 
             var pagedModel = new PagedViewModel<ManufacturerViewModel>
             {
                 Model = vm,
                 CurrentPage = page,
                 PageSize = pageSize,
-                TotalItems = await _productCategoryService.CountProductCategoryAsync()
+                TotalItems = await container._productCategoryService.CountProductCategoryAsync()
             };
 
             return View(pagedModel);
