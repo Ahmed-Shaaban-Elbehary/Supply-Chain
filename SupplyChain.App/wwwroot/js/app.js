@@ -38,50 +38,49 @@ app.showloader = (targetId) => {
 /**
  * 
  * @param {string} url
- * @param {string} type
+ * @param {string} method
  * @param {string} datatype
  * @param {object} data
  * @param {function()} successCallback
  * @param {function()} errorCallback
  */
-app.ajax_request = (url, type, datatype, data) => {
-    return new Promise(function (resolve, reject) {
+app.ajax_request = (url, method, datatype, data) => {
+    return new Promise((resolve, reject) => {
         console.log(data);
         $.ajax({
             url: url,
-            type: type,
+            method: method,
             dataType: datatype,
             contentType: "application/json; charset=utf-8",
             data: data,
-            success: function (response) {
+            success: (response) => {
                 resolve(response);
             },
-            error: function (jqXHR, textStatus, errorThrown) {
+            error: (jqXHR, textStatus, errorThrown) => {
                 reject(errorThrown);
             }
         });
     });
 }
-/**
- * Specific Ajax Request using new method delete to specify and target only HTTPDelete JsonResult In the Controller.
- * Make sure to pass id within url.
- * @param {string} _url
- * @returns
- */
-app.ajax_delete_request = (_url) => {
-    return new Promise(function (resolve, reject) {
+
+app.SubmitForm = (url, formData) => {
+    return new Promise((resolve, reject) => {
         $.ajax({
-            url: _url,
-            method: "DELETE",
-            success: function (data) {
-                resolve(data);
+            url: url,
+            data: formData,
+            method: 'POST',
+            processData: false, // Required for FormData
+            contentType: false, // Required for FormData
+            success: (response) => {
+                resolve(response);
             },
-            error: function (xhr, status, error) {
-                reject(xhr, status, error);
+            error: (jqXHR, textStatus, errorThrown) => {
+                reject(errorThrown);
             }
-        });
-    });
+        })
+    })
 }
+
 /**
  * Swal Callback Function, for alert successfull processes.
  * @param {string} msg

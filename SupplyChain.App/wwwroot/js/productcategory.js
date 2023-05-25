@@ -1,19 +1,36 @@
-﻿var prcartegory = (() => {
-
+﻿let base_url = "/Setup"
+var prcartegory = (() => {
     function OpenGeneralModal() {
         $('#general-modal-content').load('/Setup/AddEditCategory');
     }
+    function AddProductCategory(event) {
+        event.preventDefault();
+        // Get the form element and create FormData object
+        var formElement = event.target.closest('form');
+        var formData = new FormData(formElement);
+        if (formData.checkValidity()) {
+            const hideloader = app.showloader('general-partial-modal');
+            let url = $(formElement).attr('asp-action');
+            app.SubmitForm(url, formData)
+                .then((response) => {
+                    app.SuccessAlertMessage(response)
+                })
+                .catch((xhr, status, error) => {
+                    console.error(error);
+                })
+        } else {
 
+        }
+    }
     function DeleteSelectedItem(categoryId) {
-
-        let url = "/Setup/DeleteCategory/" + categoryId + "";
         app.DeleteConfirmMessage().then((result) => {
             const hideloader = app.showloader('page-content');
             if (result.isConfirmed) {
-                app.ajax_delete_request(url)
+                let data = JSON.stringify({ id: categoryId })
+                let url = "/Setup/DeleteCategory";
+                app.ajax_request(url, 'DELETE', 'json', data)
                     .then((resonse) => {
                         if (resonse.success == true) {
-
                             app.SuccessAlertMessage('Delete Category Item Process Compeleted Successfully!')
                                 .then((result) => {
                                     if (result.dismiss === Swal.DismissReason.timer) {
@@ -33,7 +50,6 @@
 
         })
     }
-
     function OpenGeneralModalForEdit(categoryId) {
         let url = "/Setup/AddEditCategory"
         let data = { id: categoryId };
@@ -49,6 +65,9 @@
     }
 
     return {
+        add_category: (event) => {
+            AddProductCategory(event);
+        },
         show_modal_init: () => {
             var button = document.getElementById('open-form-modal');
             button.addEventListener('click', OpenGeneralModal);
