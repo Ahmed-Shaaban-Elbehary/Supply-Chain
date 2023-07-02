@@ -1,11 +1,11 @@
 ﻿var base_url = "/Setup"
-var prcartegory = (() => {
+var prmanufacturer = (() => {
     function OpenGeneralModal() {
-        $('#general-modal-content').load('/Setup/AddEditCategory');
+        $('#general-modal-content').load('/Setup/AddEditManufacturer');
     }
-    function AddProductCategory(event) {
+    function AddProductManufacturer(event) {
         event.preventDefault();
-        const hideloader = app.showloader('category-card');
+        const hideloader = app.showloader('manufacturer-card');
         // Get the form element and create FormData object
         var formElement = event.target.closest('form');
         var formData = new FormData(formElement);
@@ -22,15 +22,15 @@ var prcartegory = (() => {
             })
 
     }
-    function DeleteSelectedItem(categoryId) {
+    function DeleteSelectedItem(manufacturerId) {
         app.DeleteConfirmMessage().then((result) => {
             const hideloader = app.showloader('page-content');
             if (result.isConfirmed) {
-                let url = base_url + "/DeleteCategory/" + categoryId;
+                let url = base_url + "/DeleteManufacturer/" + manufacturerId;
                 app.ajax_request(url, 'DELETE', 'json', null)
                     .then((resonse) => {
                         if (resonse.success == true) {
-                            app.SuccessAlertMessage('Delete Category Item Process Compeleted Successfully!')
+                            app.SuccessAlertMessage('Delete manufacturer Item Process Compeleted Successfully!')
                                 .then((result) => {
                                     if (result.dismiss === Swal.DismissReason.timer) {
                                         location.reload();
@@ -50,9 +50,9 @@ var prcartegory = (() => {
 
         })
     }
-    function OpenGeneralModalForEdit(categoryId) {
-        let url = "/Setup/AddEditCategory"
-        let data = { id: categoryId };
+    function OpenGeneralModalForEdit(manufacturerId) {
+        let url = "/Setup/AddEditmanufacturer"
+        let data = { id: manufacturerId };
         app.ajax_request(url, 'GET', 'html', data)
             .then((resonse) => {
                 $('#general-partial-modal').find('#general-modal-content').html(resonse);
@@ -64,8 +64,8 @@ var prcartegory = (() => {
     }
 
     return {
-        add_category: (event) => {
-            AddProductCategory(event);
+        add_manufacturer: (event) => {
+            AddProductManufacturer(event);
         },
         show_modal_init: () => {
             var button = document.getElementById('open-form-modal');
@@ -74,7 +74,7 @@ var prcartegory = (() => {
         load_edit_modal: (id) => {
             OpenGeneralModalForEdit(id);
         },
-        delete_category_item: (id) => {
+        delete_manufacturer_item: (id) => {
             DeleteSelectedItem(id);
         }
     };
@@ -82,5 +82,5 @@ var prcartegory = (() => {
 
 //self-invoking
 (function () {
-    prcartegory.show_modal_init();
+    prmanufacturer.show_modal_init();
 })();
