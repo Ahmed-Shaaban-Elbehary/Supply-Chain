@@ -46,7 +46,6 @@ app.showloader = (targetId) => {
  */
 app.ajax_request = (url, method, datatype, data) => {
     return new Promise((resolve, reject) => {
-        console.log(data);
         $.ajax({
             url: url,
             method: method,

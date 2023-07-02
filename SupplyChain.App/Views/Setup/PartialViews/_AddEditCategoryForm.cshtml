@@ -1,6 +1,6 @@
 ﻿@model SupplyChain.App.ViewModels.ProductCategoryViewModel
 
-<form asp-action="AddEditCategory">
+<form asp-action="AddEditCategory" onsubmit="prcartegory.add_category(event)">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="form-group">
         <label asp-for="Name" class="control-label"></label>

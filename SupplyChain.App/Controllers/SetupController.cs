@@ -52,7 +52,8 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddEditCategory(ProductCategoryViewModel vm)
+        [ValidateAntiForgeryToken]
+        public async Task<JsonResult> AddEditCategory(ProductCategoryViewModel vm)
         {
             if (ModelState.IsValid)
             {
@@ -61,18 +62,19 @@ namespace SupplyChain.App.Controllers
                 if (category.Id == 0) // Adding a new category
                 {
                     await container._productCategoryService.CreateProductCategoryAsync(category);
+                    return Json(new { message = "Add New Category Successed!" });
                 }
                 else // Editing an existing category
                 {
                     await container._productCategoryService.UpdateProductCategoryAsync(category);
+                    return Json(new { message = "Edit Category Successed!" });
                 }
 
-                return RedirectToAction(nameof(Category));
             }
 
             // If the model is not valid, redisplay the form with validation errors
             ViewBag.Categories = await container._productCategoryService.GetAllProductCategoriesAsync();
-            return View(vm);
+            return Json(vm, new { });
         }
 
         [HttpDelete]
