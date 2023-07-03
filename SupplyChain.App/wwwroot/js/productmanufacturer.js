@@ -69,7 +69,8 @@ var prmanufacturer = (() => {
         },
         show_modal_init: () => {
             var button = document.getElementById('open-form-modal');
-            button.addEventListener('click', OpenGeneralModal);
+            if (button != null)
+                button.addEventListener('click', OpenGeneralModal);
         },
         load_edit_modal: (id) => {
             OpenGeneralModalForEdit(id);

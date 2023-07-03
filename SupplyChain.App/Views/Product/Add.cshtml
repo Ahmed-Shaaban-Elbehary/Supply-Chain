@@ -74,7 +74,7 @@
                     </div>
                     <div class="col-md-4 col-sm-12">
                         <label asp-for="CountryOfOriginCode" class="control-label"></label>
-                        @Html.DropDownListFor(m => m.CountryOfOriginCode, Model.CountryOfOriginList, "-- Select Country of Origin --", new { @class = "form-control" })
+                        @Html.DropDownListFor(m => m.CountryOfOriginCode, Model.CountryOfOriginList, "-- Select Country of Origin --", new { @class = "form-control", @id = "CountriesDropdown" })
                         <span asp-validation-for="CountryOfOriginCode" class="text-danger"></span>
                     </div>
                     <div class="col-md-4 col-sm-12">

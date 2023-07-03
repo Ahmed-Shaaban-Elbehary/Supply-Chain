@@ -11,24 +11,27 @@ namespace SupplyChain.App.Utils
     {
         private IWebHostEnvironment _webHostEnvironment;
         private readonly IProductCategoryService _productCategoryService;
+        private readonly IManufacturerService _manufacturerService;
         private readonly IMapper _mapper;
 
         public Lookups(IWebHostEnvironment webHostEnvironment, 
             IProductCategoryService productCategoryService,
+            IManufacturerService  manufacturerService,
             IMapper mapper
             )
         {
             _webHostEnvironment = webHostEnvironment;
             _productCategoryService = productCategoryService;
+            _manufacturerService = manufacturerService;
             _mapper = mapper;
             Countries = GetCountries();
-            Manufacturers = GetManufacturers();
+            Manufacturers = GetManufacturers().Result.ToList();
             Categories = GetCategories().Result.ToList();
         }
 
         public List<Country> Countries { get; private set; }
 
-        public List<SelectList> Manufacturers { get; private set; }
+        public List<ManufacturerViewModel> Manufacturers { get; private set; }
 
         public List<ProductCategoryViewModel> Categories { get; private set; }
 
@@ -43,16 +46,10 @@ namespace SupplyChain.App.Utils
             return countries;
         }
 
-        public List<SelectList> GetManufacturers()
+        public async Task<IEnumerable<ManufacturerViewModel>> GetManufacturers()
         {
-            return new List<SelectList>()
-            {
-                new SelectList { Id = 1, Name = "Misr Linen"},
-                new SelectList { Id = 2, Name = "El Nasr Clothing and Textile Company (Kabo)"},
-                new SelectList { Id = 3, Name = "El Nasr Wool and Selected Textiles Company"},
-                new SelectList { Id = 4, Name = "El-Mahalla El-Kubra Spinning and Weaving Company"},
-                new SelectList { Id = 5, Name = "Alexandria Spinning and Weaving Company"},
-            };
+            var result = await _manufacturerService.GetAllManufacturerAsync();
+            return _mapper.Map<IEnumerable<ManufacturerViewModel>>(result);
         }
 
         public async Task<IEnumerable<ProductCategoryViewModel>> GetCategories()
@@ -64,12 +61,6 @@ namespace SupplyChain.App.Utils
         public class Country
         {
             public string Code { get; set; }
-            public string Name { get; set; }
-        }
-
-        public class SelectList
-        {
-            public int Id { get; set; }
             public string Name { get; set; }
         }
     }

@@ -7,13 +7,13 @@ namespace SupplyChain.App.Utils.Contracts
     {
         List<Country> Countries { get; }
 
-        List<SelectList> Manufacturers { get; }
+        List<ManufacturerViewModel> Manufacturers { get; }
 
         List<ProductCategoryViewModel> Categories { get; }
 
         List<Country> GetCountries();
 
-        List<SelectList> GetManufacturers();
+        Task<IEnumerable<ManufacturerViewModel>> GetManufacturers();
 
         Task<IEnumerable<ProductCategoryViewModel>> GetCategories();
     }
