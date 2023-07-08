@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using SupplyChain.App.App_Class;
 using SupplyChain.App.Utils.Contracts;
 using SupplyChain.App.ViewModels;
 using SupplyChain.Core.Models;
@@ -11,27 +12,17 @@ namespace SupplyChain.App.Controllers
 {
     public class ProductController : Controller
     {
-        private readonly IProductService _productService;
-        private readonly IUploadFile _uploadFile;
-        private readonly ILookUp _lookUp;
-        private readonly IMapper _mapper;
-
+        private readonly DependencyContainer container;
         public ProductController(
-            IProductService productService,
-            IUploadFile uploadFile,
-            ILookUp lookUp,
-            IMapper mapper )
+            DependencyContainer _container)
         {
-            _productService = productService;
-            _uploadFile = uploadFile;
-            _lookUp = lookUp;
-            _mapper = mapper;
+            _container = container;
         }
 
         public async Task<ActionResult<IEnumerable<ProductViewModel>>> Index()
         {
-            var products = await _productService.GetAllProductsAsync();
-            var vm = products.Count() > 0 ? _mapper.Map<List<ProductViewModel>>(products) : new List<ProductViewModel>();
+            var products = await container._productService.GetAllProductsAsync();
+            var vm = products.Count() > 0 ? container._mapper.Map<List<ProductViewModel>>(products) : new List<ProductViewModel>();
             return View(vm);
         }
 
@@ -39,9 +30,9 @@ namespace SupplyChain.App.Controllers
         public IActionResult Add()
         {
             var vm = new ProductViewModel();
-            vm.CountryOfOriginList = new SelectList(_lookUp.Countries, "Code", "Name");
-            vm.ManufacturerList = new SelectList(_lookUp.Manufacturers, "Id", "Name");
-            vm.CategoryList = new SelectList(_lookUp.Categories, "Id", "Name");
+            vm.CountryOfOriginList = new SelectList(container._lookup.Countries, "Code", "Name");
+            vm.ManufacturerList = new SelectList(container._lookup.Manufacturers, "Id", "Name");
+            vm.CategoryList = new SelectList(container._lookup.Categories, "Id", "Name");
             return View(vm);
         }
 
@@ -54,10 +45,10 @@ namespace SupplyChain.App.Controllers
             {
                 return BadRequest("Invalid file type.");
             }
-            vm.ImageUrl = await _uploadFile.UploadImage(file);
+            vm.ImageUrl = await container._uploadFile.UploadImage(file);
             vm.Description.Trim();
             vm.Name.Trim();
-            await _productService.CreateProductAsync(_mapper.Map<Product>(vm));
+            await container._productService.CreateProductAsync(container._mapper.Map<Product>(vm));
             return RedirectToAction(nameof(Index));
         }
     }

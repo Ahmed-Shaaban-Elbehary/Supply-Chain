@@ -7,9 +7,9 @@ namespace SupplyChain.Services.Contracts
         Task<IEnumerable<ProductCategory>> GetAllProductCategoriesAsync();
         Task<IEnumerable<ProductCategory>> GetAllPagedProductCategoriesAsync(int page, int pageSize);
         Task<ProductCategory> GetProductCategoryByIdAsync(int id);
-        Task CreateProductCategoryAsync(ProductCategory product);
-        Task UpdateProductCategoryAsync(ProductCategory product);
-        Task DeleteProductCategoryAsync(ProductCategory product);
+        Task CreateProductCategoryAsync(ProductCategory productCategory);
+        Task UpdateProductCategoryAsync(ProductCategory productCategory);
+        Task DeleteProductCategoryAsync(ProductCategory productCategory);
         Task<int> CountProductCategoryAsync();
     }
 }

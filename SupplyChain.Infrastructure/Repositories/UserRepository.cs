@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace SupplyChain.Infrastructure.Repositories
 {
-    public class ProductCategoryRepository : GenericRepository<ProductCategory>, IProductCategoryRepository
+    internal class UserRepository : GenericRepository<User>, IUserRepository
     {
-        public ProductCategoryRepository(SupplyChainDbContext dbContext) : base(dbContext) { }
+        public UserRepository(SupplyChainDbContext dbContext) : base(dbContext) { }
     }
 }

@@ -16,9 +16,6 @@ namespace SupplyChain.Infrastructure
             });
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-            services.AddTransient<IProductRepository, ProductRepository>();
-
             return services;
         }
     }

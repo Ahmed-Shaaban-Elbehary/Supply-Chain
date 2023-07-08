@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SupplyChain.Infrastructure;
 
@@ -11,9 +12,11 @@ using SupplyChain.Infrastructure;
 namespace SupplyChain.Infrastructure.Migrations
 {
     [DbContext(typeof(SupplyChainDbContext))]
-    partial class SupplyChainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230707204713_AddIsSupplierForUser_MakeEmailUnique")]
+    partial class AddIsSupplierForUser_MakeEmailUnique
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -120,27 +123,6 @@ namespace SupplyChain.Infrastructure.Migrations
                     b.ToTable("Manufacturers");
                 });
 
-            modelBuilder.Entity("SupplyChain.Core.Models.Permission", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
-
-                    b.ToTable("Permissions");
-                });
-
             modelBuilder.Entity("SupplyChain.Core.Models.Product", b =>
                 {
                     b.Property<int>("Id")
@@ -234,42 +216,6 @@ namespace SupplyChain.Infrastructure.Migrations
                     b.ToTable("ProductComponents");
                 });
 
-            modelBuilder.Entity("SupplyChain.Core.Models.Role", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
-
-                    b.ToTable("Roles");
-                });
-
-            modelBuilder.Entity("SupplyChain.Core.Models.RolePermission", b =>
-                {
-                    b.Property<int>("RoleId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PermissionId")
-                        .HasColumnType("int");
-
-                    b.HasKey("RoleId", "PermissionId");
-
-                    b.HasIndex("PermissionId");
-
-                    b.ToTable("RolePermissions");
-                });
-
             modelBuilder.Entity("SupplyChain.Core.Models.User", b =>
                 {
                     b.Property<int>("Id")
@@ -303,22 +249,7 @@ namespace SupplyChain.Infrastructure.Migrations
                         .IsUnique()
                         .HasFilter("[Email] IS NOT NULL");
 
-                    b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("SupplyChain.Core.Models.UserRole", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RoleId")
-                        .HasColumnType("int");
-
-                    b.HasKey("UserId", "RoleId");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("UserRoles");
+                    b.ToTable("User");
                 });
 
             modelBuilder.Entity("SupplyChain.Core.Models.Warehouse", b =>
@@ -422,44 +353,6 @@ namespace SupplyChain.Infrastructure.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("SupplyChain.Core.Models.RolePermission", b =>
-                {
-                    b.HasOne("SupplyChain.Core.Models.Permission", "Permission")
-                        .WithMany("RolePermissions")
-                        .HasForeignKey("PermissionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SupplyChain.Core.Models.Role", "Role")
-                        .WithMany("RolePermissions")
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Permission");
-
-                    b.Navigation("Role");
-                });
-
-            modelBuilder.Entity("SupplyChain.Core.Models.UserRole", b =>
-                {
-                    b.HasOne("SupplyChain.Core.Models.Role", "Role")
-                        .WithMany("UserRoles")
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SupplyChain.Core.Models.User", "User")
-                        .WithMany("UserRoles")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Role");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("SupplyChain.Core.Models.Cart", b =>
                 {
                     b.Navigation("Items");
@@ -468,11 +361,6 @@ namespace SupplyChain.Infrastructure.Migrations
             modelBuilder.Entity("SupplyChain.Core.Models.Manufacturer", b =>
                 {
                     b.Navigation("Products");
-                });
-
-            modelBuilder.Entity("SupplyChain.Core.Models.Permission", b =>
-                {
-                    b.Navigation("RolePermissions");
                 });
 
             modelBuilder.Entity("SupplyChain.Core.Models.Product", b =>
@@ -485,18 +373,9 @@ namespace SupplyChain.Infrastructure.Migrations
                     b.Navigation("Products");
                 });
 
-            modelBuilder.Entity("SupplyChain.Core.Models.Role", b =>
-                {
-                    b.Navigation("RolePermissions");
-
-                    b.Navigation("UserRoles");
-                });
-
             modelBuilder.Entity("SupplyChain.Core.Models.User", b =>
                 {
                     b.Navigation("Carts");
-
-                    b.Navigation("UserRoles");
                 });
 
             modelBuilder.Entity("SupplyChain.Core.Models.Warehouse", b =>

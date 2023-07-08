@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SupplyChain.Core.Models;
+using System.Data;
+using System.Security;
 
 namespace SupplyChain.Infrastructure
 {
@@ -16,6 +18,11 @@ namespace SupplyChain.Infrastructure
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<Warehouse> Warehouses { get; set; }
         public DbSet<ProductComponent> ProductComponents { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Permission> Permissions { get; set; }
+        public DbSet<Role> Roles { get; set; }
+        public DbSet<RolePermission> RolePermissions { get; set; }
+        public DbSet<UserRole> UserRoles { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             #region Define the Product entity
@@ -177,10 +184,65 @@ namespace SupplyChain.Infrastructure
                 .Property(u => u.Email)
                 .HasMaxLength(50);
             modelBuilder.Entity<User>()
+            .HasIndex(u => u.Email)
+            .IsUnique();
+            modelBuilder.Entity<User>()
                 .Property(u => u.Phone)
                 .HasMaxLength(20);
+            modelBuilder.Entity<User>()
+           .Property(u => u.IsSupplier)
+           .IsRequired();
             #endregion
 
+            #region Define the Permission entity
+            modelBuilder.Entity<Permission>()
+           .HasKey(p => p.Id);
+            modelBuilder.Entity<Permission>()
+                .HasIndex(p => p.Name)
+                .IsUnique();
+            modelBuilder.Entity<Permission>()
+                .Property(p => p.Name)
+                .IsRequired()
+                .HasMaxLength(50);
+            #endregion
+
+            #region Define the Roles entity
+            modelBuilder.Entity<Role>()
+            .HasKey(r => r.Id);
+            modelBuilder.Entity<Role>()
+                .HasIndex(r => r.Name)
+                .IsUnique();
+            modelBuilder.Entity<Role>()
+                .Property(r => r.Name)
+                .IsRequired()
+                .HasMaxLength(50);
+            #endregion
+
+            #region Define the RolePermission entity
+            modelBuilder.Entity<RolePermission>()
+           .HasKey(rp => new { rp.RoleId, rp.PermissionId });
+            modelBuilder.Entity<RolePermission>()
+                .HasOne(rp => rp.Role)
+                .WithMany(r => r.RolePermissions)
+                .HasForeignKey(rp => rp.RoleId);
+            modelBuilder.Entity<RolePermission>()
+                .HasOne(rp => rp.Permission)
+                .WithMany(p => p.RolePermissions)
+                .HasForeignKey(rp => rp.PermissionId);
+            #endregion
+
+            #region Define the UserRole entity
+            modelBuilder.Entity<UserRole>()
+                .HasKey(ur => new { ur.UserId, ur.RoleId });
+            modelBuilder.Entity<UserRole>()
+                .HasOne(ur => ur.User)
+                .WithMany(u => u.UserRoles)
+                .HasForeignKey(ur => ur.UserId);
+            modelBuilder.Entity<UserRole>()
+                .HasOne(ur => ur.Role)
+                .WithMany(r => r.UserRoles)
+                .HasForeignKey(ur => ur.RoleId);
+            #endregion 
         }
     }
 }

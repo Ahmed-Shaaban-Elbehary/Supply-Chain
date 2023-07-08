@@ -9,11 +9,16 @@ namespace SupplyChain.Core.Interfaces
 {
     public interface IUnitOfWork : IDisposable
     {
-        IGenericRepository<Product> ProductRepository { get; }
-        IGenericRepository<ProductCategory> ProductCategoryRepository { get; }
-        IGenericRepository<Manufacturer> ManufacturerRepository { get; }
-        IGenericRepository<Cart> CartRepository { get; }
-        Task CommitAsync();
+        IProductRepository ProductRepository { get; }
+        IProductCategoryRepository ProductCategoryRepository { get; }
+        IManufacturerRepository ManufacturerRepository { get; }
+        ICartRepository CartRepository { get; }
+        IUserRepository UserRepository { get; }
+        IPermissionRepository PermissionRepository { get; }
+        IRoleRepository RoleRepository { get; }
+        IRolePermissionRepository RolePermissionRepository { get; }
+        IUserRoleRepository UserRoleRepository { get; }
+        Task<int> CommitAsync();
         Task RollbackAsync();
     }
 }

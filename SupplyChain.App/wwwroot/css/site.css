@@ -47,3 +47,51 @@ input[type=number] {
     z-index: 1000;
     pointer-events: none;
 }
+
+a {
+    all: initial;
+}
+
+.landscape-background {
+    background-image: linear-gradient(90deg, rgba(39,174,96,1) 0%, rgba(241,196,15,0.3) 100%), url('../images/supplu-chain-background.jpg');
+    background-size: cover;
+}
+
+.button-container {
+    height: 70%;
+}
+
+.supplier-buyer-btn {
+    border: none;
+    padding: 50px 80px;
+    cursor: pointer;
+    font-size: 150%;
+    font-family: 'Roboto', sans-serif;
+}
+
+.supplyer-btn {
+    background-color: #27ae60;
+    color: #fff;
+}
+
+    .supplyer-btn:hover {
+        background-color: #fff;
+        color: #27ae60;
+    }
+
+.buyer-btn {
+    background-color: #f1c40f;
+    color: #fff;
+}
+
+    .buyer-btn:hover {
+        background-color: #fff;
+        color: #f1c40f;
+    }
+
+.supplier-login-page {
+    background: rgb(39,174,96);
+}
+.buyer-login-page {
+    background: rgb(241,196,15);
+}

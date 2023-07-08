@@ -1,0 +1,69 @@
+﻿@using SupplyChain.App.ViewModels;
+@model PagedViewModel<LoginViewModel>
+
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Supplier</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Font Awesome -->
+    <link href="~/adminlte/plugins/fontawesome-free/css/all.min.css" rel="stylesheet" />
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <!-- Theme style -->
+    <link href="~/adminlte/dist/css/adminlte.min.css" rel="stylesheet" />
+    <!-- Google Font: Source Sans Pro -->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+    <link href="~/css/site.css" rel="stylesheet" />
+</head>
+<body class="hold-transition login-page supplier-login-page">
+    <div class="login-box">
+        <div class="login-logo">
+            <b class="text-uppercase text-light">Supplier</b>
+        </div>
+        <!-- /.login-logo -->
+        <div class="card">
+            <div class="card-body login-card-body">
+                <p class="login-box-msg">Sign in to start your session</p>
+                <form action="#" method="post">
+                    @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+                    {
+                        <div class="alert alert-danger">@ViewBag.ErrorMessage</div>
+                    }
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Username">
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <input type="password" class="form-control" placeholder="Password">
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <i class="fas fa-lock"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <button type="submit" class="btn btn-success btn-block btn-flat">Sign In</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- /.login-box -->
+    <!-- jQuery -->
+    <script src="~/adminlte/plugins/jquery/jquery.min.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="~/adminlte/plugins/bootstrap/js/bootstrap.min.js"></script>
+</body>
+</html>

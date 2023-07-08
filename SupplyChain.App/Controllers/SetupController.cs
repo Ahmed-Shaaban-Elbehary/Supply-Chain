@@ -165,5 +165,28 @@ namespace SupplyChain.App.Controllers
             }
         }
         #endregion Manufacturer
+
+        #region User Roles Management System
+        public IActionResult Users()
+        {
+            return View();
+        }
+        public IActionResult Roles()
+        {
+            return View();
+        }
+        public IActionResult Permissions()
+        {
+            return View();
+        }
+        public IActionResult RolePermissions()
+        {
+            return View();
+        }
+        public IActionResult UserRoles()
+        {
+            return View();
+        }
+        #endregion User Roles Management System 
     }
 }
