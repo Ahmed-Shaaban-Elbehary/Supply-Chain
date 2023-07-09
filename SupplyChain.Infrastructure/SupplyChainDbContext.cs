@@ -178,6 +178,9 @@ namespace SupplyChain.Infrastructure
                 .Property(u => u.Name)
                 .HasMaxLength(50);
             modelBuilder.Entity<User>()
+                .Property(u => u.Password)
+                .HasMaxLength(100);
+            modelBuilder.Entity<User>()
                 .Property(u => u.Address)
                 .HasMaxLength(200);
             modelBuilder.Entity<User>()

@@ -1,4 +1,5 @@
-﻿using SupplyChain.Core.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using SupplyChain.Core.Interfaces;
 using SupplyChain.Core.Models;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,32 @@ namespace SupplyChain.Infrastructure.Repositories
 {
     internal class UserRepository : GenericRepository<User>, IUserRepository
     {
-        public UserRepository(SupplyChainDbContext dbContext) : base(dbContext) { }
+        private readonly SupplyChainDbContext _context;
+        public UserRepository(SupplyChainDbContext dbContext) : base(dbContext) { _context = dbContext; }
+
+        public async Task<IEnumerable<string>> GetUserPermissionsAsync(int userId)
+        {
+            var user = await _context.Users
+                .Include(u => u.UserRoles)
+                .ThenInclude(ur => ur.Role)
+                .ThenInclude(r => r.RolePermissions)
+                .ThenInclude(rp => rp.Permission)
+                .FirstOrDefaultAsync(u => u.Id == userId);
+
+            if (user == null)
+            {
+                throw new ArgumentException("Invalid user ID");
+            }
+
+            var permissions = new List<Permission>();
+
+            foreach (var userRole in user.UserRoles)
+            {
+                var rolePermissions = userRole.Role.RolePermissions.Select(rp => rp.Permission);
+                permissions.AddRange(rolePermissions);
+            }
+
+            return permissions.Select(r => r.Name).ToList();
+        }
     }
 }

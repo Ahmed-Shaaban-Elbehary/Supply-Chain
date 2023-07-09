@@ -1,4 +1,5 @@
-﻿using SupplyChain.Core.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using SupplyChain.Core.Interfaces;
 using SupplyChain.Core.Models;
 using System;
 using System.Collections.Generic;

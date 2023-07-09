@@ -52,9 +52,9 @@ namespace SupplyChain.Services
             return await _unitOfWork.UserRepository.GetByIdAsync(userId);
         }
 
-        public Task<IEnumerable<Permission>> GetUserPermissionsAsync(int userId)
+        public async Task<IEnumerable<string>> GetUserPermissionsAsync(int userId)
         {
-            throw new NotImplementedException();
+            return await _unitOfWork.UserRepository.GetUserPermissionsAsync(userId);
         }
 
         public async Task<IEnumerable<string>> GetUserRolesAsync(int userId)

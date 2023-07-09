@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using SupplyChain.App.App_Class;
+using SupplyChain.App.Utils.Validations;
 using SupplyChain.App.ViewModels;
 using SupplyChain.Core.Models;
 using SupplyChain.Services.Contracts;
@@ -14,6 +15,8 @@ namespace SupplyChain.App.Controllers
         {
             container = dependencyContainer;
         }
+
+        [InRole("admin")]
         public IActionResult Index()
         {
             return View();

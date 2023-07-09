@@ -5,7 +5,8 @@ namespace SupplyChain.App.ViewModels
     public class LoginViewModel
     {
         [Required]
-        public string UserName { get; set; }
+        [EmailAddress(ErrorMessage = "Invalid Email Address")]
+        public string Email { get; set; }
 
         [Required]
         [DataType(DataType.Password)]

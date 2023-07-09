@@ -13,8 +13,8 @@ namespace SupplyChain.Services.Contracts
         Task<int> DeleteUserAsync(User User);
         Task<bool> ValidateUserCredentialsAsync(string email, string password);
         Task<IEnumerable<string>> GetUserRolesAsync(int userId);
+        Task<IEnumerable<string>> GetUserPermissionsAsync(int userId);
         Task<IEnumerable<User>> GetAllPagedUsersAsync(int page, int pageSize);
         Task<int> CountUserAsync();
-        Task<IEnumerable<Permission>> GetUserPermissionsAsync(int userId);
     }
 }

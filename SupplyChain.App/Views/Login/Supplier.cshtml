@@ -1,5 +1,5 @@
 ﻿@using SupplyChain.App.ViewModels;
-@model PagedViewModel<LoginViewModel>
+@model LoginViewModel
 
 @{
     Layout = null;
@@ -38,20 +38,22 @@
                         <div class="alert alert-danger">@ViewBag.ErrorMessage</div>
                     }
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control" placeholder="Username">
+                        <input asp-for="Email" class="form-control rounded-0" placeholder="Email"/>
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <i class="fas fa-user"></i>
                             </div>
                         </div>
+                        <span asp-validation-for="Email" class="text-danger"></span>
                     </div>
                     <div class="input-group mb-3">
-                        <input type="password" class="form-control" placeholder="Password">
+                        <input asp-for="Password" class="form-control rounded-0" placeholder="Password" />
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <i class="fas fa-lock"></i>
                             </div>
                         </div>
+                        <span asp-validation-for="Password" class="text-danger"></span>
                     </div>
                     <div class="row">
                         <button type="submit" class="btn btn-success btn-block btn-flat">Sign In</button>
