@@ -23,6 +23,7 @@ namespace SupplyChain.Infrastructure
             services.AddScoped<IRoleRepository, RoleRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserRoleRepository, UserRoleRepository>();
+            services.AddScoped<INotifcationRepository, NotificationRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             return services;
         }

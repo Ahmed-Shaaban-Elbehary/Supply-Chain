@@ -1,8 +1,6 @@
 using SupplyChain.App.Profiles;
 using SupplyChain.App.Utils;
 using SupplyChain.App.Utils.Contracts;
-using SupplyChain.Core.Interfaces;
-using SupplyChain.Core.Models;
 using SupplyChain.Infrastructure;
 using SupplyChain.Services;
 using SupplyChain.Services.Contracts;
