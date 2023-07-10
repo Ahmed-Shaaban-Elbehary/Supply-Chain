@@ -1,4 +1,3 @@
-using SupplyChain.App.App_Class;
 using SupplyChain.App.Profiles;
 using SupplyChain.App.Utils;
 using SupplyChain.App.Utils.Contracts;
@@ -28,17 +27,12 @@ builder.Services.AddScoped<IProductCategoryService, ProductCategoryService>();
 builder.Services.AddScoped<IManufacturerService, ManufacturerService>();
 builder.Services.AddScoped<IUserRoleService, UserRoleService>();
 builder.Services.AddScoped<IUserService, UserService>();
-/********* User Current Session ***************/
-builder.Services.AddSingleton<ICurrentUserSerivce, CurrentUserService>();
-/********* Dependencies Container ***************/
-builder.Services.AddScoped<DependencyContainer>();
 #endregion
 
 #region Utils
 builder.Services.AddScoped<IUploadFile, UploadFile>();
 builder.Services.AddScoped<ILookUp, Lookups>();
 #endregion
-
 
 var app = builder.Build();
 
@@ -52,6 +46,8 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+
+app.UseAuthentication();
 
 app.MapControllerRoute(
     name: "default",

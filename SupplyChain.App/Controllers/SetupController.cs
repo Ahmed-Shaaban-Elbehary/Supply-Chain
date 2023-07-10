@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using SupplyChain.App.App_Class;
 using SupplyChain.App.Utils.Validations;
 using SupplyChain.App.ViewModels;
 using SupplyChain.Core.Models;
@@ -10,13 +9,19 @@ namespace SupplyChain.App.Controllers
 {
     public class SetupController : Controller
     {
-        private readonly DependencyContainer container;
-        public SetupController(DependencyContainer dependencyContainer)
+        private readonly IProductCategoryService _productCategoryService;
+        private readonly IManufacturerService _manufacturerService;
+        private readonly IMapper _mapper;
+        public SetupController(IProductCategoryService productCategoryService, 
+            IMapper mapper,
+            IManufacturerService manufacturerService)
         {
-            container = dependencyContainer;
+            _productCategoryService = productCategoryService;
+            _mapper = mapper;
+            _manufacturerService = manufacturerService;
         }
 
-        [InRole("admin")]
+        
         public IActionResult Index()
         {
             return View();
@@ -26,15 +31,15 @@ namespace SupplyChain.App.Controllers
         [HttpGet]
         public async Task<ActionResult> Category(int page = 1, int pageSize = 10)
         {
-            var categories = await container._productCategoryService.GetAllPagedProductCategoriesAsync(page, pageSize);
-            var vm = container._mapper.Map<List<ProductCategoryViewModel>>(categories);
+            var categories = await _productCategoryService.GetAllPagedProductCategoriesAsync(page, pageSize);
+            var vm = _mapper.Map<List<ProductCategoryViewModel>>(categories);
 
             var pagedModel = new PagedViewModel<ProductCategoryViewModel>
             {
                 Model = vm,
                 CurrentPage = page,
                 PageSize = pageSize,
-                TotalItems = await container._productCategoryService.CountProductCategoryAsync()
+                TotalItems = await _productCategoryService.CountProductCategoryAsync()
             };
 
             return View(pagedModel);
@@ -47,8 +52,8 @@ namespace SupplyChain.App.Controllers
 
             if (id > 0)
             {
-                var category = await container._productCategoryService.GetProductCategoryByIdAsync(id);
-                vm = container._mapper.Map<ProductCategoryViewModel>(category);
+                var category = await _productCategoryService.GetProductCategoryByIdAsync(id);
+                vm = _mapper.Map<ProductCategoryViewModel>(category);
             }
 
             return PartialView("~/Views/Setup/PartialViews/_AddEditCategoryForm.cshtml", vm);
@@ -60,23 +65,23 @@ namespace SupplyChain.App.Controllers
         {
             if (ModelState.IsValid)
             {
-                var category = container._mapper.Map<ProductCategory>(vm);
+                var category = _mapper.Map<ProductCategory>(vm);
 
                 if (category.Id == 0) // Adding a new category
                 {
-                    await container._productCategoryService.CreateProductCategoryAsync(category);
+                    await _productCategoryService.CreateProductCategoryAsync(category);
                     return Json(new { message = "Add New Category Successed!" });
                 }
                 else // Editing an existing category
                 {
-                    await container._productCategoryService.UpdateProductCategoryAsync(category);
+                    await _productCategoryService.UpdateProductCategoryAsync(category);
                     return Json(new { message = "Edit Category Successed!" });
                 }
 
             }
 
             // If the model is not valid, redisplay the form with validation errors
-            //ViewBag.Categories = await container._productCategoryService.GetAllProductCategoriesAsync();
+            //ViewBag.Categories = await _productCategoryService.GetAllProductCategoriesAsync();
             return Json(new { message = "Oops, Error Occurred, Please Try Again!" });
         }
 
@@ -85,8 +90,8 @@ namespace SupplyChain.App.Controllers
         {
             if (id > 0)
             {
-                var productCategory = await container._productCategoryService.GetProductCategoryByIdAsync(id);
-                await container._productCategoryService.DeleteProductCategoryAsync(productCategory);
+                var productCategory = await _productCategoryService.GetProductCategoryByIdAsync(id);
+                await _productCategoryService.DeleteProductCategoryAsync(productCategory);
                 return Json(new { success = true });
             }
             else
@@ -100,15 +105,15 @@ namespace SupplyChain.App.Controllers
         [HttpGet]
         public async Task<IActionResult> Manufacturer(int page = 1, int pageSize = 10)
         {
-            var manufacturers = await container._manufacturerService.GetAllPagedManufacturerAsync(page, pageSize);
-            var vm = container._mapper.Map<List<ManufacturerViewModel>>(manufacturers);
+            var manufacturers = await _manufacturerService.GetAllPagedManufacturerAsync(page, pageSize);
+            var vm = _mapper.Map<List<ManufacturerViewModel>>(manufacturers);
 
             var pagedModel = new PagedViewModel<ManufacturerViewModel>
             {
                 Model = vm,
                 CurrentPage = page,
                 PageSize = pageSize,
-                TotalItems = await container._manufacturerService.CountManufacturerAsync()
+                TotalItems = await _manufacturerService.CountManufacturerAsync()
             };
 
             return View(pagedModel);
@@ -121,8 +126,8 @@ namespace SupplyChain.App.Controllers
 
             if (id > 0)
             {
-                var manufacturer = await container._manufacturerService.GetManufacturerByIdAsync(id);
-                vm = container._mapper.Map<ManufacturerViewModel>(manufacturer);
+                var manufacturer = await _manufacturerService.GetManufacturerByIdAsync(id);
+                vm = _mapper.Map<ManufacturerViewModel>(manufacturer);
             }
 
             return PartialView("~/Views/Setup/PartialViews/_AddEditManufacturerForm.cshtml", vm);
@@ -134,23 +139,23 @@ namespace SupplyChain.App.Controllers
         {
             if (ModelState.IsValid)
             {
-                var manufacturer = container._mapper.Map<Manufacturer>(vm);
+                var manufacturer = _mapper.Map<Manufacturer>(vm);
 
                 if (manufacturer.Id == 0) // Adding a new category
                 {
-                    await container._manufacturerService.CreateManufacturerAsync(manufacturer);
+                    await _manufacturerService.CreateManufacturerAsync(manufacturer);
                     return Json(new { message = "Add New Manufacturer Successed!" });
                 }
                 else // Editing an existing category
                 {
-                    await container._manufacturerService.UpdateManufacturerAsync(manufacturer);
+                    await _manufacturerService.UpdateManufacturerAsync(manufacturer);
                     return Json(new { message = "Edit Manufacturer Successed!" });
                 }
 
             }
 
             // If the model is not valid, redisplay the form with validation errors
-            //ViewBag.Manufacturers = await container._manufacturerService.GetAllManufacturerAsync();
+            //ViewBag.Manufacturers = await _manufacturerService.GetAllManufacturerAsync();
             return Json(new { message = "Oops, Error Occurred, Please Try Again!" });
         }
         [HttpDelete]
@@ -158,8 +163,8 @@ namespace SupplyChain.App.Controllers
         {
             if (id > 0)
             {
-                var manufacturer = await container._manufacturerService.GetManufacturerByIdAsync(id);
-                await container._manufacturerService.DeleteManufacturerAsync(manufacturer);
+                var manufacturer = await _manufacturerService.GetManufacturerByIdAsync(id);
+                await _manufacturerService.DeleteManufacturerAsync(manufacturer);
                 return Json(new { success = true });
             }
             else

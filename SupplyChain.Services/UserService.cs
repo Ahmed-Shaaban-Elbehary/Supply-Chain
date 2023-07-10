@@ -1,6 +1,8 @@
 ﻿using SupplyChain.Core.Interfaces;
 using SupplyChain.Core.Models;
 using SupplyChain.Services.Contracts;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace SupplyChain.Services
 {
@@ -19,7 +21,7 @@ namespace SupplyChain.Services
 
         public async Task<int> CreateUserAsync(User user, string password)
         {
-            user.Password = BCrypt.Net.BCrypt.HashPassword(password);
+            user.Password = ComputeMD5Hash(password);
             await _unitOfWork.UserRepository.AddAsync(user);
             return await _unitOfWork.CommitAsync();
         }
@@ -86,8 +88,31 @@ namespace SupplyChain.Services
                 return false;
             }
 
-            var result = BCrypt.Net.BCrypt.Verify(password, user.Password);
+            var result = VerifyPassword(user.Password, password);
             return result;
+        }
+
+        public string ComputeMD5Hash(string input)
+        {
+            using (var md5 = MD5.Create())
+            {
+                var inputBytes = Encoding.UTF8.GetBytes(input);
+                var hashBytes = md5.ComputeHash(inputBytes);
+                var hash = new StringBuilder();
+
+                foreach (var b in hashBytes)
+                {
+                    hash.Append(b.ToString("x2"));
+                }
+
+                return hash.ToString();
+            }
+        }
+
+        public bool VerifyPassword(string hashedPassword, string inputPassword)
+        {
+            var inputPasswordHash = ComputeMD5Hash(inputPassword);
+            return hashedPassword.Equals(inputPasswordHash);
         }
     }
 }

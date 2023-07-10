@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using SupplyChain.App.App_Class;
 using SupplyChain.App.Utils.Contracts;
+using SupplyChain.App.Utils.Validations;
 using SupplyChain.App.ViewModels;
 using SupplyChain.Core.Models;
 using SupplyChain.Services.Contracts;
@@ -12,27 +12,46 @@ namespace SupplyChain.App.Controllers
 {
     public class ProductController : Controller
     {
-        private readonly DependencyContainer container;
-        public ProductController(
-            DependencyContainer _container)
+        private readonly IProductService _productService;
+        private readonly IMapper _mapper;
+        private readonly ILookUp _lookup;
+        private readonly IUploadFile _uploadFile;
+        public ProductController(IProductService productService,
+            IMapper mapper,
+            ILookUp lookUp,
+            IUploadFile uploadFile
+            )
         {
-            _container = container;
+            _productService = productService;
+            _mapper = mapper;
+            _lookup = lookUp;
+            _uploadFile = uploadFile;
         }
 
-        public async Task<ActionResult<IEnumerable<ProductViewModel>>> Index()
+        public async Task<ActionResult> Index(int page = 1, int pageSize = 10)
         {
-            var products = await container._productService.GetAllProductsAsync();
-            var vm = products.Count() > 0 ? container._mapper.Map<List<ProductViewModel>>(products) : new List<ProductViewModel>();
-            return View(vm);
+            var categories = await _productService.GetAllPagedProductsAsync(page, pageSize);
+            var vm = _mapper.Map<List<ProductViewModel>>(categories);
+
+            var pagedModel = new PagedViewModel<ProductViewModel>
+            {
+                Model = vm,
+                CurrentPage = page,
+                PageSize = pageSize,
+                TotalItems = await _productService.CountProductsAsync()
+            };
+
+            return View(pagedModel);
         }
 
         [HttpGet]
+        [InRole("user")]
         public IActionResult Add()
         {
             var vm = new ProductViewModel();
-            vm.CountryOfOriginList = new SelectList(container._lookup.Countries, "Code", "Name");
-            vm.ManufacturerList = new SelectList(container._lookup.Manufacturers, "Id", "Name");
-            vm.CategoryList = new SelectList(container._lookup.Categories, "Id", "Name");
+            vm.CountryOfOriginList = new SelectList(_lookup.Countries, "Code", "Name");
+            vm.ManufacturerList = new SelectList(_lookup.Manufacturers, "Id", "Name");
+            vm.CategoryList = new SelectList(_lookup.Categories, "Id", "Name");
             return View(vm);
         }
 
@@ -45,10 +64,10 @@ namespace SupplyChain.App.Controllers
             {
                 return BadRequest("Invalid file type.");
             }
-            vm.ImageUrl = await container._uploadFile.UploadImage(file);
+            vm.ImageUrl = await _uploadFile.UploadImage(file);
             vm.Description.Trim();
             vm.Name.Trim();
-            await container._productService.CreateProductAsync(container._mapper.Map<Product>(vm));
+            await _productService.CreateProductAsync(_mapper.Map<Product>(vm));
             return RedirectToAction(nameof(Index));
         }
     }

@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using SupplyChain.App.App_Class;
+using SupplyChain.App.Utils.Validations;
 using SupplyChain.App.ViewModels;
 using SupplyChain.Core.Models;
+using SupplyChain.Services;
 using SupplyChain.Services.Contracts;
 
 namespace SupplyChain.App.Controllers
@@ -10,14 +11,11 @@ namespace SupplyChain.App.Controllers
     public class LoginController : Controller
     {
         private readonly IUserService _userService;
-        private readonly ICurrentUserSerivce _session;
         private readonly IMapper _mapper;
         public LoginController(IUserService userService,
-            ICurrentUserSerivce session,
             IMapper mapper)
         {
             _userService = userService;
-            _session = session;
             _mapper = mapper;
         }
 
@@ -43,7 +41,7 @@ namespace SupplyChain.App.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.ErrorMessage = "In-Corrent Username Or Password!";
+                ViewBag.ErrorMessage = "Invalid Username Or Password!";
                 return View();
             }
             else
@@ -59,10 +57,10 @@ namespace SupplyChain.App.Controllers
                     var loggedInUser = await _userService.GetUserByEmailAsync(user.Email);
                     loggedInUser.IsSupplier = true;
                     var _user = _mapper.Map<User>(loggedInUser);
-                    await _session.SetUserAsync(_user);
+                    await CurrentUserService.SetUserAsync(_user, _userService);
                 }
             }
-            return View();
+            return RedirectToAction("Index", "Product");
         }
 
         public IActionResult Buyer(string t)

@@ -40,5 +40,17 @@ namespace SupplyChain.Services
             await _unitOfWork.ProductRepository.RemoveAsync(product);
             await _unitOfWork.CommitAsync();
         }
+
+        public async Task<IEnumerable<Product>> GetAllPagedProductsAsync(int page, int pageSize)
+        {
+            var result = await _unitOfWork.ProductRepository
+               .GetPagedAsync(page, pageSize, null, orderBy: q => q.OrderBy(p => p.Id), true);
+            return result;
+        }
+
+        public async Task<int> CountProductsAsync()
+        {
+            return await _unitOfWork.ProductRepository.CountAsync();
+        }
     }
 }

@@ -96,7 +96,7 @@ namespace SupplyChain.Infrastructure.Repositories
             return result;
         }
 
-        public async Task<IEnumerable<T>> GetPagedAsync(int page, int pageSize, Expression<Func<T, bool>>? predicate = null,
+        public async Task<IEnumerable<T>?> GetPagedAsync(int page, int pageSize, Expression<Func<T, bool>>? predicate = null,
             Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null, bool ascendingOrder = true)
         {
             var query = _set.AsQueryable();
@@ -112,6 +112,10 @@ namespace SupplyChain.Infrastructure.Repositories
             }
 
             var result = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+            if (result.Count == 0)
+            {
+                return null;
+            }
             return result;
         }
 

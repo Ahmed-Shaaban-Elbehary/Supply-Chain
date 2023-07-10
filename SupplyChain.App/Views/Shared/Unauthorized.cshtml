@@ -1,0 +1,14 @@
+﻿@{
+    ViewBag.Title = "Unauthorized";
+    Layout = "~/Views/Shared/_Layout.cshtml"; // Change this to your layout file
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12  text-center">
+            <h1 class="text-danger display-1">Unauthorized</h1>
+            <p>You are not authorized to access this page.</p>
+            <a asp-action="Index" asp-controller="Product" class="btn btn-success btn-sm"> Back To Home</a>
+        </div>
+    </div>
+</div>
