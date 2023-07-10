@@ -35,10 +35,12 @@
                 <form action="#" method="post">
                     @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
                     {
-                        <div class="alert alert-danger">@ViewBag.ErrorMessage</div>
+                        <div class="alert alert-danger text-center p-1">
+                            <small>@ViewBag.ErrorMessage</small>
+                        </div>
                     }
                     <div class="input-group mb-3">
-                        <input asp-for="Email" class="form-control rounded-0" placeholder="Email"/>
+                        <input asp-for="Email" class="form-control rounded-0" placeholder="Email" />
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <i class="fas fa-user"></i>

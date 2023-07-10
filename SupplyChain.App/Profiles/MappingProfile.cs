@@ -11,7 +11,9 @@ namespace SupplyChain.App.Profiles
             CreateMap<Product, ProductViewModel>().ReverseMap();
             CreateMap<ProductCategory, ProductCategoryViewModel>().ReverseMap();
             CreateMap<Manufacturer, ManufacturerViewModel>().ReverseMap();
-            CreateMap<User, UserViewModel>().ReverseMap();
+            CreateMap<User, UserViewModel>()
+                .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.Name))
+                .ReverseMap();
             CreateMap<Role, RoleViewModel>().ReverseMap();
         }
     }

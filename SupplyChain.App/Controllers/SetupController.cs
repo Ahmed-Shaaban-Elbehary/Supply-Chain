@@ -11,14 +11,17 @@ namespace SupplyChain.App.Controllers
     {
         private readonly IProductCategoryService _productCategoryService;
         private readonly IManufacturerService _manufacturerService;
+        private readonly IUserService _userService;
         private readonly IMapper _mapper;
         public SetupController(IProductCategoryService productCategoryService, 
             IMapper mapper,
-            IManufacturerService manufacturerService)
+            IManufacturerService manufacturerService,
+            IUserService userService)
         {
             _productCategoryService = productCategoryService;
             _mapper = mapper;
             _manufacturerService = manufacturerService;
+            _userService = userService;
         }
 
         
@@ -175,9 +178,20 @@ namespace SupplyChain.App.Controllers
         #endregion Manufacturer
 
         #region User Roles Management System
-        public IActionResult Users()
+        public async Task<IActionResult> Users(int page = 1, int pageSize = 10)
         {
-            return View();
+            var users = await _userService.GetAllPagedUsersAsync(page, pageSize);
+            var vm = _mapper.Map<List<UserViewModel>>(users);
+
+            var pagedModel = new PagedViewModel<UserViewModel>
+            {
+                Model = vm,
+                CurrentPage = page,
+                PageSize = pageSize,
+                TotalItems = await _userService.CountUserAsync()
+            };
+
+            return View(pagedModel);
         }
         public IActionResult Roles()
         {

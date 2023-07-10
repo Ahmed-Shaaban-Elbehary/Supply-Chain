@@ -1,5 +1,56 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@using SupplyChain.App.ViewModels;
+@model PagedViewModel<UserViewModel>
 @{
+    ViewData["Title"] = "Users";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<div class="card" id="user-card">
+    <div class="card-header">
+        <h3 class="card-title">Users</h3>
+        <button class="btn btn-small btn-outline-success float-right" id="open-form-modal" data-toggle="modal" data-target="#general-partial-modal">
+            <i class="fas fa-plus"></i>
+        </button>
+    </div>
+    <div id="user-card-body" class="card-body">
+        <div>
+            <table id="page-content" class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>User Name</th>
+                        <th>Email</th>
+                        <th>Address</th>
+                        <th>Phone</th>
+                        <th>Type</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Model)
+                    {
+                        <tr>
+                            <td>@item.Id</td>
+                            <td>@item.Username</td>
+                            <td>@item.Email</td>
+                            <td>@item.Address</td>
+                            <td>@item.Phone</td>
+                            <td>
+                                @if (item.IsSupplier)
+                                {
+                                    <span class="badge badge-success">Supplier</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-warning">Buyer</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card-footer clearfix">
+        @await Html.PartialAsync("~/Views/Pagers/_PagerUser.cshtml", Model)
+    </div>
+</div>
+@await Html.PartialAsync("_PartialModal")

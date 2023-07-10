@@ -21,6 +21,10 @@ namespace SupplyChain.Services
             Roles = await _userService.GetUserRolesAsync(UserId);
             Permissions = await _userService.GetUserPermissionsAsync(UserId);
         }
+        public static string GetUserName()
+        {
+            return UserName;
+        }
         public static Task<bool> IsInRoleAsync(string roleName)
         {
             return Task.Run(() => Roles.Contains(roleName));

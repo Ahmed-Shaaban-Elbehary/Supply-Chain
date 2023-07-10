@@ -14,6 +14,8 @@ namespace SupplyChain.App.ViewModels
         [Required]
         [StringLength(100)]
         public string Email { get; set; }
+        public string Phone { get; set; } = null;
+        public string Address { get; set; } = null;
         [Required]
         public bool IsSupplier { get; set; }
     }

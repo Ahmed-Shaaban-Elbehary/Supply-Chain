@@ -10,8 +10,8 @@ namespace SupplyChain.Core.Models
     {
         public int Id { get; set; }
         public string Message { get; set; }
-        public string RecipientUserId { get; set; }
-        public string SenderUserId { get; set; }
+        public int RecipientUserId { get; set; }
+        public int SenderUserId { get; set; }
         public NotificationType Type { get; set; }
         public DateTime CreatedDate { get; set; }
 

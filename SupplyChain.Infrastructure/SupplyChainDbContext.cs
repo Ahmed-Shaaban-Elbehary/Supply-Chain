@@ -23,6 +23,7 @@ namespace SupplyChain.Infrastructure
         public DbSet<Role> Roles { get; set; }
         public DbSet<RolePermission> RolePermissions { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             #region Define the Product entity
@@ -245,7 +246,48 @@ namespace SupplyChain.Infrastructure
                 .HasOne(ur => ur.Role)
                 .WithMany(r => r.UserRoles)
                 .HasForeignKey(ur => ur.RoleId);
-            #endregion 
+            #endregion
+
+            #region Define the Notification entity
+            modelBuilder.Entity<Notification>()
+            .ToTable("Notifications")
+            .HasKey(n => n.Id);
+
+            modelBuilder.Entity<Notification>()
+                .Property(n => n.Message)
+                .IsRequired()
+                .HasMaxLength(256);
+
+            modelBuilder.Entity<Notification>()
+                .Property(n => n.RecipientUserId)
+                .IsRequired()
+                .HasMaxLength(128);
+
+            modelBuilder.Entity<Notification>()
+                .Property(n => n.SenderUserId)
+                .IsRequired()
+                .HasMaxLength(128);
+
+            modelBuilder.Entity<Notification>()
+                .Property(n => n.Type)
+                .IsRequired();
+
+            modelBuilder.Entity<Notification>()
+                .Property(n => n.CreatedDate)
+                .IsRequired();
+
+            modelBuilder.Entity<Notification>()
+                .HasOne(n => n.RecipientUser)
+                .WithMany()
+                .HasForeignKey(n => n.RecipientUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Notification>()
+                .HasOne(n => n.SenderUser)
+                .WithMany()
+                .HasForeignKey(n => n.SenderUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+            #endregion Define the Notification entity
         }
     }
 }
