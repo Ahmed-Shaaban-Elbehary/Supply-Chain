@@ -48,9 +48,8 @@ namespace SupplyChain.Services
 
         public async Task<IEnumerable<Permission>> GetRolePermissionsAsync(int roleId)
         {
-            var rolePermissions = await _unitOfWork.RolePermissionRepository.GetWhereQueryable(e => e.RoleId == roleId)
-                                                                            .Include(rp => rp.Permission)
-                                                                            .ToListAsync();
+            var rolePermissions = await _unitOfWork.RolePermissionRepository.GetWhereAsync(e => e.RoleId == roleId)
+                
 
             return rolePermissions.Select(rp => rp.Permission);
         }
