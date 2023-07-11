@@ -18,5 +18,7 @@ namespace SupplyChain.App.ViewModels
         public string Address { get; set; } = null;
         [Required]
         public bool IsSupplier { get; set; }
+        [Required]
+        public int RoleId { get; set; }
     }
 }

@@ -40,22 +40,26 @@
                         </div>
                     }
                     <div class="input-group mb-3">
-                        <input asp-for="Email" class="form-control rounded-0" placeholder="Email" />
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <i class="fas fa-user"></i>
+                        <div class="input-group">
+                            <input asp-for="Email" class="form-control rounded-0" placeholder="Email" />
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <i class="fas fa-user"></i>
+                                </div>
                             </div>
                         </div>
                         <span asp-validation-for="Email" class="text-danger"></span>
                     </div>
                     <div class="input-group mb-3">
-                        <input asp-for="Password" class="form-control rounded-0" placeholder="Password" />
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <i class="fas fa-lock"></i>
+                        <div class="input-group">
+                            <input asp-for="Password" class="form-control rounded-0" placeholder="Password" />
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <i class="fas fa-lock"></i>
+                                </div>
                             </div>
                         </div>
-                        <span asp-validation-for="Password" class="text-danger"></span>
+                        <span asp-validation-for="Password" class="text-danger d-block"></span>
                     </div>
                     <div class="input-group mb-3">
                         <label asp-for="IsSupplier" class="control-label mr-2">I Supplier</label>

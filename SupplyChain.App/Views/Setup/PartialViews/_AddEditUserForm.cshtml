@@ -1,0 +1,44 @@
+﻿@model SupplyChain.App.ViewModels.UserViewModel
+
+<form asp-action="AddEditUser" onsubmit="user.add_user(event)">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="Username" class="control-label"></label>
+        <input asp-for="Username" class="form-control" />
+        <span asp-validation-for="Username" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Password" class="control-label"></label>
+        <input asp-for="Password" class="form-control" type="password" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Email" class="control-label"></label>
+        <input asp-for="Email" class="form-control" type="email" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Phone" class="control-label"></label>
+        <input asp-for="Phone" class="form-control" />
+        <span asp-validation-for="Phone" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Address" class="control-label"></label>
+        <input asp-for="Address" class="form-control" />
+        <span asp-validation-for="Address" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="RoleId" class="control-label">Select Role</label>
+        @Html.DropDownListFor(model => model.RoleId, new SelectList(ViewBag.UserRoles, "Value", "Text"), "Select a role", new { @class = "form-control" })
+        <span asp-validation-for="RoleId" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="IsSupplier" class="control-label"></label>
+        <input asp-for="IsSupplier" type="checkbox" />
+        <span asp-validation-for="IsSupplier" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Submit" class="btn btn-outline-primary" />
+    </div>
+</form>

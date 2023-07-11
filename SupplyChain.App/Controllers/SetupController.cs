@@ -13,16 +13,22 @@ namespace SupplyChain.App.Controllers
         private readonly IProductCategoryService _productCategoryService;
         private readonly IManufacturerService _manufacturerService;
         private readonly IUserService _userService;
+        private readonly IRoleService _roleService;
+        private readonly IUserRoleService _userRoleService;
         private readonly IMapper _mapper;
         public SetupController(IProductCategoryService productCategoryService,
             IMapper mapper,
             IManufacturerService manufacturerService,
-            IUserService userService)
+            IUserService userService,
+            IRoleService roleService,
+            IUserRoleService userRoleService)
         {
             _productCategoryService = productCategoryService;
             _mapper = mapper;
             _manufacturerService = manufacturerService;
             _userService = userService;
+            _roleService = roleService;
+            _userRoleService = userRoleService;
         }
         public IActionResult Index()
         {
@@ -79,11 +85,7 @@ namespace SupplyChain.App.Controllers
                     await _productCategoryService.UpdateProductCategoryAsync(category);
                     return Json(new { message = "Edit Category Successed!" });
                 }
-
             }
-
-            // If the model is not valid, redisplay the form with validation errors
-            //ViewBag.Categories = await _productCategoryService.GetAllProductCategoriesAsync();
             return Json(new { message = "Oops, Error Occurred, Please Try Again!" });
         }
 
@@ -176,12 +178,14 @@ namespace SupplyChain.App.Controllers
         }
         #endregion Manufacturer
 
-        #region User Roles Management System
+        #region User Roles Management 
+        #region Users
+
+        [HttpGet]
         public async Task<IActionResult> Users(int page = 1, int pageSize = 10)
         {
             var users = await _userService.GetAllPagedUsersAsync(page, pageSize);
             var vm = _mapper.Map<List<UserViewModel>>(users);
-
             var pagedModel = new PagedViewModel<UserViewModel>
             {
                 Model = vm,
@@ -189,9 +193,51 @@ namespace SupplyChain.App.Controllers
                 PageSize = pageSize,
                 TotalItems = await _userService.CountUserAsync()
             };
-
+            var roles = await _roleService.GetAllRolesAsync();
+            var roleViewModel = _mapper.Map<RoleViewModel>(roles);
+            ViewBag.UserRoles = roleViewModel;
             return View(pagedModel);
         }
+
+        [HttpGet]
+        public async Task<ActionResult> AddEditUser(int id)
+        {
+            var vm = new UserViewModel();
+
+            if (id > 0)
+            {
+                var user = await _userService.GetUserByIdAsync(id);
+                vm = _mapper.Map<UserViewModel>(user);
+            }
+
+            return PartialView("~/Views/Setup/PartialViews/_AddEditUserForm.cshtml", vm);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<JsonResult> AddEditUser(UserViewModel vm)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = _mapper.Map<User>(vm);
+
+                if (user.Id == 0) // Adding a new category
+                {
+                    //Add User
+                    var newId = await _userService.CreateUserAsync(user, user.Password);
+                    //Add User Role
+                    await _userRoleService.AddSingleUserRoleAsync(newId, vm.RoleId);
+                    return Json(new { message = "A user was successfully created!" });
+                }
+                else // Editing an existing category
+                {
+                    await _userService.UpdateUserAsync(user);
+                    return Json(new { message = "A user was successfully updated!" });
+                }
+            }
+            return Json(new { message = "Oops, Error Occurred, Please Try Again!" });
+        }
+        #endregion Users
         public IActionResult Roles()
         {
             return View();

@@ -11,11 +11,13 @@ namespace SupplyChain.Services.Contracts
     {
         Task<IEnumerable<UserRole>> GetAllUserRoleAsync();
         Task<IEnumerable<UserRole>> GetAllPagedUserRoleAsync(int page, int pageSize);
-        Task<List<UserRole>> GetUserRolesByUserIdAsync(int userId);
-        Task<List<UserRole>> GetUserRolesByRoleIdAsync(int roleId);
-        Task AddUserRolesAsync(int userId, List<int> roleIds);
-        Task DeleteUserRoleAsync(int userId, int roleId);
-        Task UpdateUserRolesAsync(int userId, List<int> roleIds);
+        Task<IEnumerable<UserRole>> GetUserRolesByUserIdAsync(int userId);
+        Task<IEnumerable<UserRole>> GetUserRolesByRoleIdAsync(int roleId);
+        Task<int> AddSingleUserRoleAsync(int userId, int roleId);
+        Task<int> AddMultipleUserRoleAsync(int userId, List<int> roleIds);
+        Task<int> DeleteUserRoleAsync(int userId, int roleId);
+        Task<int> UpdateMultipleUserRolesAsync(int userId, List<int> roleIds);
+        Task<int> UpdateSingleUserRolesAsync(int userId, int roleId);
         Task<int> CountUserRolesAsync();
     }
 }
