@@ -16,7 +16,7 @@ namespace SupplyChain.App.Utils.Validations
 
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            bool isAuthorized = await CurrentUserService.IsInRoleAsync(_roleName);
+            bool isAuthorized = await CurrentUser.IsInRoleAsync(_roleName);
 
             if (!isAuthorized)
             {

@@ -11,5 +11,6 @@ namespace SupplyChain.App.ViewModels
         [Required]
         [DataType(DataType.Password)]
         public string Password { get; set; }
+        public bool IsSupplier { get; set; } = false;
     }
 }

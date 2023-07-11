@@ -1,3 +1,6 @@
+* {
+    font-family: 'Font Awesome 5 Free', 'Roboto', sans-serif !important;
+}
 .cursor-pointer {
     cursor: pointer;
 }

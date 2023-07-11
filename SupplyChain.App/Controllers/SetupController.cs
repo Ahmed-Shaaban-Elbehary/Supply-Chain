@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SupplyChain.App.Utils.Validations;
 using SupplyChain.App.ViewModels;
 using SupplyChain.Core.Models;
+using SupplyChain.Services;
 using SupplyChain.Services.Contracts;
 
 namespace SupplyChain.App.Controllers
@@ -13,7 +14,7 @@ namespace SupplyChain.App.Controllers
         private readonly IManufacturerService _manufacturerService;
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
-        public SetupController(IProductCategoryService productCategoryService, 
+        public SetupController(IProductCategoryService productCategoryService,
             IMapper mapper,
             IManufacturerService manufacturerService,
             IUserService userService)
@@ -23,8 +24,6 @@ namespace SupplyChain.App.Controllers
             _manufacturerService = manufacturerService;
             _userService = userService;
         }
-
-        
         public IActionResult Index()
         {
             return View();

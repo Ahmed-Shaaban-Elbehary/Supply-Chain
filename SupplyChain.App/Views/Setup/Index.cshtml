@@ -6,32 +6,38 @@
 @section Styles{
     <style>
         .setup-btn {
-            min-width: 100%;
-            min-height: 100%;
+            width: -webkit-fill-available;
+            height: 100px;
         }
     </style>
 }
 <div class="row">
-    <div class="col-md-2">
-        <a asp-action="Category" class="btn btn-outline-success btn-lg setup-btn">
+    @if (await CurrentUser.HasPermissionAsync("CanAccessCategory"))
+    {
+        <div class="col-md-3">
+            <a asp-action="Category" class="btn btn-outline-success btn-lg setup-btn">
             <i class="fas fa-sitemap pt-3"></i>
             <p>Category</p>
         </a>
     </div>
-    <div class="col-md-2">
-        @if (await CurrentUserService.HasPermissionAsync("CanAddManufacturer"))
-        {
+    }
+    @if (await CurrentUser.HasPermissionAsync("CanAccessManufacturer"))
+    {
+        <div class="col-md-3">
             <a asp-action="Manufacturer" class="btn btn-outline-success btn-lg setup-btn">
                 <i class="fas fa-industry pt-3"></i>
                 <p>Manufacturer</p>
             </a>
-        }
-    </div>
-    <div class="col-md-2">
-        <a asp-action="Users" class="btn btn-outline-success btn-lg setup-btn">
+        </div>
+    }
+    @if (await CurrentUser.HasPermissionAsync("CanAccessUser"))
+    {
+        <div class="col-md-3">
+            <a asp-action="Users" class="btn btn-outline-success btn-lg setup-btn">
             <i class="fas fa-users-cog pt-3"></i>
             <p>Users</p>
         </a>
     </div>
+    }
 </div>
 

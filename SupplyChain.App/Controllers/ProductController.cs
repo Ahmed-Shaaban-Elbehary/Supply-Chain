@@ -6,6 +6,7 @@ using SupplyChain.App.Utils.Contracts;
 using SupplyChain.App.Utils.Validations;
 using SupplyChain.App.ViewModels;
 using SupplyChain.Core.Models;
+using SupplyChain.Services;
 using SupplyChain.Services.Contracts;
 
 namespace SupplyChain.App.Controllers
@@ -45,7 +46,7 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpGet]
-        [InRole("admin")]
+        [InRole("user")]
         public IActionResult Add()
         {
             var vm = new ProductViewModel();

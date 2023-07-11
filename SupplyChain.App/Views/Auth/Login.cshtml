@@ -23,16 +23,16 @@
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
     <link href="~/css/site.css" rel="stylesheet" />
 </head>
-<body class="hold-transition login-page supplier-login-page">
+<body class="landscape-background hold-transition login-page">
     <div class="login-box">
         <div class="login-logo">
-            <b class="text-uppercase text-light">Supplier</b>
+            <b class="text-uppercase text-light">Sign In</b>
         </div>
         <!-- /.login-logo -->
         <div class="card">
             <div class="card-body login-card-body">
                 <p class="login-box-msg">Sign in to start your session</p>
-                <form action="#" method="post">
+                <form method="post">
                     @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
                     {
                         <div class="alert alert-danger text-center p-1">
@@ -56,6 +56,12 @@
                             </div>
                         </div>
                         <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                    <div class="input-group mb-3">
+                        <label asp-for="IsSupplier" class="control-label mr-2">I Supplier</label>
+                        <div>
+                            <input asp-for="IsSupplier" type="checkbox" class="align-middle" />
+                        </div>
                     </div>
                     <div class="row">
                         <button type="submit" class="btn btn-success btn-block btn-flat">Sign In</button>

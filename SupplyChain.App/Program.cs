@@ -1,3 +1,4 @@
+using SupplyChain.App.App_Class;
 using SupplyChain.App.Profiles;
 using SupplyChain.App.Utils;
 using SupplyChain.App.Utils.Contracts;
@@ -47,8 +48,10 @@ app.UseAuthorization();
 
 app.UseAuthentication();
 
+app.UseAuthenticationMiddleware();
+
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Login}/{action=Index}/{id?}");
+    pattern: "{controller=Auth}/{action=Login}/{id?}");
 
 app.Run();
