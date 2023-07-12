@@ -50,6 +50,11 @@ namespace SupplyChain.Services
             return await _unitOfWork.NotifcationRepository.GetByIdAsync(id);
         }
 
+        public async Task RollbackTransaction()
+        {
+            await _unitOfWork.RollbackAsync();
+        }
+
         public async Task UpdateManufacturerAsync(Notification notification)
         {
             await _unitOfWork.NotifcationRepository.UpdateAsync(notification);

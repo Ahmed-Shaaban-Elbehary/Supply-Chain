@@ -4,13 +4,14 @@
 @{
     ViewData["Title"] = "Users";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["mTitle"] = "Add/Edit Users";
 }
 <div class="card" id="user-card">
     <div class="card-header">
         <h3 class="card-title">Users</h3>
         @if (await CurrentUser.HasPermissionAsync("CanAddUser"))
         {
-            <button class="btn btn-small btn-outline-success float-right" id="open-form-modal" data-toggle="modal" data-target="#general-partial-modal">
+            <button class="btn btn-small btn-outline-success float-right" id="open-user-modal" data-toggle="modal" data-target="#general-partial-modal">
                 <i class="fas fa-plus"></i>
             </button>
         }

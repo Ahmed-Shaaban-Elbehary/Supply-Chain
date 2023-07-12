@@ -1,6 +1,7 @@
 ﻿using SupplyChain.Core.Interfaces;
 using SupplyChain.Core.Models;
 using SupplyChain.Services.Contracts;
+using System.Security;
 
 namespace SupplyChain.Services
 {
@@ -48,20 +49,29 @@ namespace SupplyChain.Services
 
         public async Task<IEnumerable<Permission>> GetRolePermissionsAsync(int roleId)
         {
-            var rolePermissions = await _unitOfWork.RolePermissionRepository.GetWhereAsync(e => e.RoleId == roleId)
-                
-
-            return rolePermissions.Select(rp => rp.Permission);
+            var rolePermissions = await _unitOfWork.RolePermissionRepository.GetWhereAsync(rp => rp.RoleId == roleId);
+            var permissionIds = rolePermissions.Select(rp => rp.PermissionId).Distinct();
+            var permissions = await _unitOfWork.PermissionRepository.GetWhereAsync(p => permissionIds.Contains(p.Id));
+            return permissions;
         }
 
         public async Task<IEnumerable<User>> GetRoleUsersAsync(int roleId)
         {
-            throw new NotImplementedException();
+            var userRoles = await _unitOfWork.UserRoleRepository.GetWhereAsync(ur => ur.RoleId == roleId);
+            var roleIds = userRoles.Select(e => e.UserId).Distinct();
+            var users = await _unitOfWork.UserRepository.GetWhereAsync(u => roleIds.Contains(u.Id));
+            return users;
         }
 
         public async Task<int> UpdateRoleAsync(Role role)
         {
-            throw new NotImplementedException();
+            await _unitOfWork.RoleRepository.UpdateAsync(role);
+            return await _unitOfWork.CommitAsync();
+        }
+
+        public async Task RollbackTransaction()
+        {
+            await _unitOfWork.RollbackAsync();
         }
     }
 }

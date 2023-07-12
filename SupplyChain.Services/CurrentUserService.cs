@@ -53,7 +53,7 @@ namespace SupplyChain.Services
         }
         public static Task<bool> HasPermissionAsync(string permissionName)
         {
-            return Task.Run(() => {
+            return Task.Run(() =>  {
                 SessionData sessionData = SessionCache.Get(LoggedUserId.ToString()) as SessionData ?? new SessionData();
                 var permissions = sessionData.Permissions.ToList();
                 return permissions.Contains(permissionName);

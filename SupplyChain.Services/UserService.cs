@@ -114,5 +114,10 @@ namespace SupplyChain.Services
             var inputPasswordHash = ComputeMD5Hash(inputPassword);
             return hashedPassword.Equals(inputPasswordHash);
         }
+
+        public async Task RollbackTransaction()
+        {
+            await _unitOfWork.RollbackAsync();
+        }
     }
 }

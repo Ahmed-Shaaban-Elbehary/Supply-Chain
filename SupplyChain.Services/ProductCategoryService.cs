@@ -57,5 +57,10 @@ namespace SupplyChain.Services
                 .GetPagedAsync(page, pageSize, null, orderBy: q => q.OrderBy(p => p.Id), true);
             return result;
         }
+
+        public async Task RollbackTransaction()
+        {
+            await _unitOfWork.RollbackAsync();
+        }
     }
 }

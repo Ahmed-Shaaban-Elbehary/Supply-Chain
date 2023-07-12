@@ -18,5 +18,6 @@ namespace SupplyChain.Services.Contracts
         Task<int> CountRoleAsync();
         Task<IEnumerable<User>> GetRoleUsersAsync(int roleId);
         Task<IEnumerable<Permission>> GetRolePermissionsAsync(int roleId);
+        Task RollbackTransaction();
     }
 }

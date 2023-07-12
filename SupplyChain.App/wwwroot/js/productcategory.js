@@ -1,6 +1,7 @@
 ﻿var base_url = "/Setup"
 var prcartegory = (() => {
     function OpenGeneralModal() {
+        debugger;
         $('#general-modal-content').load('/Setup/AddEditCategory');
     }
     function AddProductCategory(event) {
@@ -68,7 +69,7 @@ var prcartegory = (() => {
             AddProductCategory(event);
         },
         show_modal_init: () => {
-            var button = document.getElementById('open-form-modal');
+            var button = document.getElementById('open-productCategory-modal');
             if (button != null)
                 button.addEventListener('click', OpenGeneralModal);
         },

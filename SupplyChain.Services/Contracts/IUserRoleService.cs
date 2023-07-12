@@ -19,5 +19,6 @@ namespace SupplyChain.Services.Contracts
         Task<int> UpdateMultipleUserRolesAsync(int userId, List<int> roleIds);
         Task<int> UpdateSingleUserRolesAsync(int userId, int roleId);
         Task<int> CountUserRolesAsync();
+        Task RollbackTransaction();
     }
 }

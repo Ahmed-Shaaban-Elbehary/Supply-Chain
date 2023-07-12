@@ -14,7 +14,10 @@ namespace SupplyChain.App.Profiles
             CreateMap<User, UserViewModel>()
                 .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.Name))
                 .ReverseMap();
-            CreateMap<Role, RoleViewModel>().ReverseMap();
+            CreateMap<RoleViewModel, Role>()
+                .ForMember(dest => dest.UserRoles, opt => opt.Ignore())
+                .ForMember(dest => dest.RolePermissions, opt => opt.Ignore())
+                .ReverseMap();
         }
     }
 }

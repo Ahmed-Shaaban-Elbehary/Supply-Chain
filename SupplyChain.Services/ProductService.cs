@@ -52,5 +52,10 @@ namespace SupplyChain.Services
         {
             return await _unitOfWork.ProductRepository.CountAsync();
         }
+
+        public async Task RollbackTransaction()
+        {
+            await _unitOfWork.RollbackAsync();
+        }
     }
 }

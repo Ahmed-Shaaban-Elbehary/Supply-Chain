@@ -91,5 +91,10 @@ namespace SupplyChain.Services
             var addedRolesCount = await AddSingleUserRoleAsync(userId, roleId);
             return await _unitOfWork.CommitAsync();
         }
+
+        public async Task RollbackTransaction()
+        {
+            await _unitOfWork.RollbackAsync();
+        }
     }
 }

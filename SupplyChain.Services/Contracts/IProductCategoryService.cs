@@ -11,5 +11,6 @@ namespace SupplyChain.Services.Contracts
         Task UpdateProductCategoryAsync(ProductCategory productCategory);
         Task DeleteProductCategoryAsync(ProductCategory productCategory);
         Task<int> CountProductCategoryAsync();
+        Task RollbackTransaction();
     }
 }

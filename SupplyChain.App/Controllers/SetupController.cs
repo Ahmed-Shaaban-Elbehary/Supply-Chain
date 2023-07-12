@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using SupplyChain.App.Utils.Validations;
 using SupplyChain.App.ViewModels;
 using SupplyChain.Core.Models;
@@ -179,6 +180,7 @@ namespace SupplyChain.App.Controllers
         #endregion Manufacturer
 
         #region User Roles Management 
+
         #region Users
 
         [HttpGet]
@@ -193,9 +195,6 @@ namespace SupplyChain.App.Controllers
                 PageSize = pageSize,
                 TotalItems = await _userService.CountUserAsync()
             };
-            var roles = await _roleService.GetAllRolesAsync();
-            var roleViewModel = _mapper.Map<RoleViewModel>(roles);
-            ViewBag.UserRoles = roleViewModel;
             return View(pagedModel);
         }
 
@@ -209,7 +208,9 @@ namespace SupplyChain.App.Controllers
                 var user = await _userService.GetUserByIdAsync(id);
                 vm = _mapper.Map<UserViewModel>(user);
             }
-
+            var roles = await _roleService.GetAllRolesAsync();
+            var roleViewModel = _mapper.Map<List<RoleViewModel>>(roles);
+            ViewBag.UserRoles = roleViewModel;
             return PartialView("~/Views/Setup/PartialViews/_AddEditUserForm.cshtml", vm);
         }
 
@@ -223,21 +224,33 @@ namespace SupplyChain.App.Controllers
 
                 if (user.Id == 0) // Adding a new category
                 {
-                    //Add User
-                    var newId = await _userService.CreateUserAsync(user, user.Password);
-                    //Add User Role
-                    await _userRoleService.AddSingleUserRoleAsync(newId, vm.RoleId);
-                    return Json(new { message = "A user was successfully created!" });
+                    try
+                    {
+                        //Add User
+                        var newId = await _userService.CreateUserAsync(user, user.Password);
+                        //Add User Role
+                        await _userRoleService.AddSingleUserRoleAsync(newId, vm.RoleId);
+                        return Json(new { message = "A user was successfully created!" });
+                    }
+                    catch (Exception ex)
+                    {
+                        //rollback the transaction that caused the exception
+                        await _userRoleService.RollbackTransaction();
+
+                        return Json(new { message = ex.Message.Trim() });
+                    }
                 }
                 else // Editing an existing category
                 {
                     await _userService.UpdateUserAsync(user);
+                    await _userRoleService.UpdateSingleUserRolesAsync(vm.Id, vm.RoleId);
                     return Json(new { message = "A user was successfully updated!" });
                 }
             }
             return Json(new { message = "Oops, Error Occurred, Please Try Again!" });
         }
         #endregion Users
+
         public IActionResult Roles()
         {
             return View();

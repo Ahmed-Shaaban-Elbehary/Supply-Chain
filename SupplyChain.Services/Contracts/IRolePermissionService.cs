@@ -16,5 +16,6 @@ namespace SupplyChain.Services.Contracts
         Task DeleteRolePermissionAsync(int roleId, int permissionId);
         Task UpdateRolePermissionAsync(int roleId, List<int> permissionIds);
         Task<int> CountRolePermissionAsync();
+        Task RollbackTransaction();
     }
 }

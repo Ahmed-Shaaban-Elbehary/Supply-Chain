@@ -1,6 +1,8 @@
 ﻿var base_url = "/Setup";
 var users = (() => {
     function OpenGeneralModal() {
+        debugger;
+        $('#general-modal-content').empty();
         $('#general-modal-content').load('/Setup/AddEditUser');
     }
     function AddUser(event) {
@@ -12,13 +14,19 @@ var users = (() => {
         let url = $(formElement).attr('action');
         app.SubmitForm(url, formData)
             .then((response) => {
+                debugger;
                 $('#general-partial-modal').modal('hide');
                 app.SuccessAlertMessage(response.message);
                 setTimeout(() => { hideloader(); location.reload(); }, 2000);
             })
             .catch((xhr, status, error) => {
+                debugger;
+                if (error.responseJSON) {
+                    app.FailAlertMessage(error.responseJSON.message);
+                } else {
+                    app.FailAlertMessage("Oops, Error Occurred, Please Try Again!");
+                }
                 hideloader();
-                app.FailAlertMessage(error);
             })
 
     }
@@ -62,12 +70,13 @@ var users = (() => {
                 console.error(error);
             })
     }
+
     return {
         add_user: (event) => {
             AddUser(event);
         },
         show_modal_init: () => {
-            var button = document.getElementById('open-form-modal');
+            var button = document.getElementById('open-user-modal');
             if (button != null)
                 button.addEventListener('click', OpenGeneralModal);
         },

@@ -47,6 +47,11 @@ namespace SupplyChain.Services
             return await _unitOfWork.ManufacturerRepository.GetByIdAsync(id);
         }
 
+        public async Task RollbackTransaction()
+        {
+            await _unitOfWork.RollbackAsync();
+        }
+
         public async Task UpdateManufacturerAsync(Manufacturer manufacturer)
         {
             await _unitOfWork.ManufacturerRepository.UpdateAsync(manufacturer);

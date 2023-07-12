@@ -16,5 +16,6 @@ namespace SupplyChain.Services.Contracts
         Task UpdateManufacturerAsync(Notification notification);
         Task DeleteManufacturerAsync(Notification notification);
         Task<int> CountManufacturerAsync();
+        Task RollbackTransaction();
     }
 }

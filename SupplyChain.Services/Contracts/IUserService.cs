@@ -16,5 +16,6 @@ namespace SupplyChain.Services.Contracts
         Task<IEnumerable<string>> GetUserPermissionsAsync(int userId);
         Task<IEnumerable<User>> GetAllPagedUsersAsync(int page, int pageSize);
         Task<int> CountUserAsync();
+        Task RollbackTransaction();
     }
 }
