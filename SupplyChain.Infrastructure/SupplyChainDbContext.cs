@@ -183,7 +183,8 @@ namespace SupplyChain.Infrastructure
                 .HasMaxLength(100);
             modelBuilder.Entity<User>()
                 .Property(u => u.Address)
-                .HasMaxLength(200);
+                .HasMaxLength(200)
+                .IsRequired(false);
             modelBuilder.Entity<User>()
                 .Property(u => u.Email)
                 .HasMaxLength(50);
@@ -192,6 +193,7 @@ namespace SupplyChain.Infrastructure
             .IsUnique();
             modelBuilder.Entity<User>()
                 .Property(u => u.Phone)
+                .IsRequired(false)
                 .HasMaxLength(20);
             modelBuilder.Entity<User>()
            .Property(u => u.IsSupplier)

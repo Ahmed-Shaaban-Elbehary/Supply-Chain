@@ -163,6 +163,7 @@ namespace SupplyChain.App.Controllers
             //ViewBag.Manufacturers = await _manufacturerService.GetAllManufacturerAsync();
             return Json(new { message = "Oops, Error Occurred, Please Try Again!" });
         }
+
         [HttpDelete]
         public async Task<JsonResult> DeleteManufacturer(int id)
         {
@@ -230,24 +231,25 @@ namespace SupplyChain.App.Controllers
                         var newId = await _userService.CreateUserAsync(user, user.Password);
                         //Add User Role
                         await _userRoleService.AddSingleUserRoleAsync(newId, vm.RoleId);
-                        return Json(new { message = "A user was successfully created!" });
+                        return Json(new ApiResponse<bool>(true, true, "A user was successfully created!"));
                     }
                     catch (Exception ex)
                     {
                         //rollback the transaction that caused the exception
                         await _userRoleService.RollbackTransaction();
-
-                        return Json(new { message = ex.Message.Trim() });
+                        return Json(new ApiResponse<bool>(false, false, ex.InnerException.Message.Trim(), "ERR001"));
                     }
                 }
                 else // Editing an existing category
                 {
                     await _userService.UpdateUserAsync(user);
                     await _userRoleService.UpdateSingleUserRolesAsync(vm.Id, vm.RoleId);
-                    return Json(new { message = "A user was successfully updated!" });
+                    return Json(new ApiResponse<bool>(true, true, "A user was successfully updated!"));
                 }
+            }else
+            {
+                return Json(new ApiResponse<bool>(false, false, "Please fill out all required fields."));
             }
-            return Json(new { message = "Oops, Error Occurred, Please Try Again!" });
         }
         #endregion Users
 
