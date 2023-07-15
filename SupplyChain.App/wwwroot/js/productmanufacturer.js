@@ -1,7 +1,7 @@
 ﻿var base_url = "/Setup"
 var prmanufacturer = (() => {
     function OpenGeneralModal() {
-        debugger;
+        $('#general-modal-content').empty();
         $('#general-modal-content').load('/Setup/AddEditManufacturer');
     }
     function AddProductManufacturer(event) {

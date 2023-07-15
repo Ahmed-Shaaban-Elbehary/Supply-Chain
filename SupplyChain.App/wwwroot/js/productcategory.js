@@ -1,7 +1,7 @@
 ﻿var base_url = "/Setup"
 var prcartegory = (() => {
     function OpenGeneralModal() {
-        debugger;
+        $('#general-modal-content').empty();
         $('#general-modal-content').load('/Setup/AddEditCategory');
     }
     function AddProductCategory(event) {
