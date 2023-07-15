@@ -216,7 +216,7 @@ namespace SupplyChain.App.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<JsonResult> AddEditUser(UserViewModel vm)
+        public async Task< ActionResult> AddEditUser(UserViewModel vm)
         {
             if (ModelState.IsValid)
             {
