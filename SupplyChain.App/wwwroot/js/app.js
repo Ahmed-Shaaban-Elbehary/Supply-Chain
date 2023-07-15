@@ -35,6 +35,15 @@ app.showloader = (targetId) => {
         target.style.pointerEvents = 'auto';
     };
 };
+
+app.closeGeneralPatialModal = () => {
+    $('#general-partial-modal').modal('hide');
+}
+app.fillErrorMessageContainer = (msg) => {
+    var linkElement = $('#error-message-content');
+    linkElement.parent().removeClass('d-none');
+    linkElement.html(msg);
+}
 /**
  * 
  * @param {string} url
@@ -80,6 +89,16 @@ app.SubmitForm = (url, formData) => {
     })
 }
 
+app.reEnterFormData = (formElement, formData) => {
+    $(formElement).find('input[type!="checkbox"], select, textarea')
+        .each(function () {
+            $(this).val(formData.get($(this).attr('name')));
+        });
+
+    $(formElement).find('input[name="Password"]').val('');
+    $(formElement).find('input[name="Submit"]').val('Save');
+}
+
 /**
  * Swal Callback Function, for alert successfull processes.
  * @param {string} msg
@@ -95,6 +114,9 @@ app.SuccessAlertMessage = (msg) => {
         didOpen: (toast) => {
             toast.addEventListener('mouseenter', Swal.stopTimer)
             toast.addEventListener('mouseleave', Swal.resumeTimer)
+        },
+        didClose: () => {
+            location.reload();
         }
     })
 
@@ -133,6 +155,9 @@ app.FailAlertMessage = (msg) => {
         didOpen: (toast) => {
             toast.addEventListener('mouseenter', Swal.stopTimer)
             toast.addEventListener('mouseleave', Swal.resumeTimer)
+        },
+        didClose: () => {
+            location.reload();
         }
     })
 
@@ -141,3 +166,4 @@ app.FailAlertMessage = (msg) => {
         title: 'error: ' + msg + '',
     })
 }
+

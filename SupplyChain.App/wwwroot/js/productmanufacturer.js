@@ -13,9 +13,9 @@ var prmanufacturer = (() => {
         let url = $(formElement).attr('action');
         app.SubmitForm(url, formData)
             .then((response) => {
-                $('#general-partial-modal').modal('hide');
+                app.closeGeneralPatialModal();
                 app.SuccessAlertMessage(response.message);
-                setTimeout(() => { hideloader(); location.reload(); }, 2000);
+                hideloader();
             })
             .catch((xhr, status, error) => {
                 hideloader();
@@ -46,7 +46,7 @@ var prmanufacturer = (() => {
                         hideloader();
                         app.FailAlertMessage(error);
                     });
-                setTimeout(() => { hideloader(); }, 2000);
+                hideloader();
             }
 
         })

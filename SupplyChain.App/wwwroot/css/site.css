@@ -16,6 +16,11 @@ input[type=number] {
     -moz-appearance: textfield;
 }
 
+label[required]::before {
+    content: "* ";
+    color: #e74c3c;
+}
+
 .content-wrapper {
     padding-bottom: 10px;
 }

@@ -7,27 +7,29 @@ var users = (() => {
     function AddUser(event) {
         event.preventDefault();
         const hideloader = app.showloader('user-card');
-        // Get the form element and create FormData object
         var formElement = event.target.closest('form');
         var formData = new FormData(formElement);
         let url = $(formElement).attr('action');
         app.SubmitForm(url, formData)
             .then((response) => {
-                debugger;
-                $('#general-partial-modal').modal('hide');
-                app.SuccessAlertMessage(response.message);
-                setTimeout(() => { hideloader(); location.reload(); }, 2000);
+                if (!response.success) {
+                    app.fillErrorMessageContainer(response.message);
+                    app.reEnterFormData(formElement, formData);
+                    hideloader();
+                } else {
+
+                }
             })
             .catch((xhr, status, error) => {
-                debugger;
                 if (error.responseJSON) {
                     app.FailAlertMessage(error.responseJSON.message);
+                    app.reEnterFormData(formElement, formData);
+                    hideloader();
                 } else {
                     app.FailAlertMessage("Oops, Error Occurred, Please Try Again!");
+                    hideloader();
                 }
-                hideloader();
             })
-
     }
     function DeleteSelectedItem(userId) {
         app.DeleteConfirmMessage().then((result) => {
@@ -52,7 +54,7 @@ var users = (() => {
                         hideloader();
                         app.FailAlertMessage(error);
                     });
-                setTimeout(() => { hideloader(); }, 2000);
+                hideloader();
             }
 
         })
