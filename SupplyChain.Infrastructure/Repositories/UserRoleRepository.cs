@@ -9,6 +9,16 @@ namespace SupplyChain.Infrastructure.Repositories
         private readonly SupplyChainDbContext _dbContext;
         public UserRoleRepository(SupplyChainDbContext dbContext) : base(dbContext) { _dbContext = dbContext; }
 
+        public async Task<UserRole?> GetUserRoleByRoleIdAsync(int roleId)
+        {
+            return await _dbContext.UserRoles.Where(ur => ur.RoleId == roleId).FirstOrDefaultAsync();
+        }
+
+        public async Task<UserRole?> GetUserRoleByUserIdAsync(int userId)
+        {
+            return await _dbContext.UserRoles.Where(ur => ur.UserId == userId).FirstOrDefaultAsync();
+        }
+
         public async Task<List<UserRole>> GetUserRolesByRoleIdAsync(int roleId)
         {
             return await _dbContext.UserRoles.Where(ur => ur.RoleId == roleId).ToListAsync();

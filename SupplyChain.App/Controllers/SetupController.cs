@@ -206,8 +206,10 @@ namespace SupplyChain.App.Controllers
 
             if (id > 0)
             {
+                ViewBag.isEdit = true;
                 var user = await _userService.GetUserByIdAsync(id);
                 vm = _mapper.Map<UserViewModel>(user);
+                vm.RoleId = user.UserRoles.Select(e => e.RoleId).FirstOrDefault();
             }
             var roles = await _roleService.GetAllRolesAsync();
             var roleViewModel = _mapper.Map<List<RoleViewModel>>(roles);
@@ -217,7 +219,7 @@ namespace SupplyChain.App.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task< ActionResult> AddEditUser(UserViewModel vm)
+        public async Task<ActionResult> AddEditUser(UserViewModel vm)
         {
             if (ModelState.IsValid)
             {
@@ -242,13 +244,51 @@ namespace SupplyChain.App.Controllers
                 }
                 else // Editing an existing category
                 {
-                    await _userService.UpdateUserAsync(user);
-                    await _userRoleService.UpdateSingleUserRolesAsync(vm.Id, vm.RoleId);
-                    return Json(new ApiResponse<bool>(true, true, "A user was successfully updated!"));
+                    try
+                    {
+                        await _userService.UpdateUserAsync(user, vm.Password, vm.IsPasswordChanged);
+                        await _userRoleService.UpdateSingleUserRolesAsync(vm.Id, vm.RoleId);
+                        return Json(new ApiResponse<bool>(true, true, "A user was successfully updated!"));
+                    }
+                    catch (Exception ex)
+                    {
+                        await _userService.RollbackTransaction();
+                        await _userRoleService.RollbackTransaction();
+                        return Json(new ApiResponse<bool>(false, false, $"Failed to update user \n {ex.InnerException.Message}"));
+                    }
+
                 }
-            }else
+            }
+            else
             {
                 return Json(new ApiResponse<bool>(false, false, "Please fill out all required fields."));
+            }
+        }
+
+        [HttpDelete]
+        public async Task<JsonResult> DeleteUser(int id)
+        {
+            if (id > 0)
+            {
+                try
+                {
+                    var user = await _userService.GetUserByIdAsync(id);
+                    var roleId = user.UserRoles.Select(e => e.RoleId).FirstOrDefault();
+                    await _userService.DeleteUserAsync(user);
+                    await _userRoleService.DeleteUserRoleAsync(user.Id, roleId);
+                    return Json(new ApiResponse<bool>(true, true, "A user was Successfully Deleted"));
+                }
+                catch (Exception ex)
+                {
+                    await _userService.RollbackTransaction();
+                    await _userRoleService.RollbackTransaction();
+                    return Json(new ApiResponse<bool>(false, false, $"Failed to delete user \n {ex.InnerException.Message}"));
+                }
+                
+            }
+            else
+            {
+                return Json(new { success = false });
             }
         }
         #endregion Users

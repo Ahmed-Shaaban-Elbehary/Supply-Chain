@@ -51,7 +51,9 @@ namespace SupplyChain.Services
 
         public async Task<User> GetUserByIdAsync(int userId)
         {
-            return await _unitOfWork.UserRepository.GetByIdAsync(userId);
+            var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
+            user.UserRoles = await _unitOfWork.UserRoleRepository.GetUserRolesByUserIdAsync(userId);
+            return user;
         }
 
         public async Task<IEnumerable<string>> GetUserPermissionsAsync(int userId)
@@ -74,8 +76,23 @@ namespace SupplyChain.Services
             return (await _unitOfWork.UserRepository.GetWhereAsync(u => userIds.Contains(u.Id))).ToList();
         }
 
-        public async Task<int> UpdateUserAsync(User user)
+        public async Task<int> UpdateUserAsync(User user, string newPassword, bool isPasswordChanged)
         {
+            var userInDb = GetUserByIdAsync(user.Id).Result;
+            if (isPasswordChanged)
+            {
+                user.Password = isPasswordChanged
+                    ? user.Password = newPassword
+                    : user.Password = userInDb.Password;
+                user.Password = ComputeMD5Hash(user.Password);
+            }
+            else
+            {
+                user.Password = userInDb.Password;
+            }
+
+            // If the user is already in the context, detach it
+            await _unitOfWork.Detach(userInDb);
             await _unitOfWork.UserRepository.UpdateAsync(user);
             return await _unitOfWork.CommitAsync();
         }

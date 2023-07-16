@@ -48,6 +48,13 @@ namespace SupplyChain.Services
             return await _unitOfWork.CommitAsync();
         }
 
+        public async Task<int> DeleteUserRolesAsync(int userId, List<int> roleIds)
+        {
+            var userRoles = roleIds.Select(roleId => new UserRole { UserId = userId, RoleId = roleId });
+            await _unitOfWork.UserRoleRepository.RemoveRangeAsync(userRoles);
+            return await _unitOfWork.CommitAsync();
+        }
+
         public async Task<IEnumerable<UserRole>> GetAllPagedUserRoleAsync(int page, int pageSize)
         {
             var result = await _unitOfWork.UserRoleRepository
@@ -83,12 +90,13 @@ namespace SupplyChain.Services
 
         public async Task<int> UpdateSingleUserRolesAsync(int userId, int roleId)
         {
-            // Remove the existing user roles for the user.
-            var existingUserRoles = await _unitOfWork.UserRoleRepository.GetWhereAsync(ur => ur.UserId == userId);
-            await _unitOfWork.UserRoleRepository.RemoveRangeAsync(existingUserRoles);
-
-            // Add the new user roles for the user.
-            var addedRolesCount = await AddSingleUserRoleAsync(userId, roleId);
+            var userRole = await _unitOfWork.UserRoleRepository.GetUserRoleByUserIdAsync(userId);
+            if (userRole == null)
+            {
+                throw new ArgumentException("Invalid user ID");
+            }
+            userRole.RoleId = roleId;
+            await _unitOfWork.UserRoleRepository.UpdateAsync(userRole);
             return await _unitOfWork.CommitAsync();
         }
 

@@ -16,6 +16,7 @@ namespace SupplyChain.App.ViewModels
         public string Email { get; set; }
         public string Phone { get; set; } = null;
         public string Address { get; set; } = null;
+        public bool IsPasswordChanged { get; set; }
         [Required]
         public bool IsSupplier { get; set; }
         [Required]

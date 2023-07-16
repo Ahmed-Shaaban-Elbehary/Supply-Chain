@@ -16,6 +16,7 @@ namespace SupplyChain.Services.Contracts
         Task<int> AddSingleUserRoleAsync(int userId, int roleId);
         Task<int> AddMultipleUserRoleAsync(int userId, List<int> roleIds);
         Task<int> DeleteUserRoleAsync(int userId, int roleId);
+        public Task<int> DeleteUserRolesAsync(int userId, List<int> roleIds);
         Task<int> UpdateMultipleUserRolesAsync(int userId, List<int> roleIds);
         Task<int> UpdateSingleUserRolesAsync(int userId, int roleId);
         Task<int> CountUserRolesAsync();
