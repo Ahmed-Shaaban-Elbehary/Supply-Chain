@@ -9,13 +9,14 @@ namespace SupplyChain.Services.Contracts
         Task<IEnumerable<User>> GetAllUsersAsync();
         Task<IEnumerable<User>> GetUsersByRoleIdAsync(int roleId);
         Task<int> CreateUserAsync(User user, string password);
-        Task<int> UpdateUserAsync(User user);
+        Task<int> UpdateUserAsync(User user, string newPassword, bool IsPasswordChanged);
         Task<int> DeleteUserAsync(User User);
         Task<bool> ValidateUserCredentialsAsync(string email, string password);
         Task<IEnumerable<string>> GetUserRolesAsync(int userId);
         Task<IEnumerable<string>> GetUserPermissionsAsync(int userId);
         Task<IEnumerable<User>> GetAllPagedUsersAsync(int page, int pageSize);
         Task<int> CountUserAsync();
+        public string ComputeMD5Hash(string input);
         Task RollbackTransaction();
     }
 }

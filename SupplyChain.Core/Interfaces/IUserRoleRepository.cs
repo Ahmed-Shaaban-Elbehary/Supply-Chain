@@ -6,5 +6,7 @@ namespace SupplyChain.Core.Interfaces
     {
         Task<List<UserRole>> GetUserRolesByUserIdAsync(int userId);
         Task<List<UserRole>> GetUserRolesByRoleIdAsync(int roleId);
+        Task<UserRole> GetUserRoleByUserIdAsync(int userId);
+        Task<UserRole> GetUserRoleByRoleIdAsync(int roleId);
     }
 }

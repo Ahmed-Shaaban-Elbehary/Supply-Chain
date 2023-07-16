@@ -30,7 +30,7 @@ namespace SupplyChain.Infrastructure.Repositories
             if (property == null)
                 throw new InvalidOperationException("The entity does not have an 'Id' property.");
 
-            return (int)property.GetValue(entity);
+            return (int)(property?.GetValue(entity) ?? 0);
         }
 
         public async Task AddRangeAsync(IEnumerable<T> entities)

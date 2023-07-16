@@ -1,10 +1,12 @@
 ﻿var base_url = "/Setup";
 var users = (() => {
-    function OpenGeneralModal() {
+
+    OpenGeneralModal = () => {
         $('#general-modal-content').empty();
         $('#general-modal-content').load('/Setup/AddEditUser');
     }
-    function AddUser(event) {
+
+    AddUser = (event) => {
         event.preventDefault();
         const hideloader = app.showloader('user-card');
         var formElement = event.target.closest('form');
@@ -17,7 +19,9 @@ var users = (() => {
                     app.reEnterFormData(formElement, formData);
                     hideloader();
                 } else {
-
+                    app.closeGeneralPatialModal();
+                    app.SuccessAlertMessage(response.message);
+                    hideloader();
                 }
             })
             .catch((xhr, status, error) => {
@@ -31,7 +35,8 @@ var users = (() => {
                 }
             })
     }
-    function DeleteSelectedItem(userId) {
+
+    DeleteSelectedItem = (userId) => {
         app.DeleteConfirmMessage().then((result) => {
             const hideloader = app.showloader('page-content');
             if (result.isConfirmed) {
@@ -59,7 +64,8 @@ var users = (() => {
 
         })
     }
-    function OpenGeneralModalForEdit(userId) {
+
+    OpenGeneralModalForEdit = (userId) => {
         let url = "/Setup/AddEditUser"
         let data = { id: userId };
         app.ajax_request(url, 'GET', 'html', data)
@@ -70,6 +76,11 @@ var users = (() => {
             .catch((xhr, status, error) => {
                 console.error(error);
             })
+    }
+
+    PasswordChanged = () => {
+        $('#IsPasswordChanged').val(true);
+        console.log($('#IsPasswordChanged').val())
     }
 
     return {
@@ -86,6 +97,9 @@ var users = (() => {
         },
         delete_user_item: (id) => {
             DeleteSelectedItem(id);
+        },
+        passwordChanged: () => {
+            PasswordChanged();
         }
     };
 })();
