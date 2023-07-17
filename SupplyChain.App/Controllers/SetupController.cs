@@ -210,6 +210,9 @@ namespace SupplyChain.App.Controllers
                 var user = await _userService.GetUserByIdAsync(id);
                 vm = _mapper.Map<UserViewModel>(user);
                 vm.RoleId = user.UserRoles.Select(e => e.RoleId).FirstOrDefault();
+            }else
+            {
+                ViewBag.isEdit = false;
             }
             var roles = await _roleService.GetAllRolesAsync();
             var roleViewModel = _mapper.Map<List<RoleViewModel>>(roles);
@@ -246,14 +249,12 @@ namespace SupplyChain.App.Controllers
                 {
                     try
                     {
-                        await _userService.UpdateUserAsync(user, vm.Password, vm.IsPasswordChanged);
-                        await _userRoleService.UpdateSingleUserRolesAsync(vm.Id, vm.RoleId);
+                        await _userService.UpdateUserAsync(user, vm.Password, vm.RoleId, vm.IsPasswordChanged);
                         return Json(new ApiResponse<bool>(true, true, "A user was successfully updated!"));
                     }
                     catch (Exception ex)
                     {
                         await _userService.RollbackTransaction();
-                        await _userRoleService.RollbackTransaction();
                         return Json(new ApiResponse<bool>(false, false, $"Failed to update user \n {ex.InnerException.Message}"));
                     }
 
@@ -273,18 +274,15 @@ namespace SupplyChain.App.Controllers
                 try
                 {
                     var user = await _userService.GetUserByIdAsync(id);
-                    var roleId = user.UserRoles.Select(e => e.RoleId).FirstOrDefault();
                     await _userService.DeleteUserAsync(user);
-                    await _userRoleService.DeleteUserRoleAsync(user.Id, roleId);
                     return Json(new ApiResponse<bool>(true, true, "A user was Successfully Deleted"));
                 }
                 catch (Exception ex)
                 {
                     await _userService.RollbackTransaction();
-                    await _userRoleService.RollbackTransaction();
                     return Json(new ApiResponse<bool>(false, false, $"Failed to delete user \n {ex.InnerException.Message}"));
                 }
-                
+
             }
             else
             {

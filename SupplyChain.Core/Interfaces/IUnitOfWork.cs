@@ -22,5 +22,7 @@ namespace SupplyChain.Core.Interfaces
         Task<int> CommitAsync();
         Task Detach<T>(T entity) where T : class;
         Task RollbackAsync();
+        Task BeginTransaction();
+        Task CommitTransaction();
     }
 }

@@ -1,12 +1,24 @@
 ﻿var app = app || {}
 
+
+// Object to keep track of loader status for each element
+var loaderStatus = {};
+
 /**
- * pass html element id, to show loader on it.
- * @param {string} targetId
+ * Show loader on the specified element.
+ * @param {string} targetId - The ID of the element to show the loader on.
  */
-app.showloader = (targetId) => {
-    // Get the target element by ID
+app.showloader = function (targetId) {
     var target = document.getElementById(targetId);
+    if (!target) {
+        return;
+    }
+
+    // Check if loader is already shown on this element
+    if (loaderStatus[targetId]) {
+        return;
+    }
+    loaderStatus[targetId] = true;
 
     // Set the position style of the target element to 'relative'
     target.style.position = 'relative';
@@ -30,14 +42,19 @@ app.showloader = (targetId) => {
     spinnerContainer.style.display = 'flex';
 
     // Return a function to hide the spinner and re-enable pointer events
-    return () => {
-        spinnerContainer.style.display = 'none';
-        target.style.pointerEvents = 'auto';
+    return function () {
+        if (loaderStatus[targetId]) {
+            loaderStatus[targetId] = false;
+            spinnerContainer.style.display = 'none';
+            target.style.pointerEvents = 'auto';
+        }
     };
 };
 
 app.closeGeneralPatialModal = () => {
+    var hideLoader = app.showloader('category-card');
     $('#general-partial-modal').modal('hide');
+    hideLoader();
 }
 app.fillErrorMessageContainer = (msg) => {
     var linkElement = $('#error-message-content');
