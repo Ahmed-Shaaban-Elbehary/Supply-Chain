@@ -32,7 +32,7 @@ namespace SupplyChain.Services
         public async Task<int> AddSingleUserRoleAsync(int userId, int roleId)
         {
             UserRole ur = new UserRole() { RoleId = roleId, UserId = userId };
-            await _unitOfWork.UserRoleRepository.AddAsync(ur);
+            await _unitOfWork.UserRoleRepository.AddAsync(ur); 
             return await _unitOfWork.CommitAsync();
         }
 
