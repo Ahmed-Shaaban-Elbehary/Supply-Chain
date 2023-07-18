@@ -14,8 +14,6 @@ namespace SupplyChain.Infrastructure
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductCategory> ProductCategories { get; set; }
         public DbSet<Manufacturer> Manufacturers { get; set; }
-        public DbSet<Cart> Carts { get; set; }
-        public DbSet<CartItem> CartItems { get; set; }
         public DbSet<Warehouse> Warehouses { get; set; }
         public DbSet<ProductComponent> ProductComponents { get; set; }
         public DbSet<User> Users { get; set; }
@@ -55,40 +53,6 @@ namespace SupplyChain.Infrastructure
                 .HasColumnType("decimal(18,2)");
             #endregion
 
-            #region Define the foreign key constraint for the manufacturer
-            modelBuilder.Entity<Product>()
-                .HasOne(p => p.Manufacturer)
-                .WithMany(m => m.Products)
-                .HasForeignKey(p => p.ManufacturerId)
-                .OnDelete(DeleteBehavior.Restrict);
-            #endregion
-
-            #region Define the foreign key constraint for the product category
-            modelBuilder.Entity<Product>()
-                .HasOne(p => p.Category)
-                .WithMany(c => c.Products)
-                .HasForeignKey(p => p.CategoryId)
-                .OnDelete(DeleteBehavior.Restrict);
-            #endregion
-
-            #region Define the many-to-many relationship between products and components
-            modelBuilder.Entity<ProductComponent>()
-                .HasKey(pc => new { pc.ProductId, pc.ComponentId });
-            modelBuilder.Entity<ProductComponent>()
-                .HasOne(pc => pc.Product)
-                .WithMany(p => p.Components)
-                .HasForeignKey(pc => pc.ProductId)
-                .OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<ProductComponent>()
-                .HasOne(pc => pc.Component)
-                .WithMany()
-                .HasForeignKey(pc => pc.ComponentId)
-                .OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<ProductComponent>()
-                .Property(pc => pc.Quantity)
-                .HasColumnType("decimal(18,2)");
-            #endregion
-
             #region Define the ProductCategory entity
             modelBuilder.Entity<ProductCategory>()
                 .HasKey(c => c.Id);
@@ -100,45 +64,6 @@ namespace SupplyChain.Infrastructure
             {
                 e.HasIndex(pc => pc.Name).IsUnique();
             });
-            #endregion
-
-            #region Define the Cart entity
-            modelBuilder.Entity<Cart>()
-                .HasKey(sc => sc.Id);
-            modelBuilder.Entity<Cart>()
-                .HasOne(sc => sc.User)
-                .WithMany(u => u.Carts)
-                .HasForeignKey(sc => sc.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
-            modelBuilder.Entity<Cart>()
-                .Property(sc => sc.ShippingMethod)
-                .HasMaxLength(50);
-            modelBuilder.Entity<Cart>()
-                .Property(sc => sc.ShippingAddress)
-                .HasMaxLength(200);
-            #endregion
-
-            #region Define the CartItem entity
-            modelBuilder.Entity<CartItem>()
-                .HasKey(sci => sci.Id);
-            modelBuilder.Entity<CartItem>()
-                .HasOne(sci => sci.Product)
-                .WithMany()
-                .HasForeignKey(sci => sci.ProductId)
-                .OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<CartItem>()
-                .HasOne(sci => sci.SourceWarehouse)
-                .WithMany(w => w.OutgoingItems)
-                .HasForeignKey(sci => sci.SourceWarehouseId)
-                .OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<CartItem>()
-                .HasOne(sci => sci.DestinationWarehouse)
-                .WithMany(w => w.IncomingItems)
-                .HasForeignKey(sci => sci.DestinationWarehouseId)
-                .OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<CartItem>()
-                .Property(c => c.Quantity)
-                .HasColumnType("decimal(18,2)");
             #endregion
 
             #region Define the Manufacturer entity
@@ -227,27 +152,11 @@ namespace SupplyChain.Infrastructure
             #region Define the RolePermission entity
             modelBuilder.Entity<RolePermission>()
            .HasKey(rp => new { rp.RoleId, rp.PermissionId });
-            modelBuilder.Entity<RolePermission>()
-                .HasOne(rp => rp.Role)
-                .WithMany(r => r.RolePermissions)
-                .HasForeignKey(rp => rp.RoleId);
-            modelBuilder.Entity<RolePermission>()
-                .HasOne(rp => rp.Permission)
-                .WithMany(p => p.RolePermissions)
-                .HasForeignKey(rp => rp.PermissionId);
             #endregion
 
             #region Define the UserRole entity
             modelBuilder.Entity<UserRole>()
                 .HasKey(ur => new { ur.UserId, ur.RoleId });
-            modelBuilder.Entity<UserRole>()
-                .HasOne(ur => ur.User)
-                .WithMany(u => u.UserRoles)
-                .HasForeignKey(ur => ur.UserId);
-            modelBuilder.Entity<UserRole>()
-                .HasOne(ur => ur.Role)
-                .WithMany(r => r.UserRoles)
-                .HasForeignKey(ur => ur.RoleId);
             #endregion
 
             #region Define the Notification entity
@@ -278,17 +187,6 @@ namespace SupplyChain.Infrastructure
                 .Property(n => n.CreatedDate)
                 .IsRequired();
 
-            modelBuilder.Entity<Notification>()
-                .HasOne(n => n.RecipientUser)
-                .WithMany()
-                .HasForeignKey(n => n.RecipientUserId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Notification>()
-                .HasOne(n => n.SenderUser)
-                .WithMany()
-                .HasForeignKey(n => n.SenderUserId)
-                .OnDelete(DeleteBehavior.Restrict);
             #endregion Define the Notification entity
         }
     }
