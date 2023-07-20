@@ -4,6 +4,6 @@
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
-        public virtual List<Product> Products { get; set; }
+        public virtual ICollection<Product> Products { get; set; }
     }
 }
