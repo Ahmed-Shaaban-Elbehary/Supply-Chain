@@ -9,7 +9,7 @@
         public string Email { get; set; } = string.Empty;
         public string Phone { get; set; } = string.Empty;
         public bool IsSupplier { get; set; } = false; //IsSupplier = false || true.
-        public ICollection<UserRole> UserRoles { get; set; }
-        public virtual List<Cart> Carts { get; set; }
+        public virtual ICollection<UserRole> UserRoles { get; set; }
+        public virtual ICollection<Cart> Carts { get; set; }
     }
 }
