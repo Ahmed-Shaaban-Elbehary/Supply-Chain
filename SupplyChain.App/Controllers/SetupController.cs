@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
 using SupplyChain.App.Utils.Validations;
 using SupplyChain.App.ViewModels;
@@ -209,14 +210,15 @@ namespace SupplyChain.App.Controllers
                 ViewBag.isEdit = true;
                 var user = await _userService.GetUserByIdAsync(id);
                 vm = _mapper.Map<UserViewModel>(user);
-                vm.RoleId = user.UserRoles.Select(e => e.RoleId).FirstOrDefault();
-            }else
+                vm.RoleIds = user.UserRoles.Select(e => e.RoleId).ToList();
+                
+            }
+            else
             {
                 ViewBag.isEdit = false;
             }
             var roles = await _roleService.GetAllRolesAsync();
-            var roleViewModel = _mapper.Map<List<RoleViewModel>>(roles);
-            ViewBag.UserRoles = roleViewModel;
+            vm.Roles = new SelectList(roles, "Id", "Name");
             return PartialView("~/Views/Setup/PartialViews/_AddEditUserForm.cshtml", vm);
         }
 
@@ -235,7 +237,7 @@ namespace SupplyChain.App.Controllers
                         //Add User
                         var newId = await _userService.CreateUserAsync(user, user.Password);
                         //Add User Role
-                        await _userRoleService.AddSingleUserRoleAsync(newId, vm.RoleId);
+                        await _userRoleService.AddUserRolesAsync(user, vm.RoleIds);
                         return Json(new ApiResponse<bool>(true, true, "A user was successfully created!"));
                     }
                     catch (Exception ex)
@@ -249,7 +251,7 @@ namespace SupplyChain.App.Controllers
                 {
                     try
                     {
-                        await _userService.UpdateUserAsync(user, vm.Password, vm.RoleId, vm.IsPasswordChanged);
+                        //await _userService.UpdateUserAsync(user, vm.Password, vm.RoleIds, vm.IsPasswordChanged);
                         return Json(new ApiResponse<bool>(true, true, "A user was successfully updated!"));
                     }
                     catch (Exception ex)
@@ -289,6 +291,24 @@ namespace SupplyChain.App.Controllers
                 return Json(new { success = false });
             }
         }
+
+        [Route("/setup/roles")]
+        public async Task<IActionResult> GetRoles(string q)
+        { 
+            List<RolesViewModel> vm = new List<RolesViewModel>();
+            // Add parts to the list.
+            var roles = await _roleService.GetAllRolesAsync();
+            foreach (var role in roles)
+            {
+                vm.Add(new RolesViewModel { Id = role.Id, Name = role.Name });
+            }
+            if (!(string.IsNullOrEmpty(q) || string.IsNullOrWhiteSpace(q)))
+            {
+                vm = vm.Where(x => x.Name.ToLower().StartsWith(q.ToLower())).ToList();
+            }
+            return Json(new { items = vm });
+        }
+
         #endregion Users
 
         public IActionResult Roles()

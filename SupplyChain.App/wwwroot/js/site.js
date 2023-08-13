@@ -14,8 +14,10 @@ $(() => {
 
     // Get the current page or section name
     var currentPage = $('#currentPage').val();
+
     // Set the active nav-item
     $('li[data-nav="' + currentPage + '"]').addClass('active');
+
 });
 
 

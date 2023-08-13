@@ -1,6 +1,5 @@
 ﻿var app = app || {}
 
-
 // Object to keep track of loader status for each element
 var loaderStatus = {};
 
@@ -56,11 +55,13 @@ app.closeGeneralPatialModal = () => {
     $('#general-partial-modal').modal('hide');
     hideLoader();
 }
+
 app.fillErrorMessageContainer = (msg) => {
     var linkElement = $('#error-message-content');
     linkElement.parent().removeClass('d-none');
     linkElement.html(msg);
 }
+
 /**
  * 
  * @param {string} url
@@ -142,6 +143,7 @@ app.SuccessAlertMessage = (msg) => {
         title: '' + msg + ''
     })
 }
+
 /**
  * Swal Callback Function, for alert confirmation message before deleting action.
  * @returns alert
@@ -157,6 +159,7 @@ app.DeleteConfirmMessage = () => {
         confirmButtonText: 'Yes, delete it!'
     })
 }
+
 /**
  * Swal Callback Function, for alert Fail Processes
  * @param {string} msg

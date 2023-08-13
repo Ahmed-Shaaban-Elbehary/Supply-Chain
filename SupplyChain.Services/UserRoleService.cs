@@ -17,25 +17,6 @@ namespace SupplyChain.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<int> AddMultipleUserRoleAsync(int userId, List<int> roleIds)
-        {
-            foreach (var roleId in roleIds)
-            {
-                UserRole ur = new UserRole();
-                ur.UserId = userId;
-                ur.RoleId = roleId;
-                await _unitOfWork.UserRoleRepository.AddAsync(ur);
-            }
-            return await _unitOfWork.CommitAsync();
-        }
-
-        public async Task<int> AddSingleUserRoleAsync(int userId, int roleId)
-        {
-            UserRole ur = new UserRole() { RoleId = roleId, UserId = userId };
-            await _unitOfWork.UserRoleRepository.AddAsync(ur); 
-            return await _unitOfWork.CommitAsync();
-        }
-
         public async Task<int> CountUserRolesAsync()
         {
             return await _unitOfWork.UserRepository.CountAsync();
@@ -76,33 +57,42 @@ namespace SupplyChain.Services
         {
             return await _unitOfWork.UserRoleRepository.GetWhereAsync(ur => ur.UserId == userId);
         }
+        public async Task RollbackTransaction()
+        {
+            await _unitOfWork.RollbackAsync();
+        }
 
-        public async Task<int> UpdateMultipleUserRolesAsync(int userId, List<int> roleIds)
+        public async Task<int> AddUserRolesAsync(User user, List<int> roleIds)
+        {
+            foreach (var roleId in roleIds)
+            {
+                //get role
+                var role = await _unitOfWork.RoleRepository.GetByIdAsync(roleId);
+                if (role == null)
+                    throw new ArgumentException("Invalid Role Id");
+
+                UserRole ur = new UserRole()
+                {
+                    User = user,
+                    Role = role,
+                    UserId = user.Id,
+                    RoleId = roleId
+                };
+
+                await _unitOfWork.UserRoleRepository.AddAsync(ur);
+            }
+            return await _unitOfWork.CommitAsync();
+        }
+
+        public async Task<int> UpdateUserRolesAsync(int userId, List<int> roleIds)
         {
             // Remove the existing user roles for the user.
             var existingUserRoles = await _unitOfWork.UserRoleRepository.GetWhereAsync(ur => ur.UserId == userId);
             await _unitOfWork.UserRoleRepository.RemoveRangeAsync(existingUserRoles);
 
             // Add the new user roles for the user.
-            var addedRolesCount = await AddMultipleUserRoleAsync(userId, roleIds);
+            //var addedRolesCount = await AddUserRolesAsync(userId, roleIds);
             return await _unitOfWork.CommitAsync();
-        }
-
-        public async Task<int> UpdateSingleUserRolesAsync(int userId, int roleId)
-        {
-            var userRole = await _unitOfWork.UserRoleRepository.GetUserRoleByUserIdAsync(userId);
-            if (userRole == null)
-            {
-                throw new ArgumentException("Invalid user ID");
-            }
-            userRole.RoleId = roleId;
-            await _unitOfWork.UserRoleRepository.UpdateAsync(userRole);
-            return await _unitOfWork.CommitAsync();
-        }
-
-        public async Task RollbackTransaction()
-        {
-            await _unitOfWork.RollbackAsync();
         }
     }
 }
