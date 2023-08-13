@@ -80,7 +80,6 @@ var users = (() => {
 
     PasswordChanged = () => {
         $('#IsPasswordChanged').val(true);
-        console.log($('#IsPasswordChanged').val())
     }
 
     return {

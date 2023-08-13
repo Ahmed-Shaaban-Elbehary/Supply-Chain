@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations;
 
 namespace SupplyChain.App.ViewModels
 {
@@ -19,7 +20,10 @@ namespace SupplyChain.App.ViewModels
         public bool IsPasswordChanged { get; set; }
         [Required]
         public bool IsSupplier { get; set; }
+
         [Required]
-        public int RoleId { get; set; }
+        public List<int> RoleIds { get; set; }
+
+        public SelectList Roles { get; set; }
     }
 }

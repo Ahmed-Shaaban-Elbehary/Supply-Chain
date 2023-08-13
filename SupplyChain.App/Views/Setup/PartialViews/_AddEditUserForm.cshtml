@@ -44,11 +44,10 @@
     <div class="row">
         <div class="col-md-6">
             <div class="form-group">
-                <label asp-for="RoleId" class="control-label">User Role ?</label>
-                @Html.DropDownListFor(model => model.RoleId,
-                new SelectList(ViewBag.UserRoles, "Id", "Name", Model.RoleId),
-                "Select a role", new { @class = "form-control", required = "required"})
-                <span asp-validation-for="RoleId" class="text-danger"></span>
+                <form method="post">
+                    <label class="control-label">User Role</label>
+                    <select class="roleSelect w-100"></select>
+                </form>
             </div>
         </div>
         <div class="col-md-6">
@@ -70,3 +69,25 @@
         <input type="submit" value="Save" name="Submit" class="btn btn-outline-primary btn-block" />
     </div>
 </form>
+<script>
+    $(function () {
+        $(".roleSelect").select2({
+            minimumInputLength: 2,
+            ajax: {
+                url: '/setup/roles',
+                data: function (params) {
+                    return {
+                        q: params.term// search term
+                    };
+                },
+                processResults: function (data) {
+                    console.log(data);
+                    return {
+                        results: data.items
+                    }
+                },
+            }
+        });
+    });
+</script>
+
