@@ -46,7 +46,7 @@
             <div class="form-group">
                 <form method="post">
                     <label class="control-label">User Role</label>
-                    <select class="roleSelect w-100"></select>
+                    @Html.DropDownListFor(m => m.RoleIds, Model.Roles, null, new { @class="form-control form-control-chosen", multiple = "true" })
                 </form>
             </div>
         </div>
@@ -71,6 +71,11 @@
 </form>
 <script>
     $(function () {
+        $("#RoleIds").chosen({
+            no_results_text: "Oops, nothing found!",
+            width: "100%",
+            placeholder_text_multiple: "Search"
+        });
         $(".roleSelect").select2({
             minimumInputLength: 2,
             ajax: {

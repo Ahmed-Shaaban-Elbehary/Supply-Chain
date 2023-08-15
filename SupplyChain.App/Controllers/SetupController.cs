@@ -292,7 +292,7 @@ namespace SupplyChain.App.Controllers
             }
         }
 
-        [Route("/setup/roles")]
+        [HttpGet]
         public async Task<IActionResult> GetRoles(string q)
         { 
             List<RolesViewModel> vm = new List<RolesViewModel>();
