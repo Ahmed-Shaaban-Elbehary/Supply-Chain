@@ -62,8 +62,10 @@ namespace SupplyChain.Services
             await _unitOfWork.RollbackAsync();
         }
 
-        public async Task<int> AddUserRolesAsync(User user, List<int> roleIds)
+        public async Task<List<int>> AddUserRolesAsync(User user, List<int> roleIds)
         {
+            List<int> result = new List<int>();
+
             foreach (var roleId in roleIds)
             {
                 //get role
@@ -80,8 +82,9 @@ namespace SupplyChain.Services
                 };
 
                 await _unitOfWork.UserRoleRepository.AddAsync(ur);
+                result.Add(await _unitOfWork.CommitAsync());
             }
-            return await _unitOfWork.CommitAsync();
+            return result;
         }
 
         public async Task<int> UpdateUserRolesAsync(int userId, List<int> roleIds)

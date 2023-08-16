@@ -7,7 +7,7 @@ var loaderStatus = {};
  * Show loader on the specified element.
  * @param {string} targetId - The ID of the element to show the loader on.
  */
-app.showloader = function (targetId) {
+app.showloader = (targetId) => {
     var target = document.getElementById(targetId);
     if (!target) {
         return;
@@ -51,9 +51,7 @@ app.showloader = function (targetId) {
 };
 
 app.closeGeneralPatialModal = () => {
-    var hideLoader = app.showloader('category-card');
     $('#general-partial-modal').modal('hide');
-    hideLoader();
 }
 
 app.fillErrorMessageContainer = (msg) => {
