@@ -44,10 +44,8 @@
     <div class="row">
         <div class="col-md-6">
             <div class="form-group">
-                <form method="post">
-                    <label class="control-label">User Role</label>
-                    @Html.DropDownListFor(m => m.RoleIds, Model.Roles, null, new { @class="form-control form-control-chosen", multiple = "true" })
-                </form>
+                <label class="control-label">User Role</label>
+                @Html.DropDownListFor(m => m.RoleIds, Model.Roles, null, new { @class="form-control form-control-chosen", multiple = "true" })
             </div>
         </div>
         <div class="col-md-6">
@@ -70,28 +68,11 @@
     </div>
 </form>
 <script>
-    $(function () {
+    $(() => {
         $("#RoleIds").chosen({
             no_results_text: "Oops, nothing found!",
             width: "100%",
-            placeholder_text_multiple: "Search"
-        });
-        $(".roleSelect").select2({
-            minimumInputLength: 2,
-            ajax: {
-                url: '/setup/roles',
-                data: function (params) {
-                    return {
-                        q: params.term// search term
-                    };
-                },
-                processResults: function (data) {
-                    console.log(data);
-                    return {
-                        results: data.items
-                    }
-                },
-            }
+            placeholder_text_multiple: "type to search"
         });
     });
 </script>

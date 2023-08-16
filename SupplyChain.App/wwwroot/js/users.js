@@ -17,15 +17,13 @@ var users = (() => {
                 if (!response.success) {
                     app.fillErrorMessageContainer(response.message);
                     app.reEnterFormData(formElement, formData);
-                    hideloader();
                 } else {
                     app.closeGeneralPatialModal();
                     app.SuccessAlertMessage(response.message);
-                    hideloader();
                 }
             })
             .catch((xhr, status, error) => {
-                if (error.responseJSON) {
+                if (error != undefined) {
                     app.FailAlertMessage(error.responseJSON.message);
                     app.reEnterFormData(formElement, formData);
                     hideloader();

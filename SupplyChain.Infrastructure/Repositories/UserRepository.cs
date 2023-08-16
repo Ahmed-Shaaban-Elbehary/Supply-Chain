@@ -14,6 +14,17 @@ namespace SupplyChain.Infrastructure.Repositories
         private readonly SupplyChainDbContext _context;
         public UserRepository(SupplyChainDbContext dbContext) : base(dbContext) { _context = dbContext; }
 
+        public async Task<int> AddUserAsync(User user)
+        {
+            await _context.Users.AddAsync(user);
+            await _context.SaveChangesAsync();
+            var property = user.GetType().GetProperty("Id");
+            if (property == null)
+                throw new InvalidOperationException("The entity does not have an 'Id' property.");
+
+            return (int)(property?.GetValue(user) ?? 0);
+        }
+
         public async Task<IEnumerable<string>> GetUserPermissionsAsync(int userId)
         {
             var user = await _context.Users

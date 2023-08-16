@@ -211,7 +211,7 @@ namespace SupplyChain.App.Controllers
                 var user = await _userService.GetUserByIdAsync(id);
                 vm = _mapper.Map<UserViewModel>(user);
                 vm.RoleIds = user.UserRoles.Select(e => e.RoleId).ToList();
-                
+
             }
             else
             {
@@ -237,7 +237,7 @@ namespace SupplyChain.App.Controllers
                         //Add User
                         var newId = await _userService.CreateUserAsync(user, user.Password);
                         //Add User Role
-                        await _userRoleService.AddUserRolesAsync(user, vm.RoleIds);
+                        var newRoles = await _userRoleService.AddUserRolesAsync(user, vm.RoleIds);
                         return Json(new ApiResponse<bool>(true, true, "A user was successfully created!"));
                     }
                     catch (Exception ex)
@@ -294,7 +294,7 @@ namespace SupplyChain.App.Controllers
 
         [HttpGet]
         public async Task<IActionResult> GetRoles(string q)
-        { 
+        {
             List<RolesViewModel> vm = new List<RolesViewModel>();
             // Add parts to the list.
             var roles = await _roleService.GetAllRolesAsync();

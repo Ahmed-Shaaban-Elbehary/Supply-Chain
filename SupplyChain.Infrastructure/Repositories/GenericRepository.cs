@@ -22,15 +22,9 @@ namespace SupplyChain.Infrastructure.Repositories
             _set = _context.Set<T>();
         }
 
-        public async Task<int> AddAsync(T entity)
+        public async Task AddAsync(T entity)
         {
             await _set.AddAsync(entity);
-            await _context.SaveChangesAsync();
-            var property = entity.GetType().GetProperty("Id");
-            if (property == null)
-                throw new InvalidOperationException("The entity does not have an 'Id' property.");
-
-            return (int)(property?.GetValue(entity) ?? 0);
         }
 
         public async Task AddRangeAsync(IEnumerable<T> entities)
