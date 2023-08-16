@@ -45,7 +45,9 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label class="control-label">User Role</label>
-                @Html.DropDownListFor(m => m.RoleIds, Model.Roles, null, new { @class="form-control form-control-chosen", multiple = "true" })
+                @Html.DropDownListFor(m => m.RoleIds,
+                new SelectList(Model.Roles.OrderBy(r => r.Id), "Id", "Name", ViewBag.SelectedRole),
+                new { @class = "form-control form-control-chosen", multiple = "true" })
             </div>
         </div>
         <div class="col-md-6">
@@ -64,16 +66,24 @@
     <div class="form-group">
         <input type="hidden" asp-for="Id" />
         <input type="hidden" asp-for="IsPasswordChanged" />
+        <select asp-for="RoleIds" asp-items='new SelectList(Model.Roles, ViewBag.SelectedRole, "Id", "Name")' hidden></select>
         <input type="submit" value="Save" name="Submit" class="btn btn-outline-primary btn-block" />
     </div>
 </form>
 <script>
     $(() => {
+        chosenInitiation();
+    });
+
+    function chosenInitiation() {
         $("#RoleIds").chosen({
             no_results_text: "Oops, nothing found!",
             width: "100%",
             placeholder_text_multiple: "type to search"
         });
-    });
+    }
+    function SetSelectedValue() {
+
+    }
 </script>
 
