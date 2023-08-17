@@ -205,22 +205,22 @@ namespace SupplyChain.App.Controllers
         public async Task<ActionResult> AddEditUser(int id)
         {
             var vm = new UserViewModel();
-            var roles = await _roleService.GetAllRolesAsync();
             if (id > 0)
             {
                 ViewBag.isEdit = true;
                 var user = await _userService.GetUserByIdAsync(id);
                 vm = _mapper.Map<UserViewModel>(user);
-                foreach (var role in roles)
-                {
-                    vm.Roles.Add(new RolesViewModel { Id = role.Id, Name = role.Name });
-                }
-                ViewBag.SelectedRole = user.UserRoles.Select(e => e.RoleId).ToList();
+                
+                vm.RoleIds = user.UserRoles.Select(e => e.RoleId).ToList();
             }
             else
             {
                 ViewBag.isEdit = false;
-                ViewBag.SelectedRole = null;
+            }
+            var roles = await _roleService.GetAllRolesAsync();
+            foreach (var role in roles)
+            {
+                vm.Roles.Add(new RolesViewModel { Id = role.Id, Name = role.Name });
             }
             return PartialView("~/Views/Setup/PartialViews/_AddEditUserForm.cshtml", vm);
         }

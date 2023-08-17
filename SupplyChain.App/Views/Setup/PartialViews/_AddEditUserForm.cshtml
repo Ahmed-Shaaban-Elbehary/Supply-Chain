@@ -2,6 +2,7 @@
 @{
     var isEdit = ViewBag.isEdit;
     var passwordValue = isEdit ? "5273909c02b8ce7ae42a4e21542b3326" : null;
+    var selectedRoleIds = Model.RoleIds;
 }
 <form asp-action="AddEditUser" onsubmit="users.add_user(event)">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -46,7 +47,7 @@
             <div class="form-group">
                 <label class="control-label">User Role</label>
                 @Html.DropDownListFor(m => m.RoleIds,
-                new SelectList(Model.Roles.OrderBy(r => r.Id), "Id", "Name", ViewBag.SelectedRole),
+                new SelectList(Model.Roles.OrderBy(r => r.Id), "Id", "Name"),
                 new { @class = "form-control form-control-chosen", multiple = "true" })
             </div>
         </div>
@@ -66,13 +67,13 @@
     <div class="form-group">
         <input type="hidden" asp-for="Id" />
         <input type="hidden" asp-for="IsPasswordChanged" />
-        <select asp-for="RoleIds" asp-items='new SelectList(Model.Roles, ViewBag.SelectedRole, "Id", "Name")' hidden></select>
         <input type="submit" value="Save" name="Submit" class="btn btn-outline-primary btn-block" />
     </div>
 </form>
 <script>
     $(() => {
         chosenInitiation();
+        SetSelectedValue();
     });
 
     function chosenInitiation() {
@@ -83,7 +84,13 @@
         });
     }
     function SetSelectedValue() {
-
+        var myArray = [];
+        @foreach (var d in Model.RoleIds)
+        {
+            @:myArray.push("@d");
+        }
+        var str_array = myArray.split(',');
+        $("#RoleIds").val(str_array).trigger("chosen:updated");
     }
 </script>
 
