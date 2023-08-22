@@ -210,7 +210,7 @@ namespace SupplyChain.App.Controllers
                 ViewBag.isEdit = true;
                 var user = await _userService.GetUserByIdAsync(id);
                 vm = _mapper.Map<UserViewModel>(user);
-                
+
                 vm.RoleIds = user.UserRoles.Select(e => e.RoleId).ToList();
             }
             else
@@ -237,9 +237,7 @@ namespace SupplyChain.App.Controllers
                 {
                     try
                     {
-                        //Add User
                         var newId = await _userService.CreateUserAsync(user, user.Password);
-                        //Add User Role
                         var newRoles = await _userRoleService.AddUserRolesAsync(user, vm.RoleIds);
                         return Json(new ApiResponse<bool>(true, true, "A user was successfully created!"));
                     }
@@ -254,7 +252,8 @@ namespace SupplyChain.App.Controllers
                 {
                     try
                     {
-                        //await _userService.UpdateUserAsync(user, vm.Password, vm.RoleIds, vm.IsPasswordChanged);
+                        await _userService.UpdateUserAsync(user, vm.Password, vm.RoleIds, vm.IsPasswordChanged);
+                        await _userRoleService.UpdateUserRolesAsync(user, vm.RoleIds);
                         return Json(new ApiResponse<bool>(true, true, "A user was successfully updated!"));
                     }
                     catch (Exception ex)

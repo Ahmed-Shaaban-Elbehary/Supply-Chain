@@ -84,13 +84,8 @@
         });
     }
     function SetSelectedValue() {
-        var myArray = [];
-        @foreach (var d in Model.RoleIds)
-        {
-            @:myArray.push("@d");
-        }
-        var str_array = myArray.split(',');
-        $("#RoleIds").val(str_array).trigger("chosen:updated");
+        var myArray = [@Html.Raw(string.Join(",", Model.RoleIds))];
+        $("#RoleIds").val(myArray).trigger("chosen:updated");
     }
 </script>
 
