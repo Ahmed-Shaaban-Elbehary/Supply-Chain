@@ -1,0 +1,11 @@
+﻿@using SupplyChain.App.ViewModels;
+@model ErrorResponse
+@{
+    Layout = null;
+}
+<div class="d-flex justify-content-center align-items-center h-100">
+    <h1 class="mr-3 pr-3 align-top border-right inline-block align-content-center text-danger">Oops!</h1>
+    <div class="inline-block align-middle">
+        <h3 class="font-weight-normal lead">@Model.Message</h3> 
+    </div>
+</div>

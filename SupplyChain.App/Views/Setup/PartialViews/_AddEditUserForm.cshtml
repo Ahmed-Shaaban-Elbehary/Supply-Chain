@@ -2,7 +2,6 @@
 @{
     var isEdit = ViewBag.isEdit;
     var passwordValue = isEdit ? "5273909c02b8ce7ae42a4e21542b3326" : null;
-    var selectedRoleIds = Model.RoleIds;
 }
 <form asp-action="AddEditUser" onsubmit="users.add_user(event)">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -84,8 +83,15 @@
         });
     }
     function SetSelectedValue() {
-        var myArray = [@Html.Raw(string.Join(",", Model.RoleIds))];
-        $("#RoleIds").val(myArray).trigger("chosen:updated");
+        @{
+            if (Model.RoleIds is not null)
+            {
+                <text>
+                    var myArray = [@Html.Raw(string.Join(",", Model.RoleIds))];
+                    $("#RoleIds").val(myArray).trigger("chosen:updated");
+                </text>
+            }
+        }
     }
 </script>
 

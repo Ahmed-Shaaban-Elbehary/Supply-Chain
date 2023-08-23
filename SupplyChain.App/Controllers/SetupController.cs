@@ -8,6 +8,8 @@ using SupplyChain.App.ViewModels;
 using SupplyChain.Core.Models;
 using SupplyChain.Services;
 using SupplyChain.Services.Contracts;
+using System.ComponentModel;
+using System.Net;
 
 namespace SupplyChain.App.Controllers
 {
@@ -204,25 +206,32 @@ namespace SupplyChain.App.Controllers
         [HttpGet]
         public async Task<ActionResult> AddEditUser(int id)
         {
-            var vm = new UserViewModel();
-            if (id > 0)
+            try
             {
-                ViewBag.isEdit = true;
-                var user = await _userService.GetUserByIdAsync(id);
-                vm = _mapper.Map<UserViewModel>(user);
+                var vm = new UserViewModel();
+                if (id > 0)
+                {
+                    ViewBag.isEdit = true;
+                    var user = await _userService.GetUserByIdAsync(id);
+                    vm = _mapper.Map<UserViewModel>(user);
 
-                vm.RoleIds = user.UserRoles.Select(e => e.RoleId).ToList();
+                    vm.RoleIds = user.UserRoles.Select(e => e.RoleId).ToList();
+                }
+                else
+                {
+                    ViewBag.isEdit = false;
+                }
+                var roles = await _roleService.GetAllRolesAsync();
+                foreach (var role in roles)
+                {
+                    vm.Roles.Add(new RolesViewModel { Id = role.Id, Name = role.Name });
+                }
+                return PartialView("~/Views/Setup/PartialViews/_AddEditUserForm.cshtml", vm);
             }
-            else
+            catch (Exception ex)
             {
-                ViewBag.isEdit = false;
+                return RedirectToAction("Index", "Error", ErrorResponse.PreException(ex));
             }
-            var roles = await _roleService.GetAllRolesAsync();
-            foreach (var role in roles)
-            {
-                vm.Roles.Add(new RolesViewModel { Id = role.Id, Name = role.Name });
-            }
-            return PartialView("~/Views/Setup/PartialViews/_AddEditUserForm.cshtml", vm);
         }
 
         [HttpPost]
