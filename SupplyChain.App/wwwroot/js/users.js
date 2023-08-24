@@ -35,8 +35,8 @@ var users = (() => {
     }
 
     DeleteSelectedItem = (userId) => {
+        const hideloader = app.showloader('page-content');
         app.DeleteConfirmMessage().then((result) => {
-            const hideloader = app.showloader('page-content');
             if (result.isConfirmed) {
                 let url = base_url + "/DeleteUser/" + userId;
                 app.ajax_request(url, 'DELETE', 'json', null)
@@ -57,6 +57,8 @@ var users = (() => {
                         hideloader();
                         app.FailAlertMessage(error);
                     });
+                hideloader();
+            } else {
                 hideloader();
             }
 
