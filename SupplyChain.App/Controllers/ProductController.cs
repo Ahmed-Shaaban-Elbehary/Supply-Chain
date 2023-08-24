@@ -46,7 +46,7 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpGet]
-        [InRole("user")]
+        [InRole("Admin")]
         public IActionResult Add()
         {
             var vm = new ProductViewModel();

@@ -1,7 +1,7 @@
 ﻿@using SupplyChain.Services;
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="index3.html" class="brand-link">
+    <a asp-controller="Product" asp-action="index" class="brand-link">
         <img src="~/images/logo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
         <span class="brand-text font-weight-light">Supply Chain</span>
     </a>
@@ -21,7 +21,7 @@
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 <li class="nav-item">
-                    <a href="#" data-nav="Products" class="nav-link">
+                    <a asp-controller="Product" asp-action="index" data-nav="index" class="nav-link">
                         <i class="nav-icon fas fa-box-open"></i>
                         <p class="cursor-pointer">
                             Products
@@ -35,23 +35,23 @@
                                 <p class="cursor-pointer">Details</p>
                             </a>
                         </li>
-                        @if (await CurrentUser.HasPermissionAsync("CanAddProduct"))
-                        {
-                            <li class="nav-item">
-                                <a asp-controller="Product" asp-action="Add" data-val="Add" class="nav-link">
-                                    <i class="nav-icon fas fa-plus"></i>
-                                    <p>Add New Product</p>
-                                </a>
-                            </li>
-                        }
+                        <li class="nav-item">
+                            <a asp-controller="Product" asp-action="Add" data-val="Add" class="nav-link">
+                                <i class="nav-icon fas fa-plus"></i>
+                                <p>Add New Product</p>
+                            </a>
+                        </li>
                     </ul>
                 </li>
-                <li class="nav-item">
-                    <a asp-controller="Setup" asp-action="index" data-nav="index" class="nav-link">
-                        <i class="nav-icon fas fa-cogs"></i>
-                        <p class="cursor-pointer">Setup</p>
-                    </a>
-                </li>
+                @if (await CurrentUser.HasPermissionAsync("HasAccessToSetup"))
+                {
+                    <li class="nav-item">
+                        <a asp-controller="Setup" asp-action="index" data-nav="index" class="nav-link">
+                            <i class="nav-icon fas fa-cogs"></i>
+                            <p class="cursor-pointer">Setup</p>
+                        </a>
+                    </li>
+                }
                 <li class="nav-item fixed-bottom">
                     <a asp-controller="Auth" asp-action="Logout" data-nav="index" class="nav-link">
                         <i class="fas fa-sign-out-alt"></i>

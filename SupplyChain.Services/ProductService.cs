@@ -27,18 +27,21 @@ namespace SupplyChain.Services
         {
             await _unitOfWork.ProductRepository.AddAsync(product);
             await _unitOfWork.CommitAsync();
+            await _unitOfWork.CommitTransaction();
         }
 
         public async Task UpdateProductAsync(Product product)
         {
             await _unitOfWork.ProductRepository.UpdateAsync(product);
             await _unitOfWork.CommitAsync();
+            await _unitOfWork.CommitTransaction();
         }
 
         public async Task DeleteProductAsync(Product product)
         {
             await _unitOfWork.ProductRepository.RemoveAsync(product);
             await _unitOfWork.CommitAsync();
+            await _unitOfWork.CommitTransaction();
         }
 
         public async Task<IEnumerable<Product>> GetAllPagedProductsAsync(int page, int pageSize)

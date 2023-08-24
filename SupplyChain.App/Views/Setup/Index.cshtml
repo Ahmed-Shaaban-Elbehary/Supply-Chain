@@ -39,5 +39,14 @@
         </a>
     </div>
     }
+    @if (await CurrentUser.HasPermissionAsync("CanAddProduct"))
+    {
+        <div class="col-md-3">
+            <a asp-controller="Product" asp-action="Add" class="btn btn-outline-success btn-lg setup-btn">
+                <i class="nav-icon fas fa-plus pt-3"></i>
+                <p>Add New Product</p>
+            </a>
+        </div>
+    }
 </div>
 
