@@ -28,20 +28,6 @@
                             <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a asp-controller="Product" asp-action="index" data-nav="index" class="nav-link">
-                                <i class="nav-icon fas fa-info"></i>
-                                <p class="cursor-pointer">Details</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a asp-controller="Product" asp-action="Add" data-val="Add" class="nav-link">
-                                <i class="nav-icon fas fa-plus"></i>
-                                <p>Add New Product</p>
-                            </a>
-                        </li>
-                    </ul>
                 </li>
                 @if (await CurrentUser.HasPermissionAsync("HasAccessToSetup"))
                 {
@@ -49,6 +35,15 @@
                         <a asp-controller="Setup" asp-action="index" data-nav="index" class="nav-link">
                             <i class="nav-icon fas fa-cogs"></i>
                             <p class="cursor-pointer">Setup</p>
+                        </a>
+                    </li>
+                }
+                @if (await CurrentUser.HasPermissionAsync("CanAddEvents"))
+                {
+                    <li class="nav-item">
+                        <a asp-controller="Event" asp-action="index" data-nav="index" class="nav-link">
+                            <i class="nav-icon fas fa-cogs"></i>
+                            <p class="cursor-pointer">Events</p>
                         </a>
                     </li>
                 }

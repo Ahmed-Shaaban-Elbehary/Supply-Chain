@@ -11,5 +11,6 @@
         public bool IsSupplier { get; set; } = false; //IsSupplier = false || true.
         public virtual ICollection<UserRole> UserRoles { get; set; }
         public virtual ICollection<Cart> Carts { get; set; }
+        public virtual ICollection<UserEvent> UserEvents { get; set; }
     }
 }

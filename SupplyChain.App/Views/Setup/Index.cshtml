@@ -6,7 +6,7 @@
 @section Styles{
     <style>
         .setup-btn {
-            width: -webkit-fill-available;
+            width: 90%;
             height: 100px;
         }
     </style>
@@ -16,10 +16,10 @@
     {
         <div class="col-md-3">
             <a asp-action="Category" class="btn btn-outline-success btn-lg setup-btn">
-            <i class="fas fa-sitemap pt-3"></i>
-            <p>Category</p>
-        </a>
-    </div>
+                <i class="fas fa-sitemap pt-3"></i>
+                <p>Category</p>
+            </a>
+        </div>
     }
     @if (await CurrentUser.HasPermissionAsync("CanAccessManufacturer"))
     {
@@ -34,10 +34,10 @@
     {
         <div class="col-md-3">
             <a asp-action="Users" class="btn btn-outline-success btn-lg setup-btn">
-            <i class="fas fa-users-cog pt-3"></i>
-            <p>Users</p>
-        </a>
-    </div>
+                <i class="fas fa-users-cog pt-3"></i>
+                <p>Users</p>
+            </a>
+        </div>
     }
     @if (await CurrentUser.HasPermissionAsync("CanAddProduct"))
     {

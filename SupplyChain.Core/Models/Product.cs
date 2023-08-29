@@ -16,5 +16,6 @@
         public int CategoryId { get; set; }
         public virtual ProductCategory Category { get; set; }
         public virtual ICollection<ProductComponent> Components { get; set; }
+        public virtual ICollection<ProductEvent> ProductEvents { get; set; }
     }
 }

@@ -184,8 +184,6 @@ namespace SupplyChain.App.Controllers
         }
         #endregion Manufacturer
 
-        #region User Roles Management 
-
         #region Users
 
         [HttpGet]
@@ -322,10 +320,18 @@ namespace SupplyChain.App.Controllers
 
         #endregion Users
 
+        #region ROLES
         public IActionResult Roles()
         {
             return View();
         }
+        public IActionResult UserRoles()
+        {
+            return View();
+        }
+        #endregion ROLES
+
+        #region PERMISSIONS
         public IActionResult Permissions()
         {
             return View();
@@ -334,10 +340,7 @@ namespace SupplyChain.App.Controllers
         {
             return View();
         }
-        public IActionResult UserRoles()
-        {
-            return View();
-        }
-        #endregion User Roles Management System 
+        #endregion PERMISSIONS
+
     }
 }
