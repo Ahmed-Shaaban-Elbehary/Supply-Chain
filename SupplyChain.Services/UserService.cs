@@ -10,11 +10,9 @@ namespace SupplyChain.Services
     public class UserService : IUserService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IUserRepository _userRepository;
         public UserService(IUnitOfWork unitOfWork, IUserRepository userRepository)
         {
             _unitOfWork = unitOfWork;
-            _userRepository = userRepository;
         }
 
         public async Task<int> CountUserAsync()
@@ -25,7 +23,7 @@ namespace SupplyChain.Services
         public async Task<int> CreateUserAsync(User user, string password)
         {
             user.Password = ComputeMD5Hash(password);
-            await _userRepository.AddUserAsync(user);
+            await _unitOfWork.UserRepository.AddUserAsync(user);
             var result = await _unitOfWork.CommitAsync();
             await _unitOfWork.CommitTransaction();
             return result;
