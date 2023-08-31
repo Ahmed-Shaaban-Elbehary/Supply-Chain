@@ -64,5 +64,6 @@ namespace SupplyChain.App.Controllers
             CurrentUser.Logout();
             return RedirectToAction("Login");
         }
+
     }
 }

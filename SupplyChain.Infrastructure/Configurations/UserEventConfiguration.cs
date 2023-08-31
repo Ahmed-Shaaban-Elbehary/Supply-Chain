@@ -18,12 +18,12 @@ namespace SupplyChain.Infrastructure.Configurations
             builder.HasOne(ue => ue.User)
                 .WithMany(u => u.UserEvents)
                 .HasForeignKey(ue => ue.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(ue => ue.Event)
                 .WithMany(e => e.UserEvents)
                 .HasForeignKey(ue => ue.EventId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

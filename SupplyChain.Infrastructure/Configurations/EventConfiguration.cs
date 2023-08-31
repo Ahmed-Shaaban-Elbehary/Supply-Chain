@@ -13,54 +13,27 @@ namespace SupplyChain.Infrastructure.Configurations
     {
         public void Configure(EntityTypeBuilder<Event> builder)
         {
-            // Configure table name
-            builder.ToTable("Events");
-
-            // Configure primary key
             builder.HasKey(e => e.Id);
+            builder.Property(e => e.Title).IsRequired();
+            builder.Property(e => e.Description).IsRequired();
+            builder.Property(e => e.Start).IsRequired();
+            builder.Property(e => e.End).IsRequired();
+            builder.Property(e => e.CreatedBy).IsRequired();
+            builder.Property(e => e.CreatedIn).IsRequired();
+            builder.Property(e => e.Active).IsRequired();
+            builder.Property(e => e.Published).IsRequired();
+            builder.Property(e => e.Suspended).IsRequired();
+            builder.Property(e => e.Deleted).IsRequired();
 
-            // Configure properties
-            builder.Property(e => e.Title)
-                .IsRequired()
-                .HasMaxLength(100);
+            builder.HasMany(e => e.UserEvents)
+                .WithOne(ue => ue.Event)
+                .HasForeignKey(ue => ue.EventId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            builder.Property(e => e.Description)
-                .IsRequired()
-                .HasMaxLength(500);
-
-            builder.Property(e => e.Start)
-                .IsRequired();
-
-            builder.Property(e => e.End)
-                .IsRequired();
-
-            builder.Property(e => e.CreatedBy)
-                .IsRequired();
-
-            builder.Property(e => e.CreatedIn)
-                .IsRequired();
-
-            builder.Property(e => e.Active)
-                .IsRequired();
-
-            builder.Property(e => e.Published)
-                .IsRequired();
-
-            builder.Property(e => e.Suspended)
-                .IsRequired();
-
-            builder.Property(e => e.Deleted)
-                .IsRequired();
-
-            // Configure relationships
-            builder.HasMany(e => e.Products)
-                .WithMany(p => p.Events)
-                .UsingEntity(j => j.ToTable("ProductEvent"));
-
-            builder.HasMany(e => e.Users)
-                .WithMany(u => u.Events)
-                .UsingEntity(j => j.ToTable("UserEvent"));
-
+            builder.HasMany(e => e.ProductEvents)
+                .WithOne(pe => pe.Event)
+                .HasForeignKey(pe => pe.EventId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

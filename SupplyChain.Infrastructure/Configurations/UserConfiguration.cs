@@ -16,6 +16,21 @@ namespace SupplyChain.Infrastructure.Configurations
             builder.HasIndex(u => u.Email).IsUnique();
             builder.Property(u => u.Phone).HasMaxLength(20).IsRequired(false);
             builder.Property(u => u.IsSupplier).IsRequired();
+
+            builder.HasMany(u => u.UserRoles)
+            .WithOne(ur => ur.User)
+            .HasForeignKey(ur => ur.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(u => u.Carts)
+                .WithOne(c => c.User)
+                .HasForeignKey(c => c.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(u => u.UserEvents)
+                .WithOne(ue => ue.User)
+                .HasForeignKey(ue => ue.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
