@@ -38,7 +38,7 @@
                         </a>
                     </li>
                 }
-                @if (await CurrentUser.HasPermissionAsync("CanAddEvents"))
+                @if (await CurrentUser.HasPermissionAsync("HasAccessToEvents"))
                 {
                     <li class="nav-item">
                         <a asp-controller="Event" asp-action="index" data-nav="index" class="nav-link">
