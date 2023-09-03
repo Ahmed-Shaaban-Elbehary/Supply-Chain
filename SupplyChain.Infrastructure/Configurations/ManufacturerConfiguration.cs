@@ -14,6 +14,7 @@ namespace SupplyChain.Infrastructure.Configurations
             builder.Property(m => m.ContactName).HasMaxLength(50);
             builder.Property(m => m.ContactEmail).HasMaxLength(50);
             builder.Property(m => m.ContactPhone).HasMaxLength(50);
+            builder.Property(m => m.Deleted).IsRequired().HasDefaultValue(false);
         }
     }
 }

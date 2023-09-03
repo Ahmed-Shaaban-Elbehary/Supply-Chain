@@ -20,10 +20,10 @@ namespace SupplyChain.Infrastructure.Configurations
             builder.Property(e => e.End).IsRequired();
             builder.Property(e => e.CreatedBy).IsRequired();
             builder.Property(e => e.CreatedIn).IsRequired();
-            builder.Property(e => e.Active).IsRequired();
-            builder.Property(e => e.Published).IsRequired();
-            builder.Property(e => e.Suspended).IsRequired();
-            builder.Property(e => e.Deleted).IsRequired();
+            builder.Property(e => e.Active).IsRequired().HasDefaultValue(false);
+            builder.Property(e => e.Published).IsRequired().HasDefaultValue(false);
+            builder.Property(e => e.Suspended).IsRequired().HasDefaultValue(false);
+            builder.Property(e => e.Deleted).IsRequired().HasDefaultValue(false);
 
             builder.HasMany(e => e.UserEvents)
                 .WithOne(ue => ue.Event)

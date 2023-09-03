@@ -17,6 +17,7 @@ namespace SupplyChain.Infrastructure.Configurations
             builder.Property(p => p.ExpirationDate).HasColumnType("datetime2");
             builder.Property(p => p.CountryOfOriginCode).HasMaxLength(4);
             builder.Property(p => p.Quantity).HasColumnType("decimal(18,2)");
+            builder.Property(p => p.Deleted).IsRequired().HasDefaultValue(false);
             builder.HasOne(p => p.Category).WithMany(c => c.Products).HasForeignKey(p => p.CategoryId).OnDelete(DeleteBehavior.Restrict);
             builder.HasOne(p => p.Manufacturer).WithMany(m => m.Products).HasForeignKey(p => p.ManufacturerId).OnDelete(DeleteBehavior.Restrict);
 

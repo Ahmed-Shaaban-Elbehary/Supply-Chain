@@ -13,6 +13,7 @@ namespace SupplyChain.Infrastructure.Configurations
             builder.Property(sc => sc.ShippingMethod).HasMaxLength(50);
             builder.Property(sc => sc.ShippingAddress).HasMaxLength(200);
             builder.Property(c => c.TotalPrice).HasColumnType("decimal(18,2)").IsRequired();
+            builder.Property(c => c.Deleted).IsRequired().HasDefaultValue(false);
             builder.HasOne(sc => sc.User).WithMany(u => u.Carts).HasForeignKey(sc => sc.UserId).OnDelete(DeleteBehavior.Cascade);
             builder.HasMany(c => c.Items).WithOne(ci => ci.Cart).HasForeignKey(ci => ci.CartId).OnDelete(DeleteBehavior.Cascade);
         }

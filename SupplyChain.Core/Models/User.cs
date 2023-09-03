@@ -8,7 +8,8 @@
         public string Address { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string Phone { get; set; } = string.Empty;
-        public bool IsSupplier { get; set; } = false; //IsSupplier = false || true.
+        public bool IsSupplier { get; set; } //IsSupplier = false || true.
+        public bool Deleted { get; set; } //IsSupplier = false || true.
         public virtual ICollection<UserRole> UserRoles { get; set; }
         public virtual ICollection<Cart> Carts { get; set; }
         public virtual ICollection<UserEvent> UserEvents { get; set; }

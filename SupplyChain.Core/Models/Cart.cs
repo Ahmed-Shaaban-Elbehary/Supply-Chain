@@ -15,6 +15,7 @@
         }
         public string ShippingMethod { get; set; }
         public string ShippingAddress { get; set; }
+        public bool Deleted { get; set; }
 
         public void UpdateTotalPrice()
         {
