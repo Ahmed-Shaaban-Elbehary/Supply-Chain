@@ -12,6 +12,6 @@
         public bool Suspended { get; set; }
         public bool Deleted { get; set; }
         public List<UserViewModel> Users { get; set; }
-        public List<ProductViewModel> Products { get; set; }
+        public List<ProductViewModel> Products { get; set; } = new List<ProductViewModel>();
     }
 }
