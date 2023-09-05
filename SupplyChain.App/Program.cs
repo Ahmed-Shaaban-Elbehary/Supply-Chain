@@ -1,4 +1,7 @@
+using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.DependencyInjection;
 using SupplyChain.App.App_Class;
+using SupplyChain.App.Notification;
 using SupplyChain.App.Profiles;
 using SupplyChain.App.Utils;
 using SupplyChain.App.Utils.Contracts;
@@ -35,6 +38,9 @@ builder.Services.AddScoped<IRolePermissionService, RolePermissionService>();
 #region Utils
 builder.Services.AddScoped<IUploadFile, UploadFile>();
 builder.Services.AddScoped<ILookUp, Lookups>();
+builder.Services.AddSignalR();
+string connString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddTransient<SqlDependency>(_ => new SqlDependency(new SqlConnection(connString)));
 #endregion
 
 var app = builder.Build();
@@ -58,5 +64,7 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Auth}/{action=Login}/{id?}"
     );
+
+app.MapHub<NotificationHub>("/Notification");
 
 app.Run();
