@@ -41,7 +41,6 @@ builder.Services.AddScoped<IUploadFile, UploadFile>();
 builder.Services.AddScoped<ILookUp, Lookups>();
 builder.Services.AddSignalR();
 string connString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddTransient<SqlDependency>(_ => new SqlDependency(new SqlConnection(connString)));
 #endregion
 
 var app = builder.Build();
@@ -61,11 +60,11 @@ app.UseAuthentication();
 
 app.UseAuthenticationMiddleware();
 
+app.MapHub<NotificationHub>("/notificationHub");
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Auth}/{action=Login}/{id?}"
     );
-
-app.MapHub<NotificationHub>("/Notification");
 
 app.Run();
