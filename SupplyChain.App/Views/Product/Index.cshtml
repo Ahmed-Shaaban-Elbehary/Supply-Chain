@@ -27,7 +27,7 @@
 
     @foreach (var item in Model.Model)
     {
-        <div class="col-md-3">
+        <div class="col-md-4">
             <div class="card">
                 <img class="card-img-top" src="@item.ImageUrl" alt="product-image-@item.Name">
                 <div class="card-body">
@@ -46,7 +46,7 @@
                             }
                         </p>
                     </div>
-                    <a asp-action="ProductItem" asp-route-id="@item.Id" class="btn btn-block btn-outline-info">Pay Now</a>
+                    <a asp-action="ProductItem" asp-route-id="@item.Id" class="btn btn-outline-info">Pay Now</a>
                 </div>
             </div>
         </div>

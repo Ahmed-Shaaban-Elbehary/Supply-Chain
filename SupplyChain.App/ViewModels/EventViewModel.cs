@@ -12,6 +12,12 @@
         public bool Suspended { get; set; }
         public bool Deleted { get; set; }
         public List<UserViewModel> Users { get; set; }
-        public List<ProductViewModel> Products { get; set; } = new List<ProductViewModel>();
+        public List<ProductSelectedListViewModel> Products { get; set; } = new List<ProductSelectedListViewModel>();
+    }
+
+    public class ProductSelectedListViewModel
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
     }
 }

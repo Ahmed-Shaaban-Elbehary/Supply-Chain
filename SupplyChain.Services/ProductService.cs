@@ -15,7 +15,8 @@ namespace SupplyChain.Services
 
         public async Task<IEnumerable<Product>> GetAllProductsAsync()
         {
-            return await _unitOfWork.ProductRepository.GetAllAsync();
+            var list = await _unitOfWork.ProductRepository.GetWhereAsync(e => e.Deleted == false);
+            return list;
         }
 
         public async Task<Product> GetProductByIdAsync(int id)
