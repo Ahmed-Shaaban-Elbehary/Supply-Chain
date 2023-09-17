@@ -1,15 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Data.SqlClient;
-using NuGet.Packaging;
-using SupplyChain.App.Utils.Validations;
 using SupplyChain.App.ViewModels;
 using SupplyChain.Core.Models;
-using SupplyChain.Services;
 using SupplyChain.Services.Contracts;
-using System.ComponentModel;
-using System.Net;
 
 namespace SupplyChain.App.Controllers
 {

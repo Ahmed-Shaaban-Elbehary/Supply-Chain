@@ -36,5 +36,5 @@
         </div>
     </div>
 </div>
-@await Html.PartialAsync("_PartialModal")
+@await Html.PartialAsync("_PartialModal", new ViewDataDictionary(ViewData) { { "ModalTitle", "Add/Edit Event" } })
 <script src="~/js/calendar.js"></script>

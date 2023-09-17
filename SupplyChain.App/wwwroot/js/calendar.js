@@ -13,6 +13,14 @@
             },
             editable: true,
             droppable: true, // this allows things to be dropped onto the calendar
+            eventSources: [
+                // your event source
+                {
+                    url: '/Event/GetEvents', // use the `url` property
+                    color: 'yellow',    // an option!
+                    textColor: 'black'  // an option!
+                }
+            ]
         });
 
         calendar.render();

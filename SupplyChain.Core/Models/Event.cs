@@ -14,7 +14,7 @@ namespace SupplyChain.Core.Models
         public DateTime Start { get; set; }
         public DateTime End { get; set; }
         public int CreatedBy { get; set; }
-        public DateTime CreatedIn { get; set; }
+        public DateTime CreatedIn { get; set; } = DateTime.Now;
         public bool Active { get; set; }
         public bool Published { get; set; }
         public bool Suspended { get; set; }

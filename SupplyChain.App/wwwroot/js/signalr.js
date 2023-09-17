@@ -5,7 +5,7 @@ let connection = new signalR.HubConnectionBuilder().withUrl("/notificationHub").
 
 $(() => {
     connection.start().then(function () {
-        alert("Connection to the hub success!");
+        console.info("Connection to the hub success!");
     }).catch((error) => {
         console.error(error);
     })

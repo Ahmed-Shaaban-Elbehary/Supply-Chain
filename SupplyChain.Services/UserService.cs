@@ -44,7 +44,7 @@ namespace SupplyChain.Services
                 await _unitOfWork.CommitTransaction();
                 return result;
             }
-            catch (Exception)
+            catch
             {
                 await _unitOfWork.RollbackAsync();
                 throw;
@@ -119,7 +119,7 @@ namespace SupplyChain.Services
                 await _unitOfWork.CommitTransaction();
                 return result;
             }
-            catch (Exception)
+            catch
             {
                 await _unitOfWork.RollbackAsync();
                 throw;

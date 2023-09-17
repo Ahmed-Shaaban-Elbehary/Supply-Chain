@@ -17,40 +17,66 @@ namespace SupplyChain.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<int> CountManufacturerAsync()
+        public async Task<int> CountEventAsync()
         {
             return await _unitOfWork.EventRepository.CountAsync();
         }
 
-        public async Task CreateManufacturerAsync(Event _event)
+        public async Task<int> CreateEventAsync(Event _event)
         {
-            await _unitOfWork.EventRepository.AddAsync(_event);
-            await _unitOfWork.CommitAsync();
-            await _unitOfWork.CommitTransaction();
+            try
+            {
+                await _unitOfWork.EventRepository.AddAsync(_event);
+                var result = await _unitOfWork.CommitAsync();
+                await _unitOfWork.CommitTransaction();
+                return result;
+            }
+            catch
+            {
+                await _unitOfWork.RollbackAsync();
+                throw;
+            }
+
         }
 
-        public async Task DeleteManufacturerAsync(Event _event)
+        public async Task<int> DeleteEventAsync(Event _event)
         {
-            await _unitOfWork.EventRepository.RemoveAsync(_event);
-            await _unitOfWork.CommitAsync();
-            await _unitOfWork.CommitTransaction();
+            try
+            {
+                await _unitOfWork.EventRepository.RemoveAsync(_event);
+                var result = await _unitOfWork.CommitAsync();
+                await _unitOfWork.CommitTransaction();
+                return result;
+            }
+            catch
+            {
+                await _unitOfWork.RollbackAsync();
+                throw;
+            }
+
         }
 
-        public async Task<IEnumerable<Event>> GetAllManufacturerAsync()
+        public async Task<IEnumerable<Event>> GetAllEventsAsync()
         {
             return await _unitOfWork.EventRepository.GetAllAsync();
         }
 
-        public async Task<IEnumerable<Event>> GetAllPagedManufacturerAsync(int page, int pageSize)
+        public async Task<IEnumerable<Event>> GetAllPagedEventsAsync(int page, int pageSize)
         {
             var result = await _unitOfWork.EventRepository
               .GetPagedAsync(page, pageSize, null, orderBy: q => q.OrderBy(p => p.Id), true);
             return result;
         }
 
-        public async Task<Event> GetManufacturerByIdAsync(int id)
+        public async Task<Event> GetEventByIdAsync(int id)
         {
             return await _unitOfWork.EventRepository.GetByIdAsync(id);
+        }
+
+        public async Task<IEnumerable<Event>> GetIntervalEvent(DateTime start, DateTime end)
+        {
+            return await _unitOfWork.EventRepository
+                .GetWhereAsync(e => e.Start.Equals(start) && e.End.Equals(end));
         }
 
         public async Task RollbackTransaction()
@@ -58,11 +84,21 @@ namespace SupplyChain.Services
             await _unitOfWork.RollbackAsync();
         }
 
-        public async Task UpdateManufacturerAsync(Event _event)
+        public async Task<int> UpdateEventAsync(Event _event)
         {
-            await _unitOfWork.EventRepository.UpdateAsync(_event);
-            await _unitOfWork.CommitAsync();
-            await _unitOfWork.CommitTransaction();
+            try
+            {
+                await _unitOfWork.EventRepository.UpdateAsync(_event);
+                var result = await _unitOfWork.CommitAsync();
+                await _unitOfWork.CommitTransaction();
+                return result;
+            }
+            catch
+            {
+                await _unitOfWork.RollbackAsync();
+                throw;
+            }
+
         }
     }
 }

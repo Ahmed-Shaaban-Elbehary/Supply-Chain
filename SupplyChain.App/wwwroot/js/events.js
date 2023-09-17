@@ -38,11 +38,11 @@ var events = (() => {
         const hideloader = app.showloader('page-content');
         app.DeleteConfirmMessage().then((result) => {
             if (result.isConfirmed) {
-                let url = base_url + "/DeleteUser/" + userId;
+                let url = base_url + "/DeleteEvent/" + userId;
                 app.ajax_request(url, 'DELETE', 'json', null)
                     .then((resonse) => {
                         if (resonse.success == true) {
-                            app.SuccessAlertMessage('Delete User Compeleted Successfully!')
+                            app.SuccessAlertMessage('Delete Event Compeleted Successfully!')
                                 .then((result) => {
                                     if (result.dismiss === Swal.DismissReason.timer) {
                                         location.reload();
@@ -65,11 +65,31 @@ var events = (() => {
         })
     }
 
+    OpenGeneralModalForEdit = (eventId) => {
+        let url = "/Setup/AddEditEvent"
+        let data = { id: eventId };
+        app.ajax_request(url, 'GET', 'html', data)
+            .then((resonse) => {
+                $('#general-partial-modal').find('#general-modal-content').html(resonse);
+                $('#general-partial-modal').modal('show');
+            })
+            .catch((xhr, status, error) => {
+                console.error(error);
+            })
+    }
+
     return {
         show_modal_init: () => {
             var button = document.getElementById('open-event-modal');
             if (button != null)
                 button.addEventListener('click', OpenGeneralModal);
+        }, add_event: (event) => {
+            AddEvent(event);
+        }, load_edit_modal: (id) => {
+            OpenGeneralModalForEdit(id);
+        },
+        delete_event_item: (id) => {
+            DeleteSelectedItem(id);
         }
     }
 })();

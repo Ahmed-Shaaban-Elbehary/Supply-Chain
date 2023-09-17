@@ -57,6 +57,11 @@ namespace SupplyChain.Infrastructure.Repositories
             return _set.AsQueryable();
         }
 
+        public async Task<IEnumerable<T>> GetAsync(Expression<Func<T, bool>> predicate, Expression<Func<T, T>> select)
+        {
+            return await _set.Where(predicate).Select(select).ToListAsync();
+        }
+
         public async Task<T> GetByIdAsync(int id)
         {
             var result = await _set.FindAsync(id);

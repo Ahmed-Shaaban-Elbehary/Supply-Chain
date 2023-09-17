@@ -9,13 +9,14 @@ namespace SupplyChain.Services.Contracts
 {
     public interface IEventService
     {
-        Task<IEnumerable<Event>> GetAllManufacturerAsync();
-        Task<IEnumerable<Event>> GetAllPagedManufacturerAsync(int page, int pageSize);
-        Task<Event> GetManufacturerByIdAsync(int id);
-        Task CreateManufacturerAsync(Event _event);
-        Task UpdateManufacturerAsync(Event _event);
-        Task DeleteManufacturerAsync(Event _event);
-        Task<int> CountManufacturerAsync();
+        Task<IEnumerable<Event>> GetAllEventsAsync();
+        Task<IEnumerable<Event>> GetAllPagedEventsAsync(int page, int pageSize);
+        Task<Event> GetEventByIdAsync(int id);
+        Task<IEnumerable<Event>> GetIntervalEvent(DateTime start, DateTime end);
+        Task<int> CreateEventAsync(Event _event);
+        Task<int> UpdateEventAsync(Event _event);
+        Task<int> DeleteEventAsync(Event _event);
+        Task<int> CountEventAsync();
         Task RollbackTransaction();
     }
 }
