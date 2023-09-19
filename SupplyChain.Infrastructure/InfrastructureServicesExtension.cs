@@ -26,7 +26,7 @@ namespace SupplyChain.Infrastructure
             services.AddScoped<IUserRoleRepository, UserRoleRepository>();
             services.AddScoped<IEventRepository, EventRepository>();
             services.AddScoped<IProductEventRepository, ProductEventRepository>();
-            services.AddScoped<IEventStatusRepository, EventStatusRepository>();
+            services.AddScoped<INotifcationRepository, NotificationRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             return services;
         }

@@ -24,10 +24,5 @@ namespace SupplyChain.Infrastructure.Repositories
 
             return (int)(property?.GetValue(_event) ?? 0);
         }
-
-        public async Task<IEnumerable<Event>> ExecSqlQuery(string sql, params object[] parameters)
-        {
-            return await _context.Events.FromSqlRaw(sql, parameters).ToListAsync();
-        }
     }
 }

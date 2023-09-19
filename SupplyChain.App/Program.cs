@@ -15,15 +15,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddMvc();
 
-//using session state
-// Using the GetValue<type>(string key) method
-double sessionTimeout = builder.Configuration.GetValue<double>("SessionTimeOut");
-builder.Services.AddDistributedMemoryCache();
-builder.Services.AddSession(options =>
-{
-    options.IdleTimeout = TimeSpan.FromMinutes(sessionTimeout);
-});
-
 //Infrastructure Services
 builder.Services.InfrastructureServices(builder.Configuration);
 
@@ -43,7 +34,6 @@ builder.Services.AddScoped<IPermissionService, PermissionService>();
 builder.Services.AddScoped<IUserRoleService, UserRoleService>();
 builder.Services.AddScoped<IRolePermissionService, RolePermissionService>();
 builder.Services.AddScoped<IEventService, EventService>();
-builder.Services.AddScoped<IEventStatusService, EventStatusService>();
 builder.Services.AddScoped<IProductEventService, ProductEventService>();
 #endregion
 
@@ -61,9 +51,6 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
 }
-
-app.UseSession();
-
 app.UseStaticFiles();
 
 app.UseRouting();
@@ -72,7 +59,7 @@ app.UseAuthorization();
 
 app.UseAuthentication();
 
-//app.UseAuthenticationMiddleware();
+app.UseAuthenticationMiddleware();
 
 app.MapHub<NotificationHub>("/notificationHub");
 

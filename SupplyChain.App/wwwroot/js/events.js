@@ -1,16 +1,14 @@
 ﻿var base_url = "/Event";
+var events = (() => {
 
-const events = (() => {
-
-    const OpenGeneralModal = () => {
-        $('#general-partial-modal').find('.modal-title').text('Add Event');
+    OpenGeneralModal = () => {
         $('#general-modal-content').empty();
         $('#general-modal-content').load('/Event/AddEditEvent');
     }
 
-    const AddEvent = (event) => {
+    AddEvent = (event) => {
         event.preventDefault();
-        const hideloader = app.showloader('calendar');
+        const hideloader = app.showloader('event-card');
         var formElement = event.target.closest('form');
         var formData = new FormData(formElement);
         let url = $(formElement).attr('action');
@@ -20,12 +18,8 @@ const events = (() => {
                     app.fillErrorMessageContainer(response.message);
                     app.reEnterFormData(formElement, formData);
                 } else {
-                    app.showhideModal('general-partial-modal');
+                    app.closeGeneralPatialModal();
                     app.SuccessAlertMessage(response.message);
-                    if (calendar) {
-                        calendar.refetchEvents();
-                        setTimeout(() => { hideloader() }, 1000)
-                    }
                 }
             })
             .catch((xhr, status, error) => {
@@ -34,14 +28,13 @@ const events = (() => {
                     app.reEnterFormData(formElement, formData);
                     hideloader();
                 } else {
-                    console.error(xhr);
                     app.FailAlertMessage("Oops, Error Occurred, Please Try Again!");
                     hideloader();
                 }
             })
     }
 
-    const DeleteSelectedItem = (eventId) => {
+    DeleteSelectedItem = (eventId) => {
         const hideloader = app.showloader('page-content');
         app.DeleteConfirmMessage().then((result) => {
             if (result.isConfirmed) {
@@ -52,8 +45,7 @@ const events = (() => {
                             app.SuccessAlertMessage('Delete Event Compeleted Successfully!')
                                 .then((result) => {
                                     if (result.dismiss === Swal.DismissReason.timer) {
-                                        $('#calendar').fullCalendar('refetchEvents');
-                                        //location.reload();
+                                        location.reload();
                                     }
                                 });
                         } else {
@@ -73,21 +65,20 @@ const events = (() => {
         })
     }
 
-    const OpenGeneralModalForEdit = (eventId) => {
+    OpenGeneralModalForEdit = (eventId) => {
         let url = base_url + "/AddEditEvent"
         let data = { id: eventId };
         app.ajax_request(url, 'GET', 'html', data)
             .then((resonse) => {
-                $('#general-partial-modal').find('.modal-title').text('Edit Event');
                 $('#general-partial-modal').find('#general-modal-content').html(resonse);
-                app.showhideModal('general-partial-modal');
+                $('#general-partial-modal').modal('show');
             })
             .catch((xhr, status, error) => {
                 console.error(error);
             })
     }
 
-    const GetEventById = (eventId) => {
+    GetEventById = (eventId) => {
         let url = base_url + "/GetEventById/" + eventId;
         app.ajax_request(url, 'GET', 'json', null)
             .then((response) => {
@@ -97,18 +88,6 @@ const events = (() => {
                 console.error(error);
             });
 
-    }
-
-    const OnEventBlockQuoteClick = (eventId) => {
-        let url = `/Event/UpdateEventAsRead/${eventId}`;
-        app.ajax_request(url, 'GET', 'html', null)
-            .then((res) => {
-                $('#event-details-partial-modal').find('#event-details-modal-content').html(res);
-                $('#event-details-partial-modal').modal('show');
-            })
-            .catch((xhr, status, error) => {
-                console.error(error);
-            })
     }
 
     return {
@@ -126,14 +105,11 @@ const events = (() => {
         },
         delete_event_item: (eventId) => {
             DeleteSelectedItem(eventId);
-        },
-        on_event_block_quote_click: (eventId) => {
-            OnEventBlockQuoteClick(eventId);
         }
     }
 })();
 
 //self-invoking
-(() => {
+(function () {
     events.show_modal_init();
 })();

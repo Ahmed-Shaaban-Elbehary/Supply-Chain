@@ -1,8 +1,10 @@
 ﻿@using SupplyChain.Services;
 @model SupplyChain.App.ViewModels.EventViewModel
 
+@{
+    bool inEditMode = Boolean.Parse(ViewBag.isEdit);
+}
 <form asp-action="AddEditEvent" onsubmit="events.add_event(event)">
-    <input type="hidden" asp-for="Id" />
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="alert alert-danger text-center p-1 d-none">
         <small id="error-message-content"></small>
@@ -51,12 +53,17 @@
             </div>
         </div>
     </div>
-    @if (Model.IsInEditMode && await CurrentUser.HasPermissionAsync("HasPermissionToPublishEvent"))
+    @if (inEditMode && await CurrentUser.HasPermissionAsync("HasPermissionToPublishEvent"))
     {
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    <label asp-for="Active" class="control-label mr-2">Publish Now <input asp-for="Active" type="checkbox" class="align-middle" /></label>
+                    <div class="form-group">
+                        <label asp-for="Active" class="control-label mr-2">Publish Now</label>
+                        <div>
+                            <input asp-for="Active" type="checkbox" class="align-middle" />
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -64,7 +71,6 @@
     <div class="row">
         <button type="submit" class="btn btn-outline-primary btn-block">Save</button>
     </div>
-
 </form>
 <script>
     $(() => {
@@ -80,14 +86,14 @@
         });
     }
     function SetSelectedValue() {
-        @{
-            if (Model.ProductIds is not null)
-            {
-                <text>
-                    var myArray = [@Html.Raw(string.Join(",", Model.ProductIds))];
-                    $("#ProductIds").val(myArray).trigger("chosen:updated");
-                </text>
-            }
+    @{
+        if (Model.ProductIds is not null)
+        {
+            <text>
+                                        var myArray = [@Html.Raw(string.Join(",", Model.ProductIds))];
+                $("#ProductIds").val(myArray).trigger("chosen:updated");
+            </text>
         }
     }
+                }
 </script>
