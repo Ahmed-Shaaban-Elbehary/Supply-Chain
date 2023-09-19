@@ -107,7 +107,7 @@ namespace SupplyChain.App.Controllers
             DateTime _e = DateTime.Parse(end);
             var ev = await _eventService.GetIntervalEvent(_s, _e);
             string result = string.Empty;
-            if (ev != null)
+            if (ev.Count() > 0)
             {
                 List<CalenderViewModel> vm = new List<CalenderViewModel>();
                 foreach (var item in ev)
@@ -115,8 +115,9 @@ namespace SupplyChain.App.Controllers
                     vm.Add(new CalenderViewModel
                     {
                         title = item.Title,
-                        start = item.Start,
-                        end = item.End
+                        description = item.Description,
+                        start = item.StartIn,
+                        end = item.EndIn
                     });
                 }
                 result = JsonConvert.SerializeObject(vm);

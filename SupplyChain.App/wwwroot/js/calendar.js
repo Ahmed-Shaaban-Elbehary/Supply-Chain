@@ -17,8 +17,8 @@
                 // your event source
                 {
                     url: '/Event/GetEvents', // use the `url` property
-                    color: 'yellow',    // an option!
-                    textColor: 'black'  // an option!
+                    color: 'yellow', 
+                    textColor: 'black',
                 }
             ]
         });

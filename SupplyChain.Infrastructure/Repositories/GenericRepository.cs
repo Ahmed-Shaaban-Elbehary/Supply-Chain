@@ -46,7 +46,6 @@ namespace SupplyChain.Infrastructure.Repositories
         {
             await _context.Database.ExecuteSqlRawAsync(sql, parameters);
         }
-
         public async Task<IEnumerable<T>> GetAllAsync()
         {
             return await _set.ToListAsync();

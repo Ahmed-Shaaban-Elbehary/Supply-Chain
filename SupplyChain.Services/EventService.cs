@@ -76,7 +76,7 @@ namespace SupplyChain.Services
         public async Task<IEnumerable<Event>> GetIntervalEvent(DateTime start, DateTime end)
         {
             return await _unitOfWork.EventRepository
-                .GetWhereAsync(e => e.Start.Equals(start) && e.End.Equals(end));
+                .GetWhereAsync(e => e.StartIn >= start && e.EndIn <= end);
         }
 
         public async Task RollbackTransaction()

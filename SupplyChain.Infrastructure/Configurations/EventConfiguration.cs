@@ -16,8 +16,8 @@ namespace SupplyChain.Infrastructure.Configurations
             builder.HasKey(e => e.Id);
             builder.Property(e => e.Title).IsRequired();
             builder.Property(e => e.Description).IsRequired();
-            builder.Property(e => e.Start).IsRequired();
-            builder.Property(e => e.End).IsRequired();
+            builder.Property(e => e.StartIn).IsRequired();
+            builder.Property(e => e.EndIn).IsRequired();
             builder.Property(e => e.CreatedBy).IsRequired();
             builder.Property(e => e.CreatedIn).IsRequired();
             builder.Property(e => e.Active).IsRequired().HasDefaultValue(false);
