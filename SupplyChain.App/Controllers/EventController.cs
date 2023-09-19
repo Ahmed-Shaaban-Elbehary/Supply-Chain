@@ -49,14 +49,14 @@ namespace SupplyChain.App.Controllers
                 else
                 {
                     ViewBag.isEdit = false;
+                    vm.StartIn = DateTime.Now;
+                    vm.EndIn = DateTime.Now;
                 }
                 var products = await _productService.GetAllProductsLightWeightAsync();
                 foreach (var product in products)
                 {
                     vm.Products.Add(new ProductSelectedListViewModel { Id = product.Id, Name = product.Name });
                 }
-                vm.StartIn = DateTime.Now;
-                vm.EndIn = DateTime.Now;
                 return PartialView("~/Views/Event/PartialViews/_AddEditEventForm.cshtml", vm);
             }
             catch (Exception ex)
@@ -94,6 +94,12 @@ namespace SupplyChain.App.Controllers
                     {
                         await _eventService.UpdateEventAsync(ev);
                         await _productEventService.UpdateProductEventAsync(ev, vm.ProductIds);
+
+                        if (vm.Active)
+                        {
+
+                        }
+
                         return Json(new ApiResponse<bool>(true, true, "An event was successfully updated!"));
                     }
                     catch (Exception ex)
