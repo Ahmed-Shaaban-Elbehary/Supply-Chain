@@ -26,7 +26,7 @@ namespace SupplyChain.Services
         {
             try
             {
-                await _unitOfWork.EventRepository.AddAsync(_event);
+                await _unitOfWork.EventRepository.AddEventAsync(_event);
                 var result = await _unitOfWork.CommitAsync();
                 await _unitOfWork.CommitTransaction();
                 return result;
@@ -100,5 +100,7 @@ namespace SupplyChain.Services
             }
 
         }
+
+        
     }
 }
