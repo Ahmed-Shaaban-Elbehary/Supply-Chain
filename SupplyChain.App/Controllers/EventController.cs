@@ -100,7 +100,6 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpGet]
-        [DontWrapResult]
         public async Task<string> GetEvents(string start, string end)
         {
             DateTime _s = DateTime.Parse(start);
