@@ -19,6 +19,7 @@ namespace SupplyChain.Core.Interfaces
         IRolePermissionRepository RolePermissionRepository { get; }
         IUserRoleRepository UserRoleRepository { get; }
         INotifcationRepository NotifcationRepository { get; }
+        IEventRepository EventRepository { get; }
         Task<int> CommitAsync();
         Task Detach<T>(T entity) where T : class;
         Task RollbackAsync();

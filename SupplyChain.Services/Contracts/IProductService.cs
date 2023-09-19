@@ -5,6 +5,7 @@ namespace SupplyChain.Services.Contracts
     public interface IProductService
     {
         Task<IEnumerable<Product>> GetAllProductsAsync();
+        Task<IEnumerable<Product>> GetAllProductsLightWeightAsync();
         Task<IEnumerable<Product>> GetAllPagedProductsAsync(int page, int pageSize);
         Task<Product> GetProductByIdAsync(int id);
         Task CreateProductAsync(Product product);

@@ -22,12 +22,14 @@ namespace SupplyChain.Services
         {
             await _unitOfWork.ManufacturerRepository.AddAsync(manufacturer);
             await _unitOfWork.CommitAsync();
+            await _unitOfWork.CommitTransaction();
         }
 
         public async Task DeleteManufacturerAsync(Manufacturer manufacturer)
         {
             await _unitOfWork.ManufacturerRepository.RemoveAsync(manufacturer);
             await _unitOfWork.CommitAsync();
+            await _unitOfWork.CommitTransaction();
         }
 
         public async Task<IEnumerable<Manufacturer>> GetAllManufacturerAsync()
@@ -56,6 +58,7 @@ namespace SupplyChain.Services
         {
             await _unitOfWork.ManufacturerRepository.UpdateAsync(manufacturer);
             await _unitOfWork.CommitAsync();
+            await _unitOfWork.CommitTransaction();
         }
     }
 }

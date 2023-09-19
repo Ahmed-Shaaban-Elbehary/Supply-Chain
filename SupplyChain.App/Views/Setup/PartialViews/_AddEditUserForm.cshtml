@@ -45,7 +45,9 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label class="control-label">User Role</label>
-                @Html.DropDownListFor(m => m.RoleIds, Model.Roles, null, new { @class="form-control form-control-chosen", multiple = "true" })
+                @Html.DropDownListFor(m => m.RoleIds,
+                new SelectList(Model.Roles.OrderBy(r => r.Id), "Id", "Name"),
+                new { @class = "form-control form-control-chosen", multiple = "true" })
             </div>
         </div>
         <div class="col-md-6">
@@ -69,11 +71,40 @@
 </form>
 <script>
     $(() => {
+        chosenInitiation();
+        SetSelectedValue();
+    });
+
+    function chosenInitiation() {
         $("#RoleIds").chosen({
             no_results_text: "Oops, nothing found!",
             width: "100%",
             placeholder_text_multiple: "type to search"
         });
-    });
+    }
+    // function chosenInitiation() {
+    //     $("#RoleIds").ajaxChosen({
+    //         type: 'GET',
+    //         url: '/ajax-chosen/data.php',
+    //         dataType: 'json'
+    //     }, function (data) {
+    //         var results = [];
+    //         $.each(data, function (i, val) {
+    //             results.push({ value: val.value, text: val.text });
+    //         });
+    //         return results;
+    //     });
+    // }
+    function SetSelectedValue() {
+        @{
+            if (Model.RoleIds is not null)
+            {
+                <text>
+                    var myArray = [@Html.Raw(string.Join(",", Model.RoleIds))];
+                    $("#RoleIds").val(myArray).trigger("chosen:updated");
+                </text>
+            }
+        }
+    }
 </script>
 

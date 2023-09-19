@@ -21,6 +21,11 @@ namespace SupplyChain.App.Controllers
         [HttpGet]
         public IActionResult Login()
         {
+            var userIsLoggedIn = CurrentUser.GetUserName();
+            if (!string.IsNullOrEmpty(userIsLoggedIn))
+            {
+                return RedirectToAction("Index", "Product");
+            }
             return View();
         }
 
@@ -59,5 +64,6 @@ namespace SupplyChain.App.Controllers
             CurrentUser.Logout();
             return RedirectToAction("Login");
         }
+
     }
 }

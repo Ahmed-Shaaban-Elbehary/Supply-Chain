@@ -1,0 +1,40 @@
+﻿@using SupplyChain.Services;
+@{
+    ViewData["Title"] = "Country";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles {
+    <style>
+        .event-item {
+            padding: 0;
+            margin: 0;
+        }
+
+        .text-end {
+            text-align: end !important;
+        }
+    </style>
+}
+<div class="row justify-content-end">
+    <div class="col-md-3 h2 mb-3 text-end">
+        @if (await CurrentUser.HasPermissionAsync("CanAddEvent"))
+        {
+            <button id="open-event-modal" class="btn btn-success btn-lg text-light"
+                    data-toggle="modal" data-target="#general-partial-modal">
+                <i class="fas fa-calendar-plus pr-1"></i> Add Event
+            </button>
+        }
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="card card-primary">
+            <div class="card-body p-0">
+                <div id="calendar"></div>
+            </div>
+        </div>
+    </div>
+</div>
+@await Html.PartialAsync("_PartialModal", new ViewDataDictionary(ViewData) { { "ModalTitle", "Add/Edit Event" } })
+<script src="~/js/calendar.js"></script>

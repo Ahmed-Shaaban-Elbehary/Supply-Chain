@@ -27,12 +27,14 @@ namespace SupplyChain.Services
         {
             await _unitOfWork.ProductCategoryRepository.AddAsync(productCategory);
             await _unitOfWork.CommitAsync();
+            await _unitOfWork.CommitTransaction();
         }
 
         public async Task DeleteProductCategoryAsync(ProductCategory productCategory)
         {
             await _unitOfWork.ProductCategoryRepository.RemoveAsync(productCategory);
             await _unitOfWork.CommitAsync();
+            await _unitOfWork.CommitTransaction();
         }
 
         public async Task<IEnumerable<ProductCategory>> GetAllProductCategoriesAsync()
@@ -49,6 +51,7 @@ namespace SupplyChain.Services
         {
             await _unitOfWork.ProductCategoryRepository.UpdateAsync(productCategory);
             await _unitOfWork.CommitAsync();
+            await _unitOfWork.CommitTransaction();
         }
 
         public async Task<IEnumerable<ProductCategory>> GetAllPagedProductCategoriesAsync(int page, int pageSize)

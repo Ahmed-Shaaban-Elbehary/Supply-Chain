@@ -15,7 +15,17 @@ namespace SupplyChain.Services
 
         public async Task<IEnumerable<Product>> GetAllProductsAsync()
         {
-            return await _unitOfWork.ProductRepository.GetAllAsync();
+            var list = await _unitOfWork.ProductRepository.GetWhereAsync(e => e.Deleted == false);
+            return list;
+        }
+        public async Task<IEnumerable<Product>> GetAllProductsLightWeightAsync()
+        {
+            var list = await _unitOfWork.ProductRepository
+                .GetAsync(
+                    e => e.Deleted == false,
+                    e => new Product { Id = e.Id, Name = e.Name }
+                );
+            return list;
         }
 
         public async Task<Product> GetProductByIdAsync(int id)
@@ -27,18 +37,21 @@ namespace SupplyChain.Services
         {
             await _unitOfWork.ProductRepository.AddAsync(product);
             await _unitOfWork.CommitAsync();
+            await _unitOfWork.CommitTransaction();
         }
 
         public async Task UpdateProductAsync(Product product)
         {
             await _unitOfWork.ProductRepository.UpdateAsync(product);
             await _unitOfWork.CommitAsync();
+            await _unitOfWork.CommitTransaction();
         }
 
         public async Task DeleteProductAsync(Product product)
         {
             await _unitOfWork.ProductRepository.RemoveAsync(product);
             await _unitOfWork.CommitAsync();
+            await _unitOfWork.CommitTransaction();
         }
 
         public async Task<IEnumerable<Product>> GetAllPagedProductsAsync(int page, int pageSize)

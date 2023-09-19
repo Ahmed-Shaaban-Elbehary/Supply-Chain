@@ -1,4 +1,7 @@
+using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.DependencyInjection;
 using SupplyChain.App.App_Class;
+using SupplyChain.App.Notification;
 using SupplyChain.App.Profiles;
 using SupplyChain.App.Utils;
 using SupplyChain.App.Utils.Contracts;
@@ -30,11 +33,14 @@ builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IPermissionService, PermissionService>();
 builder.Services.AddScoped<IUserRoleService, UserRoleService>();
 builder.Services.AddScoped<IRolePermissionService, RolePermissionService>();
+builder.Services.AddScoped<IEventService, EventService>();
 #endregion
 
 #region Utils
 builder.Services.AddScoped<IUploadFile, UploadFile>();
 builder.Services.AddScoped<ILookUp, Lookups>();
+builder.Services.AddSignalR();
+string connString = builder.Configuration.GetConnectionString("DefaultConnection");
 #endregion
 
 var app = builder.Build();
@@ -53,6 +59,8 @@ app.UseAuthorization();
 app.UseAuthentication();
 
 app.UseAuthenticationMiddleware();
+
+app.MapHub<NotificationHub>("/notificationHub");
 
 app.MapControllerRoute(
     name: "default",

@@ -1,0 +1,80 @@
+﻿@model SupplyChain.App.ViewModels.EventViewModel
+
+<form asp-action="AddEditEvent" onsubmit="events.add_event(event)">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="alert alert-danger text-center p-1 d-none">
+        <small id="error-message-content"></small>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label asp-for="Title"></label>
+                <input asp-for="Title" class="form-control" required>
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="form-group">
+                <label asp-for="Description"></label>
+                <textarea asp-for="Description" class="form-control" required></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="Start"></label>
+                <input asp-for="Start" class="form-control" type="datetime-local" required>
+                <span asp-validation-for="Start" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="End"></label>
+                <input asp-for="End" class="form-control" type="datetime-local" required>
+                <span asp-validation-for="End" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div class="form-group">
+                    <label class="control-label">Products</label>
+                    @Html.DropDownListFor(m => m.Products,
+                    new SelectList(Model.Products.OrderBy(r => r.Id), "Id", "Name"),
+                    new { @class = "form-control form-control-chosen", multiple = "true" })
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <button type="submit" class="btn btn-outline-primary btn-block">Save</button>
+    </div>
+</form>
+<script>
+    $(() => {
+        chosenInitiation();
+        SetSelectedValue();
+    });
+
+    function chosenInitiation() {
+        $("#Products").chosen({
+            no_results_text: "Oops, nothing found!",
+            width: "100%",
+            placeholder_text_multiple: "type to search"
+        });
+    }
+    function SetSelectedValue() {
+    @{
+        if (Model.Products is not null)
+        {
+            <text>
+                var myArray = [@Html.Raw(string.Join(",", Model.Products))];
+                $("#RoleIds").val(myArray).trigger("chosen:updated");
+            </text>
+        }
+    }
+        }
+</script>

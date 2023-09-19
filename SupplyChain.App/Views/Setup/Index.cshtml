@@ -6,22 +6,22 @@
 @section Styles{
     <style>
         .setup-btn {
-            width: -webkit-fill-available;
+            width: 90%;
             height: 100px;
         }
     </style>
 }
 <div class="row">
-    @if (await CurrentUser.HasPermissionAsync("CanAccessCategory"))
+    @if (await CurrentUser.HasPermissionAsync("HasAccessToCategory"))
     {
         <div class="col-md-3">
             <a asp-action="Category" class="btn btn-outline-success btn-lg setup-btn">
-            <i class="fas fa-sitemap pt-3"></i>
-            <p>Category</p>
-        </a>
-    </div>
+                <i class="fas fa-sitemap pt-3"></i>
+                <p>Category</p>
+            </a>
+        </div>
     }
-    @if (await CurrentUser.HasPermissionAsync("CanAccessManufacturer"))
+    @if (await CurrentUser.HasPermissionAsync("HasAccessToManufacturer"))
     {
         <div class="col-md-3">
             <a asp-action="Manufacturer" class="btn btn-outline-success btn-lg setup-btn">
@@ -30,14 +30,23 @@
             </a>
         </div>
     }
-    @if (await CurrentUser.HasPermissionAsync("CanAccessUser"))
+    @if (await CurrentUser.HasPermissionAsync("HasAccessToUser"))
     {
         <div class="col-md-3">
             <a asp-action="Users" class="btn btn-outline-success btn-lg setup-btn">
-            <i class="fas fa-users-cog pt-3"></i>
-            <p>Users</p>
-        </a>
-    </div>
+                <i class="fas fa-users-cog pt-3"></i>
+                <p>Users</p>
+            </a>
+        </div>
+    }
+    @if (await CurrentUser.HasPermissionAsync("HasAccessToProduct"))
+    {
+        <div class="col-md-3">
+            <a asp-controller="Product" asp-action="Add" class="btn btn-outline-success btn-lg setup-btn">
+                <i class="nav-icon fas fa-plus pt-3"></i>
+                <p>Add New Product</p>
+            </a>
+        </div>
     }
 </div>
 

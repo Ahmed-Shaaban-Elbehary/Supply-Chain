@@ -24,6 +24,6 @@ namespace SupplyChain.App.ViewModels
         [Required]
         public List<int> RoleIds { get; set; }
 
-        public SelectList Roles { get; set; }
+        public List<RolesViewModel> Roles { get; set; } = new List<RolesViewModel>();
     }
 }

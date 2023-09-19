@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -10,6 +11,7 @@ namespace SupplyChain.Core.Interfaces
     public interface IGenericRepository<T> where T : class
     {
         Task<T> GetByIdAsync(int id);
+        Task<IEnumerable<T>> GetAsync(Expression<Func<T, bool>> predicate, Expression<Func<T, T>> select);
         Task<IEnumerable<T>> GetAllAsync();
         IQueryable<T> GetAllQueryable();
         Task<IEnumerable<T>> GetWhereAsync(Expression<Func<T, bool>> predicate);

@@ -40,6 +40,9 @@ namespace SupplyChain.Infrastructure
             modelBuilder.ApplyConfiguration(new NotificationConfiguration());
             modelBuilder.ApplyConfiguration(new CartConfiguration());
             modelBuilder.ApplyConfiguration(new CartItemConfiguration());
+            modelBuilder.ApplyConfiguration(new EventConfiguration());
+            modelBuilder.ApplyConfiguration(new UserEventConfiguration());
+            modelBuilder.ApplyConfiguration(new ProductEventConfiguration());
         }
     }
 }

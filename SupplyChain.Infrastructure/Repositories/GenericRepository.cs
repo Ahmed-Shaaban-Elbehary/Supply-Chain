@@ -46,7 +46,6 @@ namespace SupplyChain.Infrastructure.Repositories
         {
             await _context.Database.ExecuteSqlRawAsync(sql, parameters);
         }
-
         public async Task<IEnumerable<T>> GetAllAsync()
         {
             return await _set.ToListAsync();
@@ -55,6 +54,11 @@ namespace SupplyChain.Infrastructure.Repositories
         public IQueryable<T> GetAllQueryable()
         {
             return _set.AsQueryable();
+        }
+
+        public async Task<IEnumerable<T>> GetAsync(Expression<Func<T, bool>> predicate, Expression<Func<T, T>> select)
+        {
+            return await _set.Where(predicate).Select(select).ToListAsync();
         }
 
         public async Task<T> GetByIdAsync(int id)

@@ -4,11 +4,12 @@
     ViewData["Title"] = "Manufacturer";
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewData["mTitle"] = "Add/Edit Manufacturer";
+    int count = 1;
 }
 
 <div class="card" id="manufacturer-card">
     <div class="card-header">
-        <h3 class="card-title">Products manufacturer</h3>
+        <h3 class="card-title">Products Manufacturer</h3>
         <button class="btn btn-small btn-outline-success float-right" id="open-productManufacturer-modal" data-toggle="modal" data-target="#general-partial-modal">
             <i class="fas fa-plus"></i>
         </button>
@@ -18,7 +19,7 @@
             <table id="page-content" class="table table-bordered">
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        <th>I</th>
                         <th>Name</th>
                         <th>Actions</th>
                     </tr>
@@ -27,7 +28,7 @@
                     @foreach (var manufacturer in Model.Model)
                     {
                         <tr>
-                            <td>@manufacturer.Id</td>
+                            <td>@count</td>
                             <td>@manufacturer.Name</td>
                             <td>
                                 <button id="edit-form-modal" type="button" class="btn btn-sm btn-warning" data-id="@manufacturer.Id"
@@ -40,6 +41,7 @@
                                 </button>
                             </td>
                         </tr>
+                        { count++; }
                     }
                     </>
                 </tbody>
@@ -50,4 +52,4 @@
         @await Html.PartialAsync("~/Views/Pagers/_PagerManufacturer.cshtml", Model)
     </div>
 </div>
-@await Html.PartialAsync("_PartialModal")
+@await Html.PartialAsync("_PartialModal", new ViewDataDictionary(ViewData) { { "ModalTitle", "Add/Edit Manufacturer" } })

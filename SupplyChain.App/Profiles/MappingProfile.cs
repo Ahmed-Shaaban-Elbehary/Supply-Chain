@@ -18,6 +18,10 @@ namespace SupplyChain.App.Profiles
                 .ForMember(dest => dest.UserRoles, opt => opt.Ignore())
                 .ForMember(dest => dest.RolePermissions, opt => opt.Ignore())
                 .ReverseMap();
+            CreateMap<Event, EventViewModel>()
+            .ForMember(dest => dest.Users, opt => opt.MapFrom(src => src.UserEvents))
+            .ForMember(dest => dest.Products, opt => opt.MapFrom(src => src.ProductEvents))
+            .ReverseMap();
         }
     }
 }

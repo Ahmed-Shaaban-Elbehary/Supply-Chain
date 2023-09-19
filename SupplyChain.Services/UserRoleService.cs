@@ -87,14 +87,14 @@ namespace SupplyChain.Services
             return result;
         }
 
-        public async Task<int> UpdateUserRolesAsync(int userId, List<int> roleIds)
+        public async Task<int> UpdateUserRolesAsync(User user, List<int> roleIds)
         {
             // Remove the existing user roles for the user.
-            var existingUserRoles = await _unitOfWork.UserRoleRepository.GetWhereAsync(ur => ur.UserId == userId);
+            var existingUserRoles = await _unitOfWork.UserRoleRepository.GetWhereAsync(ur => ur.UserId == user.Id);
             await _unitOfWork.UserRoleRepository.RemoveRangeAsync(existingUserRoles);
 
             // Add the new user roles for the user.
-            //var addedRolesCount = await AddUserRolesAsync(userId, roleIds);
+            var addedRolesCount = await AddUserRolesAsync(user, roleIds);
             return await _unitOfWork.CommitAsync();
         }
     }

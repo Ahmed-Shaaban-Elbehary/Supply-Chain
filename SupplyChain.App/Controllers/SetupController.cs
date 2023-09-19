@@ -1,11 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Data.SqlClient;
-using SupplyChain.App.Utils.Validations;
 using SupplyChain.App.ViewModels;
 using SupplyChain.Core.Models;
-using SupplyChain.Services;
 using SupplyChain.Services.Contracts;
 
 namespace SupplyChain.App.Controllers
@@ -181,8 +177,6 @@ namespace SupplyChain.App.Controllers
         }
         #endregion Manufacturer
 
-        #region User Roles Management 
-
         #region Users
 
         [HttpGet]
@@ -203,23 +197,32 @@ namespace SupplyChain.App.Controllers
         [HttpGet]
         public async Task<ActionResult> AddEditUser(int id)
         {
-            var vm = new UserViewModel();
-
-            if (id > 0)
+            try
             {
-                ViewBag.isEdit = true;
-                var user = await _userService.GetUserByIdAsync(id);
-                vm = _mapper.Map<UserViewModel>(user);
-                vm.RoleIds = user.UserRoles.Select(e => e.RoleId).ToList();
+                var vm = new UserViewModel();
+                if (id > 0)
+                {
+                    ViewBag.isEdit = true;
+                    var user = await _userService.GetUserByIdAsync(id);
+                    vm = _mapper.Map<UserViewModel>(user);
 
+                    vm.RoleIds = user.UserRoles.Select(e => e.RoleId).ToList();
+                }
+                else
+                {
+                    ViewBag.isEdit = false;
+                }
+                var roles = await _roleService.GetAllRolesAsync();
+                foreach (var role in roles)
+                {
+                    vm.Roles.Add(new RolesViewModel { Id = role.Id, Name = role.Name });
+                }
+                return PartialView("~/Views/Setup/PartialViews/_AddEditUserForm.cshtml", vm);
             }
-            else
+            catch (Exception ex)
             {
-                ViewBag.isEdit = false;
+                return RedirectToAction("Index", "Error", ErrorResponse.PreException(ex));
             }
-            var roles = await _roleService.GetAllRolesAsync();
-            vm.Roles = new SelectList(roles, "Id", "Name");
-            return PartialView("~/Views/Setup/PartialViews/_AddEditUserForm.cshtml", vm);
         }
 
         [HttpPost]
@@ -234,9 +237,7 @@ namespace SupplyChain.App.Controllers
                 {
                     try
                     {
-                        //Add User
                         var newId = await _userService.CreateUserAsync(user, user.Password);
-                        //Add User Role
                         var newRoles = await _userRoleService.AddUserRolesAsync(user, vm.RoleIds);
                         return Json(new ApiResponse<bool>(true, true, "A user was successfully created!"));
                     }
@@ -251,7 +252,8 @@ namespace SupplyChain.App.Controllers
                 {
                     try
                     {
-                        //await _userService.UpdateUserAsync(user, vm.Password, vm.RoleIds, vm.IsPasswordChanged);
+                        await _userService.UpdateUserAsync(user, vm.Password, vm.RoleIds, vm.IsPasswordChanged);
+                        await _userRoleService.UpdateUserRolesAsync(user, vm.RoleIds);
                         return Json(new ApiResponse<bool>(true, true, "A user was successfully updated!"));
                     }
                     catch (Exception ex)
@@ -311,10 +313,18 @@ namespace SupplyChain.App.Controllers
 
         #endregion Users
 
+        #region ROLES
         public IActionResult Roles()
         {
             return View();
         }
+        public IActionResult UserRoles()
+        {
+            return View();
+        }
+        #endregion ROLES
+
+        #region PERMISSIONS
         public IActionResult Permissions()
         {
             return View();
@@ -323,10 +333,7 @@ namespace SupplyChain.App.Controllers
         {
             return View();
         }
-        public IActionResult UserRoles()
-        {
-            return View();
-        }
-        #endregion User Roles Management System 
+        #endregion PERMISSIONS
+
     }
 }

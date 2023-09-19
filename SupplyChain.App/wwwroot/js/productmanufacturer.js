@@ -24,8 +24,8 @@ var prmanufacturer = (() => {
 
     }
     function DeleteSelectedItem(manufacturerId) {
+        const hideloader = app.showloader('page-content');
         app.DeleteConfirmMessage().then((result) => {
-            const hideloader = app.showloader('page-content');
             if (result.isConfirmed) {
                 let url = base_url + "/DeleteManufacturer/" + manufacturerId;
                 app.ajax_request(url, 'DELETE', 'json', null)
@@ -47,8 +47,9 @@ var prmanufacturer = (() => {
                         app.FailAlertMessage(error);
                     });
                 hideloader();
+            } else {
+                hideloader();
             }
-
         })
     }
     function OpenGeneralModalForEdit(manufacturerId) {

@@ -30,6 +30,11 @@ namespace SupplyChain.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("Deleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
                     b.Property<string>("ShippingAddress")
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
@@ -90,6 +95,59 @@ namespace SupplyChain.Infrastructure.Migrations
                     b.ToTable("CartItems");
                 });
 
+            modelBuilder.Entity("SupplyChain.Core.Models.Event", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedIn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Deleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("EndIn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Published")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<DateTime>("StartIn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Suspended")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Event");
+                });
+
             modelBuilder.Entity("SupplyChain.Core.Models.Manufacturer", b =>
                 {
                     b.Property<int>("Id")
@@ -113,6 +171,11 @@ namespace SupplyChain.Infrastructure.Migrations
                     b.Property<string>("ContactPhone")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<bool>("Deleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("Name")
                         .HasMaxLength(50)
@@ -194,6 +257,11 @@ namespace SupplyChain.Infrastructure.Migrations
                     b.Property<string>("CountryOfOriginCode")
                         .HasMaxLength(4)
                         .HasColumnType("nvarchar(4)");
+
+                    b.Property<bool>("Deleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("Description")
                         .HasMaxLength(500)
@@ -278,6 +346,21 @@ namespace SupplyChain.Infrastructure.Migrations
                     b.ToTable("ProductComponents");
                 });
 
+            modelBuilder.Entity("SupplyChain.Core.Models.ProductEvent", b =>
+                {
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("EventId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProductId", "EventId");
+
+                    b.HasIndex("EventId");
+
+                    b.ToTable("ProductEvent");
+                });
+
             modelBuilder.Entity("SupplyChain.Core.Models.Role", b =>
                 {
                     b.Property<int>("Id")
@@ -326,19 +409,28 @@ namespace SupplyChain.Infrastructure.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
+                    b.Property<bool>("Deleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<bool>("IsSupplier")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Password")
+                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
@@ -352,6 +444,21 @@ namespace SupplyChain.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("SupplyChain.Core.Models.UserEvent", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("EventId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "EventId");
+
+                    b.HasIndex("EventId");
+
+                    b.ToTable("UserEvent");
                 });
 
             modelBuilder.Entity("SupplyChain.Core.Models.UserRole", b =>
@@ -381,7 +488,13 @@ namespace SupplyChain.Infrastructure.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
+                    b.Property<bool>("Deleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
@@ -493,6 +606,25 @@ namespace SupplyChain.Infrastructure.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("SupplyChain.Core.Models.ProductEvent", b =>
+                {
+                    b.HasOne("SupplyChain.Core.Models.Event", "Event")
+                        .WithMany("ProductEvents")
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SupplyChain.Core.Models.Product", "Product")
+                        .WithMany("ProductEvents")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Event");
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("SupplyChain.Core.Models.RolePermission", b =>
                 {
                     b.HasOne("SupplyChain.Core.Models.Permission", "Permission")
@@ -510,6 +642,25 @@ namespace SupplyChain.Infrastructure.Migrations
                     b.Navigation("Permission");
 
                     b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("SupplyChain.Core.Models.UserEvent", b =>
+                {
+                    b.HasOne("SupplyChain.Core.Models.Event", "Event")
+                        .WithMany("UserEvents")
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SupplyChain.Core.Models.User", "User")
+                        .WithMany("UserEvents")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Event");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SupplyChain.Core.Models.UserRole", b =>
@@ -536,6 +687,13 @@ namespace SupplyChain.Infrastructure.Migrations
                     b.Navigation("Items");
                 });
 
+            modelBuilder.Entity("SupplyChain.Core.Models.Event", b =>
+                {
+                    b.Navigation("ProductEvents");
+
+                    b.Navigation("UserEvents");
+                });
+
             modelBuilder.Entity("SupplyChain.Core.Models.Manufacturer", b =>
                 {
                     b.Navigation("Products");
@@ -549,6 +707,8 @@ namespace SupplyChain.Infrastructure.Migrations
             modelBuilder.Entity("SupplyChain.Core.Models.Product", b =>
                 {
                     b.Navigation("Components");
+
+                    b.Navigation("ProductEvents");
                 });
 
             modelBuilder.Entity("SupplyChain.Core.Models.ProductCategory", b =>
@@ -566,6 +726,8 @@ namespace SupplyChain.Infrastructure.Migrations
             modelBuilder.Entity("SupplyChain.Core.Models.User", b =>
                 {
                     b.Navigation("Carts");
+
+                    b.Navigation("UserEvents");
 
                     b.Navigation("UserRoles");
                 });

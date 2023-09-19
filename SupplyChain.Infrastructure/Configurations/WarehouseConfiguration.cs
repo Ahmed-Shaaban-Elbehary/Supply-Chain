@@ -9,8 +9,9 @@ namespace SupplyChain.Infrastructure.Configurations
         public void Configure(EntityTypeBuilder<Warehouse> builder)
         {
             builder.HasKey(w => w.Id);
-            builder.Property(w => w.Name).HasMaxLength(50);
+            builder.Property(w => w.Name).IsRequired().HasMaxLength(50);
             builder.Property(w => w.Address).HasMaxLength(200);
+            builder.Property(w => w.Deleted).IsRequired().HasDefaultValue(false);
         }
     }
 }

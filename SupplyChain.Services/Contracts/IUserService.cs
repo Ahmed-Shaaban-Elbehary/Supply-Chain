@@ -9,7 +9,7 @@ namespace SupplyChain.Services.Contracts
         Task<IEnumerable<User>> GetAllUsersAsync();
         Task<IEnumerable<User>> GetUsersByRoleIdAsync(int roleId);
         Task<int> CreateUserAsync(User user, string password);
-        Task<int> UpdateUserAsync(User user, string newPassword, int roleId, bool IsPasswordChanged);
+        Task<int> UpdateUserAsync(User user, string newPassword, List<int> roleId, bool IsPasswordChanged);
         Task<int> DeleteUserAsync(User User);
         Task<bool> ValidateUserCredentialsAsync(string email, string password);
         Task<IEnumerable<string>> GetUserRolesAsync(int userId);

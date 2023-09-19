@@ -11,10 +11,12 @@
         public DateTime ProductionDate { get; set; }
         public DateTime ExpirationDate { get; set; }
         public string CountryOfOriginCode { get; set; }
+        public bool Deleted { get; set; }
         public int ManufacturerId { get; set; }
         public virtual Manufacturer Manufacturer { get; set; }
         public int CategoryId { get; set; }
         public virtual ProductCategory Category { get; set; }
         public virtual ICollection<ProductComponent> Components { get; set; }
+        public virtual ICollection<ProductEvent> ProductEvents { get; set; }
     }
 }

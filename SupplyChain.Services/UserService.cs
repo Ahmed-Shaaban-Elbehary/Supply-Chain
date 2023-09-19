@@ -10,11 +10,9 @@ namespace SupplyChain.Services
     public class UserService : IUserService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IUserRepository _userRepository;
         public UserService(IUnitOfWork unitOfWork, IUserRepository userRepository)
         {
             _unitOfWork = unitOfWork;
-            _userRepository = userRepository;
         }
 
         public async Task<int> CountUserAsync()
@@ -25,7 +23,7 @@ namespace SupplyChain.Services
         public async Task<int> CreateUserAsync(User user, string password)
         {
             user.Password = ComputeMD5Hash(password);
-            await _userRepository.AddUserAsync(user);
+            await _unitOfWork.UserRepository.AddUserAsync(user);
             var result = await _unitOfWork.CommitAsync();
             await _unitOfWork.CommitTransaction();
             return result;
@@ -46,7 +44,7 @@ namespace SupplyChain.Services
                 await _unitOfWork.CommitTransaction();
                 return result;
             }
-            catch (Exception)
+            catch
             {
                 await _unitOfWork.RollbackAsync();
                 throw;
@@ -97,7 +95,7 @@ namespace SupplyChain.Services
             return (await _unitOfWork.UserRepository.GetWhereAsync(u => userIds.Contains(u.Id))).ToList();
         }
 
-        public async Task<int> UpdateUserAsync(User user, string newPassword, int roleId, bool isPasswordChanged)
+        public async Task<int> UpdateUserAsync(User user, string newPassword, List<int> roleId, bool isPasswordChanged)
         {
             try
             {
@@ -117,21 +115,11 @@ namespace SupplyChain.Services
                 await _unitOfWork.Detach(userInDb);
                 await _unitOfWork.BeginTransaction();
                 await _unitOfWork.UserRepository.UpdateAsync(user);
-                var userRole = await _unitOfWork.UserRoleRepository.GetUserRoleByUserIdAsync(user.Id);
-                if (userRole != null)
-                {
-                    await _unitOfWork.UserRoleRepository.UpdateAsync(userRole);
-                }
-                else
-                {
-                    UserRole ur = new UserRole() { RoleId = roleId, UserId = user.Id };
-                    await _unitOfWork.UserRoleRepository.AddAsync(ur);
-                }
-                await _unitOfWork.CommitAsync();
+                var result = await _unitOfWork.CommitAsync();
                 await _unitOfWork.CommitTransaction();
-                return 1;
+                return result;
             }
-            catch (Exception)
+            catch
             {
                 await _unitOfWork.RollbackAsync();
                 throw;
