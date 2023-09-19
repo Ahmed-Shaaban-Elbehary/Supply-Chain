@@ -7,8 +7,7 @@ using System.Threading.Tasks;
 
 namespace SupplyChain.Core.Interfaces
 {
-    public interface IEventRepository : IGenericRepository<Event>
+    public interface IProductEventRepository : IGenericRepository<ProductEvent>
     {
-        Task<int> AddEventAsync(Event _event);
     }
 }

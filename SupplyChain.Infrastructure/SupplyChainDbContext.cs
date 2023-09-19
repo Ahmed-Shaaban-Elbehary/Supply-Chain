@@ -25,6 +25,7 @@ namespace SupplyChain.Infrastructure
         public DbSet<RolePermission> RolePermissions { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<Notification> Notifications { get; set; }
+        public DbSet<Event> Events { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new ProductConfiguration());

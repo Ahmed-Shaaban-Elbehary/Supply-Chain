@@ -16,8 +16,6 @@ namespace SupplyChain.Core.Models
         public int CreatedBy { get; set; }
         public DateTime CreatedIn { get; set; } = DateTime.Now;
         public bool Active { get; set; }
-        public bool Published { get; set; }
-        public bool Suspended { get; set; }
         public bool Deleted { get; set; }
         public virtual ICollection<UserEvent> UserEvents { get; set; }
         public virtual ICollection<ProductEvent> ProductEvents { get; set; }

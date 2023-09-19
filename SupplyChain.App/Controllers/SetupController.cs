@@ -205,7 +205,6 @@ namespace SupplyChain.App.Controllers
                     ViewBag.isEdit = true;
                     var user = await _userService.GetUserByIdAsync(id);
                     vm = _mapper.Map<UserViewModel>(user);
-
                     vm.RoleIds = user.UserRoles.Select(e => e.RoleId).ToList();
                 }
                 else

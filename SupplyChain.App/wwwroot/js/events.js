@@ -38,7 +38,7 @@ var events = (() => {
         const hideloader = app.showloader('page-content');
         app.DeleteConfirmMessage().then((result) => {
             if (result.isConfirmed) {
-                let url = base_url + "/DeleteEvent/" + userId;
+                let url = base_url + "/DeleteEvent/" + eventId;
                 app.ajax_request(url, 'DELETE', 'json', null)
                     .then((resonse) => {
                         if (resonse.success == true) {
@@ -66,7 +66,7 @@ var events = (() => {
     }
 
     OpenGeneralModalForEdit = (eventId) => {
-        let url = "/Setup/AddEditEvent"
+        let url = base_url + "/AddEditEvent"
         let data = { id: eventId };
         app.ajax_request(url, 'GET', 'html', data)
             .then((resonse) => {
@@ -78,6 +78,18 @@ var events = (() => {
             })
     }
 
+    GetEventById = (eventId) => {
+        let url = base_url + "/GetEventById/" + eventId;
+        app.ajax_request(url, 'GET', 'json', null)
+            .then((response) => {
+                console.log(response);
+            })
+            .catch((xhr, status, error) => {
+                console.error(error);
+            });
+
+    }
+
     return {
         show_modal_init: () => {
             var button = document.getElementById('open-event-modal');
@@ -85,11 +97,14 @@ var events = (() => {
                 button.addEventListener('click', OpenGeneralModal);
         }, add_event: (event) => {
             AddEvent(event);
-        }, load_edit_modal: (id) => {
-            OpenGeneralModalForEdit(id);
+        }, load_edit_modal: (eventId) => {
+            OpenGeneralModalForEdit(eventId);
         },
-        delete_event_item: (id) => {
-            DeleteSelectedItem(id);
+        get_event_by_id: (eventId) => {
+            GetEventById(eventId);
+        },
+        delete_event_item: (eventId) => {
+            DeleteSelectedItem(eventId);
         }
     }
 })();
