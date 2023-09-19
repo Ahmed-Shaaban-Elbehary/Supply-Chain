@@ -19,6 +19,7 @@ namespace SupplyChain.Infrastructure.Repositories
         private readonly IUserRoleRepository _userRoleRepository;
         private readonly INotifcationRepository _notifcationRepository;
         private readonly IEventRepository _eventRepository;
+        private readonly IProductEventRepository _productEventRepository;
         private IDbContextTransaction _transaction;
         public UnitOfWork(SupplyChainDbContext context)
         {
@@ -34,6 +35,7 @@ namespace SupplyChain.Infrastructure.Repositories
             _userRoleRepository = new UserRoleRepository(_context);
             _notifcationRepository = new NotificationRepository(_context);
             _eventRepository = new EventRepository(_context);
+            _productEventRepository = new ProductEventRepository(_context);
             _transaction = _context.Database.BeginTransactionAsync().Result;
         }
 
@@ -48,6 +50,7 @@ namespace SupplyChain.Infrastructure.Repositories
         public IUserRoleRepository UserRoleRepository => _userRoleRepository;
         public INotifcationRepository NotifcationRepository => _notifcationRepository;
         public IEventRepository EventRepository => _eventRepository;
+        public IProductEventRepository ProductEventRepository => _productEventRepository;
 
         public async Task<int> CommitAsync()
         {

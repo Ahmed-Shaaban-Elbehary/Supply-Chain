@@ -17,10 +17,14 @@
                 // your event source
                 {
                     url: '/Event/GetEvents', // use the `url` property
-                    color: 'yellow', 
-                    textColor: 'black',
+                    color: '#2c3e50', 
+                    textColor: '#fff'
                 }
-            ]
+            ],
+            eventClick: function (info) {
+                var eventId = info.event._def.publicId;
+                events.load_edit_modal(eventId);
+            }
         });
 
         calendar.render();
