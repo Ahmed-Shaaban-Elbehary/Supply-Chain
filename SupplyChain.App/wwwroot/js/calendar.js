@@ -11,8 +11,7 @@
                 center: 'title',
                 right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
             },
-            editable: true,
-            droppable: true, // this allows things to be dropped onto the calendar
+
             eventSources: [
                 // your event source
                 {
@@ -21,6 +20,7 @@
                     textColor: '#fff'
                 }
             ],
+            
             eventClick: function (info) {
                 var eventId = info.event._def.publicId;
                 events.load_edit_modal(eventId);
