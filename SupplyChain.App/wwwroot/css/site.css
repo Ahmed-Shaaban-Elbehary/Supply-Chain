@@ -1,7 +1,6 @@
 * {
     font-family: 'Font Awesome 5 Free', 'Roboto', sans-serif !important;
 }
-
 .cursor-pointer {
     cursor: pointer;
 }
@@ -101,63 +100,12 @@ a {
 .supplier-login-page {
     background: rgb(39,174,96);
 }
-
 .buyer-login-page {
     background: rgb(241,196,15);
 }
-
 .fc-event {
     cursor: pointer;
 }
-
 .colored-toast.swal2-icon-success {
     background-color: #a5dc86 !important;
-}
-
-#notification-container {
-    max-height: 300px !important;
-    overflow-y: scroll;
-}
-
-#notification-list > div {
-    min-height: 250px !important;
-}
-
-.bg-cloudy {
-    background-color: #ecf0f1 !important;
-}
-
-.bg-milky {
-    background-color: #ffffff !important;
-}
-
-.dropdown-menu-lg {
-    min-width: 400px !important;
-}
-
-.blink_me {
-    animation: blinker 4s linear infinite;
-}
-
-    .blink_me:hover {
-        animation: none;
-    }
-
-@keyframes blinker {
-    50% {
-        opacity: 0;
-    }
-}
-
-#event-blockqoute:hover {
-    background-color: #bdc3c7;
-    cursor: pointer;
-}
-
-.no-padding {
-    padding: 0px !important;
-}
-
-.no-margin {
-    margin: 0px !important;
 }

@@ -3,13 +3,11 @@ var connection = new signalR.HubConnectionBuilder().withUrl("/NotificationHub").
 
 connection.on("sendToUser", (EventObject) => {
     $("#notificationbadge").addClass('dot');
-    var message = `<h2> ${EventObject.title} </h2>
-                   <p>  ${EventObject.description} </p>
-                   <p>  ${EventObject.publishedin} </p>`;
-
-    app.notification(message);
+    const publishedIn = app.getDateTimeFormat(EventObject.publishedIn);
+    app.notification(EventObject.title, EventObject.description, publishedIn);
 });
 
 connection.start().catch(function (err) {
     return console.error(err.toString());
 });
+

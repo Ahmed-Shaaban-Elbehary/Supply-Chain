@@ -10,11 +10,12 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;700&display=swap" rel="stylesheet">
     <link href="~/adminlte/plugins/fontawesome-free/css/all.min.css" rel="stylesheet" />
-    <link href="~/lib/jquerytoast/jquery.toast.min.css" rel="stylesheet" />
+    <link href="~/lib/toaster/toastr.min.css" rel="stylesheet" />
     <link href="~/adminlte/dist/css/adminlte.min.css" rel="stylesheet" />
     <!-- Select2 -->
     <link href="~/lib/chosen/component-chosen.min.css" rel="stylesheet" />
     <link href="~/css/site.css" rel="stylesheet" />
+
     @await RenderSectionAsync("Styles", required: false)
 </head>
 <body class="hold-transition sidebar-mini">
@@ -22,7 +23,7 @@
         <!--Current Page Context-->
         <input type="hidden" id="currentPage" value="@ViewContext.RouteData.Values["action"]?.ToString()" />
         <!-- Spinner -->
-        <div id="spinner" class="spinner d-none"></div>
+        <div id="spinner" class="spinner"></div>
         <!-- Preloader -->
         @await Html.PartialAsync("_Preloader")
         <!-- Navbar -->
@@ -36,11 +37,11 @@
             </div>
         </div>
         <!-- /.content-wrapper -->
-        @await Html.PartialAsync("~/Views/Event/PartialViews/_EventDetailsPatialModal.cshtml")
         <!-- Main Footer -->
         @await Html.PartialAsync("_Footer")
     </div>
     <!-- ./wrapper -->
+    <!-- Scritps -->
     @await Html.PartialAsync("_Scripts")
     @await RenderSectionAsync("Scripts", required: false)
 </body>
