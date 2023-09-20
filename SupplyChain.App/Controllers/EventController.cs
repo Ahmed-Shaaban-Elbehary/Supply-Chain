@@ -129,7 +129,7 @@ namespace SupplyChain.App.Controllers
             try
             {
                 var _events = await _eventService.GetAllPagedEventsAsync(1, 10, (e => e.OrderByDescending(e => e.PublishedIn)));
-                var vm = _mapper.Map<EventViewModel>(_events);
+                var vm = _mapper.Map<List<EventViewModel>>(_events);
                 return new JsonResult(vm);
             }
             catch(Exception ex)
