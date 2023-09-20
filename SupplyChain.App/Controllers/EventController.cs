@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
+using SupplyChain.App.Notification;
 using SupplyChain.App.ViewModels;
 using SupplyChain.Core.Models;
 using SupplyChain.Services;
@@ -14,16 +16,18 @@ namespace SupplyChain.App.Controllers
         private readonly IProductService _productService;
         private readonly IEventService _eventService;
         private readonly IProductEventService _productEventService;
+        private readonly IHubContext<NotificationHub> _notificationHubContext;
         public EventController(IMapper mapper,
             IProductService productService,
             IEventService eventService,
-            IProductEventService productEventService)
+            IProductEventService productEventService,
+            IHubContext<NotificationHub> notificationHubContext)
         {
             _mapper = mapper;
             _productService = productService;
             _eventService = eventService;
             _productEventService = productEventService;
-
+            _notificationHubContext = notificationHubContext;
         }
 
         public IActionResult Index()
@@ -97,7 +101,8 @@ namespace SupplyChain.App.Controllers
 
                         if (vm.Active)
                         {
-
+                            await _notificationHubContext.Clients.All
+                                .SendAsync("sendToUser", vm);
                         }
 
                         return Json(new ApiResponse<bool>(true, true, "An event was successfully updated!"));
