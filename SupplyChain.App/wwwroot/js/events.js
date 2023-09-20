@@ -19,8 +19,7 @@ var events = (() => {
                     app.reEnterFormData(formElement, formData);
                 } else {
                     app.closeGeneralPatialModal();
-                    $('#calendar').fullCalendar('refetchEvents');
-                    //app.SuccessAlertMessage(response.message);
+                    app.SuccessAlertMessage(response.message);
                 }
             })
             .catch((xhr, status, error) => {

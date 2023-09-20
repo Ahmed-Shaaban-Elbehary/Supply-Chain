@@ -103,3 +103,9 @@ a {
 .buyer-login-page {
     background: rgb(241,196,15);
 }
+.fc-event {
+    cursor: pointer;
+}
+.colored-toast.swal2-icon-success {
+    background-color: #a5dc86 !important;
+}
