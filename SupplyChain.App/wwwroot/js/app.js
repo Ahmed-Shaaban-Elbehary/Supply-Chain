@@ -50,6 +50,25 @@ app.showloader = (targetId) => {
     };
 };
 
+app.getDateTimeFormat = (strDate) => {
+    let date = new Date(strDate);
+
+    const yyyy = date.getFullYear();
+    let mm = date.getMonth() + 1; // Months start at 0!
+    let dd = date.getDate();
+    let h = date.getHours();
+    let m = date.getMinutes();
+    let s = date.getSeconds();
+
+    if (dd < 10) dd = '0' + dd;
+    if (mm < 10) mm = '0' + mm;
+    if (h < 10) mm = '0' + h;
+    if (s < 10) mm = '0' + s;
+
+    let fullDate = `${dd}/${mm}/${yyyy} ${h}:${m}:${s}`;
+    return fullDate;
+}
+
 app.closeGeneralPatialModal = () => {
     $('#general-partial-modal').modal('hide');
 }
@@ -188,15 +207,30 @@ app.FailAlertMessage = (msg) => {
  * Show Real Time Notification
  * @param {any} msg
  */
-app.notification = (msg) => {
-    const Toast = Swal.mixin({
-        toast: true,
-        position: 'top-end',
-        showConfirmButton: false,
-        timer: 3000,
-    })
+app.notification = (title, content, date) => {
+    toastr.info(`<div class="p-1">
+                    <p class="d-block text-truncate mb-0" style="max-width: 250px;">
+     		                ${content}
+    	            </p>
+                    <small class="d-block float-right">${date}</small>
+                </div>`,
+        `${title}`);
 
-    Toast.fire({
-        title: msg
-    })
+    toastr.options = {
+        "closeButton": false,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": false,
+        "positionClass": "toast-bottom-right",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
 }
