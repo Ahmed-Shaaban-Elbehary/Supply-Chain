@@ -91,6 +91,10 @@ var events = (() => {
 
     }
 
+    OnEventBlockQuoteClick = (eventId) => {
+        alert("The data-id of clicked item is: " + eventId);
+    }
+
     return {
         show_modal_init: () => {
             var button = document.getElementById('open-event-modal');
@@ -106,6 +110,9 @@ var events = (() => {
         },
         delete_event_item: (eventId) => {
             DeleteSelectedItem(eventId);
+        },
+        on_event_block_quote_click: (eventId) => {
+            OnEventBlockQuoteClick(eventId);
         }
     }
 })();

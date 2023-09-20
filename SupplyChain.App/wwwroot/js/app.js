@@ -262,17 +262,26 @@ app.notification = (title, content, date) => {
 
 
 app.GetEventsList = () => {
-    debugger;
     let url = '/Event/GetEventsList';
     app.ajax_request(url, 'GET', 'json', null)
         .then((response) => {
-            let html = `<a href="#" class="dropdown-item">
-                            <i class="fas fa-envelope mr-2"></i> ${response.title}
-                            <span class="float-right text-muted text-sm">${response.publishedIn}</span>
-                        </a>`;
-            $('#notification-list').find('##notification-container').html(html);
+            $.each(response, (index, val) => {
+                let html = `<blockquote id="event-blockqoute" onclick="events.on_event_block_quote_click(${val.id})" class="blockquote bg-cloudy">
+                              <p class="mb-0 text-md text-muted">${val.description}</p>
+                              <footer class="blockquote-footer">
+                                ${app.getDateTimeFormat(val.publishedIn)} 
+                                  <cite title="Source Title">
+                                    <i class="fas fa-calendar-check mr-2"></i> ${val.title}
+                                  </cite>
+                              </footer>
+                            </blockquote>`;
+
+                $('#notification-list').find('#notification-container').append(html);
+            });
+
         })
         .catch((jqXHR, textStatus, errorThrown) => {
-
+            console.error(jqXHR);
+            console.error(errorThrown);
         });
 }
