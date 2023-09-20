@@ -61,10 +61,9 @@ namespace SupplyChain.Services
             return await _unitOfWork.EventRepository.GetAllAsync();
         }
 
-        public async Task<IEnumerable<Event>> GetAllPagedEventsAsync(int page, int pageSize)
+        public async Task<IEnumerable<Event>> GetAllPagedEventsAsync(int page, int pageSize, Func<IQueryable<Event>, IOrderedQueryable<Event>> func)
         {
-            var result = await _unitOfWork.EventRepository
-              .GetPagedAsync(page, pageSize, null, orderBy: q => q.OrderBy(p => p.Id), true);
+            var result = await _unitOfWork.EventRepository.GetPagedAsync(page, pageSize, null, func, true);
             return result;
         }
 
@@ -101,6 +100,6 @@ namespace SupplyChain.Services
 
         }
 
-        
+
     }
 }

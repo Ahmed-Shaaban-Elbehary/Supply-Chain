@@ -2,6 +2,7 @@
  ***** GENERAL JAVASCRIPT ******
  *******************************/
 $(() => {
+    app.GetEventsList();
     // Write your JavaScript code.
     var inputs = document.querySelectorAll("input[type='number']");
     inputs.forEach(function (input) {

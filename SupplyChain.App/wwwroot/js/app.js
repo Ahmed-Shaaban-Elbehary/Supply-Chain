@@ -50,6 +50,11 @@ app.showloader = (targetId) => {
     };
 };
 
+/**
+ * 
+ * @param {any} strDate
+ * @returns
+ */
 app.getDateTimeFormat = (strDate) => {
     let date = new Date(strDate);
 
@@ -69,10 +74,15 @@ app.getDateTimeFormat = (strDate) => {
     return fullDate;
 }
 
+/** */
 app.closeGeneralPatialModal = () => {
     $('#general-partial-modal').modal('hide');
 }
 
+/**
+ * 
+ * @param {any} msg
+ */
 app.fillErrorMessageContainer = (msg) => {
     var linkElement = $('#error-message-content');
     linkElement.parent().removeClass('d-none');
@@ -106,6 +116,12 @@ app.ajax_request = (url, method, datatype, data) => {
     });
 }
 
+/**
+ * 
+ * @param {any} url
+ * @param {any} formData
+ * @returns
+ */
 app.SubmitForm = (url, formData) => {
     return new Promise((resolve, reject) => {
         $.ajax({
@@ -124,6 +140,11 @@ app.SubmitForm = (url, formData) => {
     })
 }
 
+/**
+ * 
+ * @param {any} formElement
+ * @param {any} formData
+ */
 app.reEnterFormData = (formElement, formData) => {
     $(formElement).find('input[type!="checkbox"], select, textarea')
         .each(function () {
@@ -203,9 +224,13 @@ app.FailAlertMessage = (msg) => {
         title: 'error: ' + msg + '',
     })
 }
+
 /**
  * Show Real Time Notification
- * @param {any} msg
+ * @param {string} title
+ * @param {string} content
+ * @param {date} date
+ * @returns toast
  */
 app.notification = (title, content, date) => {
     toastr.info(`<div class="p-1">
@@ -233,4 +258,21 @@ app.notification = (title, content, date) => {
         "showMethod": "fadeIn",
         "hideMethod": "fadeOut"
     }
+}
+
+
+app.GetEventsList = () => {
+    debugger;
+    let url = '/Event/GetEventsList';
+    app.ajax_request(url, 'GET', 'json', null)
+        .then((response) => {
+            let html = `<a href="#" class="dropdown-item">
+                            <i class="fas fa-envelope mr-2"></i> ${response.title}
+                            <span class="float-right text-muted text-sm">${response.publishedIn}</span>
+                        </a>`;
+            $('#notification-list').find('##notification-container').html(html);
+        })
+        .catch((jqXHR, textStatus, errorThrown) => {
+
+        });
 }

@@ -124,6 +124,21 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpGet]
+        public async Task<ActionResult> GetEventsList()
+        {
+            try
+            {
+                var _events = await _eventService.GetAllPagedEventsAsync(1, 10, (e => e.OrderByDescending(e => e.PublishedIn)));
+                var vm = _mapper.Map<EventViewModel>(_events);
+                return new JsonResult(vm);
+            }
+            catch(Exception ex)
+            {
+                return RedirectToAction("Index", "Error", ErrorResponse.PreException(ex));
+            }
+        }
+
+        [HttpGet]
         public async Task<string> GetEvents(string start, string end)
         {
             DateTime _s = DateTime.Parse(start);
