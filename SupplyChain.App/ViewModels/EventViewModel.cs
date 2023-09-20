@@ -16,6 +16,8 @@ namespace SupplyChain.App.ViewModels
         public DateTime EndIn { get; set; }
 
         public bool Active { get; set; }
+        public DateTime? PublishedIn { get; set; }
+
         public bool Deleted { get; set; }
         public List<UserViewModel> Users { get; set; }
 

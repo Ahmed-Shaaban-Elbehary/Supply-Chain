@@ -9,20 +9,12 @@ namespace SupplyChain.Core.Models
     public class Notification
     {
         public int Id { get; set; }
-        public string Message { get; set; }
-        public int RecipientUserId { get; set; }
-        public int SenderUserId { get; set; }
-        public NotificationType Type { get; set; }
+        public int UserId { get; set; }
+        public int EventId { get; set; }
         public DateTime CreatedDate { get; set; }
 
         // Navigation properties
-        public virtual User RecipientUser { get; set; }
-        public virtual User SenderUser { get; set; }
-    }
-    public enum NotificationType
-    {
-        Email,
-        SMS,
-        InApp
+        public virtual User User { get; set; }
+        public virtual Event Event { get; set; }
     }
 }

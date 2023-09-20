@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SupplyChain.Infrastructure;
 
@@ -11,9 +12,11 @@ using SupplyChain.Infrastructure;
 namespace SupplyChain.Infrastructure.Migrations
 {
     [DbContext(typeof(SupplyChainDbContext))]
-    partial class SupplyChainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230920032014_add_publsih_in_col_in_event")]
+    partial class add_publsih_in_col_in_event
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -190,17 +193,27 @@ namespace SupplyChain.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("EventId")
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<int>("RecipientUserId")
+                        .HasMaxLength(128)
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId")
+                    b.Property<int>("SenderUserId")
+                        .HasMaxLength(128)
+                        .HasColumnType("int");
+
+                    b.Property<int>("Type")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EventId");
+                    b.HasIndex("RecipientUserId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("SenderUserId");
 
                     b.ToTable("Notifications", (string)null);
                 });
@@ -534,21 +547,21 @@ namespace SupplyChain.Infrastructure.Migrations
 
             modelBuilder.Entity("SupplyChain.Core.Models.Notification", b =>
                 {
-                    b.HasOne("SupplyChain.Core.Models.Event", "Event")
+                    b.HasOne("SupplyChain.Core.Models.User", "RecipientUser")
                         .WithMany()
-                        .HasForeignKey("EventId")
+                        .HasForeignKey("RecipientUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("SupplyChain.Core.Models.User", "User")
+                    b.HasOne("SupplyChain.Core.Models.User", "SenderUser")
                         .WithMany()
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("SenderUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Event");
+                    b.Navigation("RecipientUser");
 
-                    b.Navigation("User");
+                    b.Navigation("SenderUser");
                 });
 
             modelBuilder.Entity("SupplyChain.Core.Models.Product", b =>
