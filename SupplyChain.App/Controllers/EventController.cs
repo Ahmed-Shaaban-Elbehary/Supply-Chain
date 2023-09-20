@@ -96,11 +96,13 @@ namespace SupplyChain.App.Controllers
                 {
                     try
                     {
+                        ev.PublishedIn = ev.Active ? DateTime.Now : null;
                         await _eventService.UpdateEventAsync(ev);
                         await _productEventService.UpdateProductEventAsync(ev, vm.ProductIds);
 
                         if (vm.Active)
                         {
+                            vm.PublishedIn = DateTime.Now;
                             await _notificationHubContext.Clients.All
                                 .SendAsync("sendToUser", vm);
                         }

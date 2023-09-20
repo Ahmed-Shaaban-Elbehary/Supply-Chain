@@ -126,6 +126,9 @@ namespace SupplyChain.Infrastructure.Migrations
                     b.Property<DateTime>("EndIn")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("PublishedIn")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("StartIn")
                         .HasColumnType("datetime2");
 
@@ -187,27 +190,17 @@ namespace SupplyChain.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<int>("RecipientUserId")
-                        .HasMaxLength(128)
+                    b.Property<int>("EventId")
                         .HasColumnType("int");
 
-                    b.Property<int>("SenderUserId")
-                        .HasMaxLength(128)
-                        .HasColumnType("int");
-
-                    b.Property<int>("Type")
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RecipientUserId");
+                    b.HasIndex("EventId");
 
-                    b.HasIndex("SenderUserId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Notifications", (string)null);
                 });
@@ -541,21 +534,21 @@ namespace SupplyChain.Infrastructure.Migrations
 
             modelBuilder.Entity("SupplyChain.Core.Models.Notification", b =>
                 {
-                    b.HasOne("SupplyChain.Core.Models.User", "RecipientUser")
+                    b.HasOne("SupplyChain.Core.Models.Event", "Event")
                         .WithMany()
-                        .HasForeignKey("RecipientUserId")
+                        .HasForeignKey("EventId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("SupplyChain.Core.Models.User", "SenderUser")
+                    b.HasOne("SupplyChain.Core.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("SenderUserId")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("RecipientUser");
+                    b.Navigation("Event");
 
-                    b.Navigation("SenderUser");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SupplyChain.Core.Models.Product", b =>
