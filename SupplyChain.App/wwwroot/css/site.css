@@ -1,6 +1,7 @@
 * {
     font-family: 'Font Awesome 5 Free', 'Roboto', sans-serif !important;
 }
+
 .cursor-pointer {
     cursor: pointer;
 }
@@ -100,12 +101,33 @@ a {
 .supplier-login-page {
     background: rgb(39,174,96);
 }
+
 .buyer-login-page {
     background: rgb(241,196,15);
 }
+
 .fc-event {
     cursor: pointer;
 }
+
 .colored-toast.swal2-icon-success {
     background-color: #a5dc86 !important;
+}
+
+#notification-container {
+    max-height: 300px !important;
+    overflow-y: scroll;
+}
+
+#notification-list > div {
+    min-height: 150px;
+    overflow-y: scroll
+}
+
+.bg-cloudy {
+    background-color: #ecf0f1;
+}
+
+.dropdown-menu-lg {
+    min-width: 400px !important;
 }
