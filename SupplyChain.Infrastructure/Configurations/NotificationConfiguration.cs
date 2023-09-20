@@ -10,13 +10,15 @@ namespace SupplyChain.Infrastructure.Configurations
         {
             builder.ToTable("Notifications");
             builder.HasKey(n => n.Id);
-            builder.Property(n => n.Message).HasMaxLength(256).IsRequired();
-            builder.Property(n => n.RecipientUserId).HasMaxLength(128).IsRequired();
-            builder.Property(n => n.SenderUserId).HasMaxLength(128).IsRequired();
-            builder.Property(n => n.Type).IsRequired();
+            builder.Property(n => n.UserId).IsRequired();
+            builder.Property(n => n.EventId).IsRequired();
             builder.Property(n => n.CreatedDate).IsRequired();
-            builder.HasOne(n => n.SenderUser).WithMany().HasForeignKey(n => n.SenderUserId).OnDelete(DeleteBehavior.Restrict);
-            builder.HasOne(n => n.RecipientUser).WithMany().HasForeignKey(n => n.RecipientUserId).OnDelete(DeleteBehavior.Restrict);
+
+
+            builder.HasOne(n => n.Event).WithMany()
+                .HasForeignKey(n => n.EventId).OnDelete(DeleteBehavior.Restrict);
+            builder.HasOne(n => n.User).WithMany()
+                .HasForeignKey(n => n.UserId).OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

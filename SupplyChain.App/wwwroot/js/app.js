@@ -184,4 +184,19 @@ app.FailAlertMessage = (msg) => {
         title: 'error: ' + msg + '',
     })
 }
+/**
+ * Show Real Time Notification
+ * @param {any} msg
+ */
+app.notification = (msg) => {
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+    })
 
+    Toast.fire({
+        title: msg
+    })
+}
