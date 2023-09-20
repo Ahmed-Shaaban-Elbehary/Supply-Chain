@@ -1,12 +1,11 @@
 ﻿"use strict";
+var connection = new signalR.HubConnectionBuilder().withUrl("/NotificationHub").build();
 
-//build the hub connection
-let connection = new signalR.HubConnectionBuilder().withUrl("/notificationHub").build()
+connection.on("sendToUser", (EventObject) => {
+    $("#notificationbadge").addClass('dot')
+    console.log(EventObject);
+});
 
-$(() => {
-    connection.start().then(function () {
-        console.info("Connection to the hub success!");
-    }).catch((error) => {
-        console.error(error);
-    })
-})
+connection.start().catch(function (err) {
+    return console.error(err.toString());
+});

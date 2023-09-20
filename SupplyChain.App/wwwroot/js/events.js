@@ -19,7 +19,8 @@ var events = (() => {
                     app.reEnterFormData(formElement, formData);
                 } else {
                     app.closeGeneralPatialModal();
-                    app.SuccessAlertMessage(response.message);
+                    $('#calendar').fullCalendar('refetchEvents');
+                    //app.SuccessAlertMessage(response.message);
                 }
             })
             .catch((xhr, status, error) => {
@@ -45,7 +46,8 @@ var events = (() => {
                             app.SuccessAlertMessage('Delete Event Compeleted Successfully!')
                                 .then((result) => {
                                     if (result.dismiss === Swal.DismissReason.timer) {
-                                        location.reload();
+                                        $('#calendar').fullCalendar('refetchEvents');
+                                        //location.reload();
                                     }
                                 });
                         } else {
