@@ -18,7 +18,7 @@ namespace SupplyChain.Core.Interfaces
         IRoleRepository RoleRepository { get; }
         IRolePermissionRepository RolePermissionRepository { get; }
         IUserRoleRepository UserRoleRepository { get; }
-        INotifcationRepository NotifcationRepository { get; }
+        IEventStatusRepository NotifcationRepository { get; }
         IEventRepository EventRepository { get; }
         IProductEventRepository ProductEventRepository { get; }
         Task<int> CommitAsync();

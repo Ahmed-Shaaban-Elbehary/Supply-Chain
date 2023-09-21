@@ -9,8 +9,8 @@ using System.Threading.Tasks;
 
 namespace SupplyChain.Infrastructure.Repositories
 {
-    public class NotificationRepository : GenericRepository<Notification>, INotifcationRepository
+    public class EventStatusRepository : GenericRepository<EventStatus>, IEventStatusRepository
     {
-        public NotificationRepository(SupplyChainDbContext dbContext) : base(dbContext) { }
+        public EventStatusRepository(SupplyChainDbContext dbContext) : base(dbContext) { }
     }
 }
