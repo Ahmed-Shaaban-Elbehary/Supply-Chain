@@ -9,13 +9,13 @@ namespace SupplyChain.Services.Contracts
 {
     public interface IEventStatusService
     {
-        Task<IEnumerable<EventStatus>> GetAllNotificationAsync();
-        Task<IEnumerable<EventStatus>> GetAllPagedNotificationAsync(int page, int pageSize);
-        Task<EventStatus> GetNotificationByIdAsync(int id);
-        Task CreateNotificationAsync(EventStatus notification);
-        Task UpdateNotificationAsync(EventStatus notification);
-        Task DeleteNotificationAsync(EventStatus notification);
-        Task<int> CountNotificationAsync();
+        Task<IEnumerable<EventStatus>> GetAllEventStatusAsync();
+        Task<IEnumerable<EventStatus>> GetAllPagedEventStatusAsync(int page, int pageSize);
+        Task<EventStatus> GetEventStatusByIdAsync(int id);
+        Task CreateEventStatusAsync(EventStatus eventStatus);
+        Task UpdateEventStatusAsync(EventStatus eventStatus);
+        Task DeleteEventStatusAsync(EventStatus eventStatus);
+        Task<int> CountEventStatusAsync();
         Task RollbackTransaction();
     }
 }

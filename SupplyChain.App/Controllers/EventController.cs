@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
 using SupplyChain.App.Notification;
+using SupplyChain.App.Utils.Contracts;
 using SupplyChain.App.ViewModels;
 using SupplyChain.Core.Models;
 using SupplyChain.Services;
@@ -18,12 +20,14 @@ namespace SupplyChain.App.Controllers
         private readonly IProductEventService _productEventService;
         private readonly IEventStatusService _eventStatusService;
         private readonly IHubContext<NotificationHub> _notificationHubContext;
+        private readonly ILookUp _lookup;
         public EventController(IMapper mapper,
             IProductService productService,
             IEventService eventService,
             IProductEventService productEventService,
             IEventStatusService eventStatusService,
-            IHubContext<NotificationHub> notificationHubContext)
+            IHubContext<NotificationHub> notificationHubContext,
+            ILookUp lookup)
         {
             _mapper = mapper;
             _productService = productService;
@@ -31,6 +35,7 @@ namespace SupplyChain.App.Controllers
             _productEventService = productEventService;
             _eventStatusService = eventStatusService;
             _notificationHubContext = notificationHubContext;
+            _lookup = lookup;
         }
 
         public IActionResult Index()
@@ -133,9 +138,14 @@ namespace SupplyChain.App.Controllers
             {
                 var _events = await _eventService.GetAllPagedEventsAsync(1, 10, (e => e.OrderByDescending(e => e.PublishedIn)));
                 var vm = _mapper.Map<List<EventViewModel>>(_events);
+
+                var currentUserId = CurrentUser.GetUserId();
+
+                
+
                 return new JsonResult(vm);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return RedirectToAction("Index", "Error", ErrorResponse.PreException(ex));
             }
@@ -183,22 +193,37 @@ namespace SupplyChain.App.Controllers
                 int eventId = id;
                 int currentUserId = CurrentUser.GetUserId();
 
-                NotificationViewModel vm = new NotificationViewModel();
-                vm.UserId = currentUserId;
-                vm.EventId = eventId;
-                vm.MakeAsRead = true;
-                vm.CreatedDate = DateTime.Now;
-                var eventStatus = _mapper.Map<EventStatus>(vm);
-
-                await _eventStatusService.CreateNotificationAsync(eventStatus);
-
+                EventStatusViewModel ESvm = new EventStatusViewModel()
+                {
+                    UserId = currentUserId,
+                    EventId = eventId,
+                    MakeAsRead = true,
+                    CreatedDate = DateTime.Now
+                };
+                var eventStatus = _mapper.Map<EventStatus>(ESvm);
+                //Add New Event Status
+                await _eventStatusService.CreateEventStatusAsync(eventStatus);
+                //Get Current Event
                 var _event = await _eventService.GetEventByIdAsync(id);
-                var evm = _mapper.Map<EventViewModel>(_event);
+                var Evm = _mapper.Map<EventViewModel>(_event);
+                //Get Product For Event
+                var productEvent = await _productEventService.GetProductEventByEventIdAsync(eventId);
+                //Get Product List
+                foreach (var item in productEvent)
+                {
+                    var product = await _productService.GetProductByIdAsync(item.ProductId);
+                    var vm = _mapper.Map<ProductViewModel>(product);
+                    vm.CountryOfOriginName = new SelectList(_lookup.Countries, "Code", "Name", product.CountryOfOriginCode)
+                        .FirstOrDefault().Text;
+                    vm.ManufacturerName = new SelectList(_lookup.Manufacturers, "Id", "Name", product.ManufacturerId)
+                        .FirstOrDefault().Text;
+                    vm.CategoryName = new SelectList(_lookup.Categories, "Id", "Name", product.CategoryId)
+                        .FirstOrDefault().Text;
 
-                //need to get event products to display products image.
-                //code!
+                    Evm.ProductViewModels.Add(vm);
+                };
 
-                return PartialView("~/Views/Event/PartialViews/_OpenEventDetails.cshtml", evm);
+                return PartialView("~/Views/Event/PartialViews/_OpenEventDetails.cshtml", Evm);
             }
             catch (Exception ex)
             {
