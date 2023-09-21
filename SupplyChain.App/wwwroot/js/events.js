@@ -92,7 +92,14 @@ var events = (() => {
     }
 
     OnEventBlockQuoteClick = (eventId) => {
-        alert("The data-id of clicked item is: " + eventId);
+        let url = `/Event/UpdateEventAsRead/${eventId}`;
+        app.ajax_request(url, 'POST', 'json', null)
+            .then((response) => {
+
+            })
+            .catch((jxhr, textstatus, errorthrow) => {
+                console.error(jxhr);
+            })
     }
 
     return {

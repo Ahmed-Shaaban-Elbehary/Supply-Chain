@@ -4,14 +4,16 @@ using SupplyChain.Core.Models;
 
 namespace SupplyChain.Infrastructure.Configurations
 {
-    public class NotificationConfiguration : IEntityTypeConfiguration<Notification>
+    public class EventStatusConfiguration : IEntityTypeConfiguration<EventStatus>
     {
-        public void Configure(EntityTypeBuilder<Notification> builder)
+        public void Configure(EntityTypeBuilder<EventStatus> builder)
         {
-            builder.ToTable("Notifications");
+            builder.ToTable("EventStatuses");
             builder.HasKey(n => n.Id);
             builder.Property(n => n.UserId).IsRequired();
             builder.Property(n => n.EventId).IsRequired();
+            builder.Property(e => e.MakeAsRead).IsRequired().HasDefaultValue(false);
+            builder.Property(e => e.Removed).IsRequired().HasDefaultValue(false);
             builder.Property(n => n.CreatedDate).IsRequired();
 
 

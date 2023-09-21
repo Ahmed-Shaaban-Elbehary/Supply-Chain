@@ -16,17 +16,20 @@ namespace SupplyChain.App.Controllers
         private readonly IProductService _productService;
         private readonly IEventService _eventService;
         private readonly IProductEventService _productEventService;
+        private readonly IEventStatusService _eventStatusService;
         private readonly IHubContext<NotificationHub> _notificationHubContext;
         public EventController(IMapper mapper,
             IProductService productService,
             IEventService eventService,
             IProductEventService productEventService,
+            IEventStatusService eventStatusService,
             IHubContext<NotificationHub> notificationHubContext)
         {
             _mapper = mapper;
             _productService = productService;
             _eventService = eventService;
             _productEventService = productEventService;
+            _eventStatusService = eventStatusService;
             _notificationHubContext = notificationHubContext;
         }
 
@@ -36,7 +39,7 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> AddEditEvent(int id)
+        public async Task<IActionResult> AddEditEvent(int id)
         {
             try
             {
@@ -71,7 +74,7 @@ namespace SupplyChain.App.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> AddEditEvent(EventViewModel vm)
+        public async Task<IActionResult> AddEditEvent(EventViewModel vm)
         {
             if (ModelState.IsValid)
             {
@@ -124,7 +127,7 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetEventsList()
+        public async Task<IActionResult> GetEventsList()
         {
             try
             {
@@ -173,18 +176,33 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetEventById(int id)
+        public async Task<IActionResult> UpdateEventAsRead(int id)
         {
             try
             {
+                int eventId = id;
+                int currentUserId = CurrentUser.GetUserId();
+
+                NotificationViewModel vm = new NotificationViewModel();
+                vm.UserId = currentUserId;
+                vm.EventId = eventId;
+                vm.MakeAsRead = true;
+                vm.CreatedDate = DateTime.Now;
+                var eventStatus = _mapper.Map<EventStatus>(vm);
+
+                await _eventStatusService.CreateNotificationAsync(eventStatus);
+
                 var _event = await _eventService.GetEventByIdAsync(id);
-                var productEvents = await _productEventService.GetProductEventByEventIdAsync(id);
-                var vm = _mapper.Map<EventViewModel>(_event);
-                vm.ProductIds = productEvents.Select(pe => pe.ProductId).ToList();
-                return new JsonResult(vm);
+                var evm = _mapper.Map<EventViewModel>(_event);
+
+                //need to get event products to display products image.
+                //code!
+
+                return PartialView("~/Views/Event/PartialViews/_OpenEventDetails.cshtml", evm);
             }
             catch (Exception ex)
             {
+                await _eventStatusService.RollbackTransaction();
                 return RedirectToAction("Index", "Error", ErrorResponse.PreException(ex));
             }
         }
