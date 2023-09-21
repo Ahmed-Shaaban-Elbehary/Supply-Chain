@@ -21,8 +21,11 @@ namespace SupplyChain.App.ViewModels
         public bool Deleted { get; set; }
         public List<UserViewModel> Users { get; set; }
 
+        public string BackgroundColor { get; set; }
+
         [Required]
         public List<int> ProductIds { get; set; }
+        public List<ProductViewModel> ProductViewModels { get; set; } = new List<ProductViewModel>();
         public List<ProductSelectedListViewModel> Products { get; set; } = new List<ProductSelectedListViewModel>();
     }
 

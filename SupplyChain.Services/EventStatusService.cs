@@ -16,40 +16,46 @@ namespace SupplyChain.Services
         {
             _unitOfWork = unitOfWork;
         }
-        public async Task<int> CountNotificationAsync()
+        public async Task<int> CountEventStatusAsync()
         {
-            return await _unitOfWork.NotifcationRepository.CountAsync();
+            return await _unitOfWork.EventStatusRepository.CountAsync();
         }
 
-        public async Task CreateNotificationAsync(EventStatus notification)
+        public async Task CreateEventStatusAsync(EventStatus eventStatus)
         {
-            await _unitOfWork.NotifcationRepository.AddAsync(notification);
+            var isEventAlreadyExist = await _unitOfWork.EventStatusRepository
+                .GetWhereAsync(e => e.UserId == eventStatus.UserId && e.EventId == eventStatus.EventId);
+
+            if (!isEventAlreadyExist.Any())
+            {
+                await _unitOfWork.EventStatusRepository.AddAsync(eventStatus);
+                await _unitOfWork.CommitAsync();
+                await _unitOfWork.CommitTransaction();
+            }
+        }
+
+        public async Task DeleteEventStatusAsync(EventStatus eventStatus)
+        {
+            await _unitOfWork.EventStatusRepository.RemoveAsync(eventStatus);
             await _unitOfWork.CommitAsync();
             await _unitOfWork.CommitTransaction();
         }
 
-        public async Task DeleteNotificationAsync(EventStatus notification)
+        public async Task<IEnumerable<EventStatus>> GetAllEventStatusAsync()
         {
-            await _unitOfWork.NotifcationRepository.RemoveAsync(notification);
-            await _unitOfWork.CommitAsync();
-            await _unitOfWork.CommitTransaction();
+            return await _unitOfWork.EventStatusRepository.GetAllAsync();
         }
 
-        public async Task<IEnumerable<EventStatus>> GetAllNotificationAsync()
+        public async Task<IEnumerable<EventStatus>> GetAllPagedEventStatusAsync(int page, int pageSize)
         {
-            return await _unitOfWork.NotifcationRepository.GetAllAsync();
-        }
-
-        public async Task<IEnumerable<EventStatus>> GetAllPagedNotificationAsync(int page, int pageSize)
-        {
-            var result = await _unitOfWork.NotifcationRepository
+            var result = await _unitOfWork.EventStatusRepository
                .GetPagedAsync(page, pageSize, null, orderBy: q => q.OrderBy(p => p.Id), true);
             return result;
         }
 
-        public async Task<EventStatus> GetNotificationByIdAsync(int id)
+        public async Task<EventStatus> GetEventStatusByIdAsync(int id)
         {
-            return await _unitOfWork.NotifcationRepository.GetByIdAsync(id);
+            return await _unitOfWork.EventStatusRepository.GetByIdAsync(id);
         }
 
         public async Task RollbackTransaction()
@@ -57,9 +63,9 @@ namespace SupplyChain.Services
             await _unitOfWork.RollbackAsync();
         }
 
-        public async Task UpdateNotificationAsync(EventStatus notification)
+        public async Task UpdateEventStatusAsync(EventStatus EventStatus)
         {
-            await _unitOfWork.NotifcationRepository.UpdateAsync(notification);
+            await _unitOfWork.EventStatusRepository.UpdateAsync(EventStatus);
             await _unitOfWork.CommitAsync();
             await _unitOfWork.CommitTransaction();
         }
