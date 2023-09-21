@@ -67,7 +67,7 @@ namespace SupplyChain.App.Controllers
             }
             vm.ImageUrl = await _uploadFile.UploadImage(file);
             vm.Description.Trim();
-            vm.Name.Trim();
+            vm.ProductName.Trim();
             await _productService.CreateProductAsync(_mapper.Map<Product>(vm));
             return RedirectToAction(nameof(Index));
         }

@@ -93,12 +93,14 @@ var events = (() => {
 
     OnEventBlockQuoteClick = (eventId) => {
         let url = `/Event/UpdateEventAsRead/${eventId}`;
-        app.ajax_request(url, 'POST', 'json', null)
-            .then((response) => {
-
+        app.ajax_request(url, 'GET', 'html', null)
+            .then((res) => {
+                console.log(res);
+                $('#event-details-partial-modal').find('#event-details-modal-content').html(res);
+                $('#event-details-partial-modal').modal('show');
             })
-            .catch((jxhr, textstatus, errorthrow) => {
-                console.error(jxhr);
+            .catch((xhr, status, error) => {
+                console.error(error);
             })
     }
 
