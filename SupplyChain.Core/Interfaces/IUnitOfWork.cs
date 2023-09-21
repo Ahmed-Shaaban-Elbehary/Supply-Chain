@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SupplyChain.Core.Interfaces
 {
-    public interface IUnitOfWork
+    public interface IUnitOfWork : IDisposable
     {
         IProductRepository ProductRepository { get; }
         IProductCategoryRepository ProductCategoryRepository { get; }
@@ -18,7 +18,7 @@ namespace SupplyChain.Core.Interfaces
         IRoleRepository RoleRepository { get; }
         IRolePermissionRepository RolePermissionRepository { get; }
         IUserRoleRepository UserRoleRepository { get; }
-        IEventStatusRepository EventStatusRepository { get; }
+        IEventStatusRepository NotifcationRepository { get; }
         IEventRepository EventRepository { get; }
         IProductEventRepository ProductEventRepository { get; }
         Task<int> CommitAsync();

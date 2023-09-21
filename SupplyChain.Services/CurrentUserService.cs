@@ -2,14 +2,12 @@
 using SupplyChain.Core.Models;
 using SupplyChain.Services.Contracts;
 using System.Data;
-using System.Net.Http;
 
 namespace SupplyChain.Services
 {
     public class CurrentUser
     {
         private static readonly MemoryCache SessionCache = new MemoryCache(new MemoryCacheOptions());
-
         private static int LoggedUserId = 0;
 
         //Cache Methods
@@ -25,7 +23,6 @@ namespace SupplyChain.Services
             };
             SessionCache.Set(userId.ToString(), sessionData);
         }
-
         private static SessionData GetSessionData(int userId)
         {
             SessionData sessionCache = SessionCache.Get(userId.ToString()) as SessionData ?? new SessionData();
@@ -46,7 +43,6 @@ namespace SupplyChain.Services
             LoggedUserId = user.Id;
             SetSessionData(user.Id, user.Name, roles, permissions, user.IsSupplier);
         }
-
         public static Task<bool> IsInRoleAsync(string roleName)
         {
             return Task.Run(() =>
@@ -56,7 +52,6 @@ namespace SupplyChain.Services
                 return roles.Contains(roleName);
             });
         }
-
         public static Task<bool> HasPermissionAsync(string permissionName)
         {
             return Task.Run(() =>  {
@@ -65,23 +60,19 @@ namespace SupplyChain.Services
                 return permissions.Contains(permissionName);
             });
         }
-
         public static void Logout()
         {
             ClearSessionData(LoggedUserId);
         }
-
         public static bool IsLoggedIn()
         {
             var sessionData = GetSessionData(LoggedUserId);
             return sessionData.UserId > 0 ? true : false;
         }
-
         public static string GetUserName()
         {
             return GetSessionData(LoggedUserId).UserName;
         }
-
         public static int GetUserId()
         {
             return LoggedUserId;

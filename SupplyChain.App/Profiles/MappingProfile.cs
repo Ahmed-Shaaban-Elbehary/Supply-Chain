@@ -8,9 +8,7 @@ namespace SupplyChain.App.Profiles
     {
         public MappingProfile()
         {
-            CreateMap<Product, ProductViewModel>()
-                .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Name))
-                .ReverseMap();
+            CreateMap<Product, ProductViewModel>().ReverseMap();
             
             CreateMap<ProductCategory, ProductCategoryViewModel>().ReverseMap();
 
@@ -31,7 +29,7 @@ namespace SupplyChain.App.Profiles
             .ForMember(dest => dest.Products, opt => opt.MapFrom(src => src.ProductEvents))
             .ReverseMap();
 
-            CreateMap<EventStatus, EventStatusViewModel>().ReverseMap();
+            CreateMap<EventStatus, NotificationViewModel>().ReverseMap();
         }
     }
 }

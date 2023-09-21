@@ -2,10 +2,11 @@
 {
     public class NotificationViewModel
     {
-        public bool DisplayGreenLight { get; set; }
-
-        public int EventCount { get; set; }
-
-        public List<EventViewModel> EventViewModels { get; set; } = new List<EventViewModel>();
+        public int Id { get; set; }
+        public int UserId { get; set; }
+        public int EventId { get; set; }
+        public bool MakeAsRead { get; set; }
+        public bool Removed { get; set; }
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
     }
 }
