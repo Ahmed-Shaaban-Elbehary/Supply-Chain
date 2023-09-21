@@ -8,6 +8,10 @@ namespace SupplyChain.App.ViewModels
 {
     public class ProductViewModel
     {
+        public ProductViewModel()
+        {
+
+        }
         public int Id { get; set; }
 
         [Required(ErrorMessage = "The Name field is required.")]
@@ -17,26 +21,19 @@ namespace SupplyChain.App.ViewModels
         public string Description { get; set; }
 
         [Required(ErrorMessage = "The Price field is required.")]
-        [Range(1, int.MaxValue, ErrorMessage = "The Price field must be greater than or equal to 1.")]
+        [Range(0, int.MaxValue, ErrorMessage = "The Price field must be greater than or equal to 0.")]
         public decimal Price { get; set; }
 
         [Required(ErrorMessage = "The Quantity field is required.")]
-        [Range(1, int.MaxValue, ErrorMessage = "The Quantity field must be greater than or equal to 1.")]
+        [Range(0, int.MaxValue, ErrorMessage = "The Quantity field must be greater than or equal to 0.")]
         public decimal Quantity { get; set; }
-        public decimal InputQuantity { get; set; }
-
-        [Required(ErrorMessage = "Please Select Unit!")]
-        [DisplayName("Unit")]
-        public int UnitCode { get; set; }
-
-        public string UnitName { get; set; }
-
-        public SelectList Units { get; set; }
 
         public string ImageUrl { get; set; }
 
+        [Required(ErrorMessage = "The Production Date field is required.")]
         public DateTime ProductionDate { get; set; }
 
+        [Required(ErrorMessage = "The Expiration Date field is required.")]
         [FutureDate(ErrorMessage = "The Expiration Date field must be a future date.")]
         public DateTime ExpirationDate { get; set; }
 
@@ -63,7 +60,5 @@ namespace SupplyChain.App.ViewModels
         public string CategoryName { get; set; }
 
         public SelectList CategoryList { get; set; }
-
-        public ICollection<EventViewModel> events { get; set; }
     }
 }
