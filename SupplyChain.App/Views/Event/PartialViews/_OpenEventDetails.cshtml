@@ -1,0 +1,96 @@
+﻿@using SupplyChain.Services;
+@model SupplyChain.App.ViewModels.EventViewModel
+
+@{
+    bool inEditMode = ViewBag.isEdit;
+}
+<form asp-action="AddEditEvent" onsubmit="events.add_event(event)">
+    <input type="hidden" asp-for="Id" />
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="alert alert-danger text-center p-1 d-none">
+        <small id="error-message-content"></small>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label asp-for="Title"></label>
+                <input asp-for="Title" class="form-control" required>
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="form-group">
+                <label asp-for="Description"></label>
+                <textarea asp-for="Description" class="form-control" required></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="StartIn"></label>
+                <input asp-for="StartIn" class="form-control" type="datetime-local" required>
+                <span asp-validation-for="StartIn" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="EndIn"></label>
+                <input asp-for="EndIn" class="form-control" type="datetime-local" required>
+                <span asp-validation-for="EndIn" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div class="form-group">
+                    <label class="control-label">Products</label>
+                    @Html.DropDownListFor(m => m.ProductIds,
+                    new SelectList(Model.Products.OrderBy(r => r.Id), "Id", "Name"),
+                    new { @class = "form-control form-control-chosen", multiple = "true" })
+                </div>
+            </div>
+        </div>
+    </div>
+    @if (inEditMode && await CurrentUser.HasPermissionAsync("HasPermissionToPublishEvent"))
+    {
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="Active" class="control-label mr-2">Publish Now <input asp-for="Active" type="checkbox" class="align-middle" /></label>
+                </div>
+            </div>
+        </div>
+    }
+    <div class="row">
+        <button type="submit" class="btn btn-outline-primary btn-block">Save</button>
+    </div>
+
+</form>
+<script>
+    $(() => {
+        chosenInitiation();
+        SetSelectedValue();
+    });
+
+    function chosenInitiation() {
+        $("#ProductIds").chosen({
+            no_results_text: "Oops, nothing found!",
+            width: "100%",
+            placeholder_text_multiple: "type to search"
+        });
+    }
+    function SetSelectedValue() {
+    @{
+        if (Model.ProductIds is not null)
+        {
+            <text>
+                                                                            var myArray = [@Html.Raw(string.Join(",", Model.ProductIds))];
+                $("#ProductIds").val(myArray).trigger("chosen:updated");
+            </text>
+        }
+    }
+                            }
+</script>

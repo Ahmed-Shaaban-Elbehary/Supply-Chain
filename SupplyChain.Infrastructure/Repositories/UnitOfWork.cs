@@ -17,7 +17,7 @@ namespace SupplyChain.Infrastructure.Repositories
         private readonly IRoleRepository _roleRepository;
         private readonly IRolePermissionRepository _rolePermissionRepository;
         private readonly IUserRoleRepository _userRoleRepository;
-        private readonly INotifcationRepository _notifcationRepository;
+        private readonly IEventStatusRepository _notifcationRepository;
         private readonly IEventRepository _eventRepository;
         private readonly IProductEventRepository _productEventRepository;
         private IDbContextTransaction _transaction;
@@ -33,7 +33,7 @@ namespace SupplyChain.Infrastructure.Repositories
             _roleRepository = new RoleRepository(_context);
             _rolePermissionRepository = new RolePermissionRepository(_context);
             _userRoleRepository = new UserRoleRepository(_context);
-            _notifcationRepository = new NotificationRepository(_context);
+            _notifcationRepository = new EventStatusRepository(_context);
             _eventRepository = new EventRepository(_context);
             _productEventRepository = new ProductEventRepository(_context);
             _transaction = _context.Database.BeginTransactionAsync().Result;
@@ -48,7 +48,7 @@ namespace SupplyChain.Infrastructure.Repositories
         public IRoleRepository RoleRepository => _roleRepository;
         public IRolePermissionRepository RolePermissionRepository => _rolePermissionRepository;
         public IUserRoleRepository UserRoleRepository => _userRoleRepository;
-        public INotifcationRepository NotifcationRepository => _notifcationRepository;
+        public IEventStatusRepository NotifcationRepository => _notifcationRepository;
         public IEventRepository EventRepository => _eventRepository;
         public IProductEventRepository ProductEventRepository => _productEventRepository;
 

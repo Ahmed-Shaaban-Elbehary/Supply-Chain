@@ -28,6 +28,7 @@ namespace SupplyChain.Services
             SessionData sessionCache = SessionCache.Get(userId.ToString()) as SessionData ?? new SessionData();
             return sessionCache;
         }
+
         private static void ClearSessionData(int userId)
         {
             LoggedUserId = 0;
@@ -71,6 +72,10 @@ namespace SupplyChain.Services
         public static string GetUserName()
         {
             return GetSessionData(LoggedUserId).UserName;
+        }
+        public static int GetUserId()
+        {
+            return LoggedUserId;
         }
     }
 
