@@ -31,6 +31,7 @@ app.showloader = (targetId) => {
 
     // Add the spinner to the container element
     var spinner = document.getElementById('spinner').cloneNode(true);
+    spinner.classList.remove("d-none");
     spinner.removeAttribute('id');
     spinnerContainer.appendChild(spinner);
 
@@ -266,7 +267,7 @@ app.GetEventsList = () => {
     app.ajax_request(url, 'GET', 'json', null)
         .then((response) => {
             $.each(response, (index, val) => {
-                let html = `<blockquote id="event-blockqoute" onclick="events.on_event_block_quote_click(${val.id})" class="blockquote bg-cloudy">
+                let html = `<blocspinnerkquote id="event-blockqoute" onclick="events.on_event_block_quote_click(${val.id})" class="blockquote bg-cloudy">
                               <p class="mb-0 text-md text-muted">${val.description}</p>
                               <footer class="blockquote-footer">
                                 ${app.getDateTimeFormat(val.publishedIn)} 

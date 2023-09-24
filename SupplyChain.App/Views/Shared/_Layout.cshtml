@@ -23,7 +23,7 @@
         <!--Current Page Context-->
         <input type="hidden" id="currentPage" value="@ViewContext.RouteData.Values["action"]?.ToString()" />
         <!-- Spinner -->
-        <div id="spinner" class="spinner"></div>
+        <div id="spinner" class="spinner d-none"></div>
         <!-- Preloader -->
         @await Html.PartialAsync("_Preloader")
         <!-- Navbar -->
