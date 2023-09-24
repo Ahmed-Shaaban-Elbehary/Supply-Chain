@@ -241,7 +241,6 @@ app.notification = (title, content, date) => {
                     <small class="d-block float-right">${date}</small>
                 </div>`,
         `${title}`);
-
     toastr.options = {
         "closeButton": false,
         "debug": false,
@@ -261,20 +260,22 @@ app.notification = (title, content, date) => {
     }
 }
 
-
+/**
+ * Get List Of Event For The Notification Dropdown List.
+ */
 app.GetEventsList = () => {
     let url = '/Event/GetEventsList';
     app.ajax_request(url, 'GET', 'json', null)
         .then((response) => {
             $.each(response, (index, val) => {
-                let html = `<blocspinnerkquote id="event-blockqoute" onclick="events.on_event_block_quote_click(${val.id})" class="blockquote bg-cloudy">
-                              <p class="mb-0 text-md text-muted">${val.description}</p>
-                              <footer class="blockquote-footer">
+                let html = `<blockquote id="event-blockqoute" onclick="events.on_event_block_quote_click(${val.id})" class="blockquote bg-cloudy">
+                                <p class="mb-0 text-md text-muted">${val.description}</p>
+                                <footer class="blockquote-footer">
                                 ${app.getDateTimeFormat(val.publishedIn)} 
-                                  <cite title="Source Title">
+                                    <cite title="Source Title">
                                     <i class="fas fa-calendar-check mr-2"></i> ${val.title}
-                                  </cite>
-                              </footer>
+                                    </cite>
+                                </footer>
                             </blockquote>`;
 
                 $('#notification-list').find('#notification-container').append(html);

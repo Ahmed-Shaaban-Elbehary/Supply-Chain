@@ -14,9 +14,9 @@ namespace SupplyChain.App.Utils
         private readonly IManufacturerService _manufacturerService;
         private readonly IMapper _mapper;
 
-        public Lookups(IWebHostEnvironment webHostEnvironment, 
+        public Lookups(IWebHostEnvironment webHostEnvironment,
             IProductCategoryService productCategoryService,
-            IManufacturerService  manufacturerService,
+            IManufacturerService manufacturerService,
             IMapper mapper
             )
         {
@@ -24,12 +24,14 @@ namespace SupplyChain.App.Utils
             _productCategoryService = productCategoryService;
             _manufacturerService = manufacturerService;
             _mapper = mapper;
-            Countries = GetCountries();
             Manufacturers = GetManufacturers().Result.ToList();
             Categories = GetCategories().Result.ToList();
+            Countries = GetCountries();
+            Units = GetUnits();
         }
 
         public List<Country> Countries { get; private set; }
+        public List<Unit> Units { get; private set; }
 
         public List<ManufacturerViewModel> Manufacturers { get; private set; }
 
@@ -45,6 +47,16 @@ namespace SupplyChain.App.Utils
             }
             return countries;
         }
+        public List<Unit> GetUnits()
+        {
+            string jsonString = File.ReadAllText(Path.Combine(_webHostEnvironment.WebRootPath, "Units.json"));
+            List<Unit> units = JsonConvert.DeserializeObject<List<Unit>>(jsonString);
+            if (units == null)
+            {
+                return new List<Unit>();
+            }
+            return units;
+        }
 
         public async Task<IEnumerable<ManufacturerViewModel>> GetManufacturers()
         {
@@ -57,11 +69,15 @@ namespace SupplyChain.App.Utils
             var result = await _productCategoryService.GetAllProductCategoriesAsync();
             return _mapper.Map<IEnumerable<ProductCategoryViewModel>>(result);
         }
-
-        public class Country
-        {
-            public string Code { get; set; }
-            public string Name { get; set; }
-        }
+    }
+    public class Country
+    {
+        public string Code { get; set; }
+        public string Name { get; set; }
+    }
+    public class Unit
+    {
+        public int Code { get; set; }
+        public string Name { get; set; }
     }
 }
