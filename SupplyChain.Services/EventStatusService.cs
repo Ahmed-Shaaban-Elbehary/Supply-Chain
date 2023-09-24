@@ -53,6 +53,13 @@ namespace SupplyChain.Services
             return result;
         }
 
+        public async Task<EventStatus> GetEventStatusByEventIdAndUserIdAsync(int eventId, int userId)
+        {
+            var result = await _unitOfWork.EventStatusRepository
+                .GetWhereAsync(e => e.EventId == eventId && e.UserId == userId);
+            return result.FirstOrDefault();
+        }
+
         public async Task<EventStatus> GetEventStatusByIdAsync(int id)
         {
             return await _unitOfWork.EventStatusRepository.GetByIdAsync(id);
