@@ -131,16 +131,22 @@ a {
 .dropdown-menu-lg {
     min-width: 400px !important;
 }
+
 .blink_me {
     animation: blinker 4s linear infinite;
 }
+
+    .blink_me:hover {
+        animation: none;
+    }
 
 @keyframes blinker {
     50% {
         opacity: 0;
     }
 }
+
 #event-blockqoute:hover {
-    background-color:#bdc3c7;
+    background-color: #bdc3c7;
     cursor: pointer;
 }
