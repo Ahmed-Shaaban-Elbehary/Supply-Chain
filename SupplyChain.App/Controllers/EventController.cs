@@ -138,12 +138,27 @@ namespace SupplyChain.App.Controllers
             {
                 var _events = await _eventService.GetAllPagedEventsAsync(1, 10, (e => e.OrderByDescending(e => e.PublishedIn)));
                 var vm = _mapper.Map<List<EventViewModel>>(_events);
-
                 var currentUserId = CurrentUser.GetUserId();
+                int esCounter = 0;
+                vm.ForEach(async item =>
+                {
+                    var itemStatus = await _eventStatusService.GetEventStatusByEventIdAndUserIdAsync(item.Id, currentUserId);
+                    if (itemStatus != null)
+                    {
+                        item.IsReaded = itemStatus.MakeAsRead;
+                        item.IsRemoved = itemStatus.Removed;
+                        esCounter++;
+                    }
+                });
 
-                
+                var model = new NotificationViewModel()
+                {
+                    EventCount = vm.Count,
+                    DisplayGreenLight = vm.Count >= esCounter,
+                    EventViewModels = vm
+                };
 
-                return new JsonResult(vm);
+                return new JsonResult(model);
             }
             catch (Exception ex)
             {
