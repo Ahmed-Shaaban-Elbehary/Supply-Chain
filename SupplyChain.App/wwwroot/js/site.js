@@ -2,7 +2,6 @@
  ***** GENERAL JAVASCRIPT ******
  *******************************/
 $(() => {
-    app.GetEventsList();
     // Write your JavaScript code.
     var inputs = document.querySelectorAll("input[type='number']");
     inputs.forEach(function (input) {
@@ -18,6 +17,9 @@ $(() => {
 
     // Set the active nav-item
     $('li[data-nav="' + currentPage + '"]').addClass('active');
+
+    //Call Events On Page Load.
+    app.GetEventsList();
 
 });
 

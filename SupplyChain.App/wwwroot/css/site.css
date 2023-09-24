@@ -120,8 +120,7 @@ a {
 }
 
 #notification-list > div {
-    min-height: 150px;
-    overflow-y: scroll
+    min-height: 250px !important;
 }
 
 .bg-cloudy {

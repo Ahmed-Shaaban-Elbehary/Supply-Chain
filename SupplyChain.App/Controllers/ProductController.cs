@@ -33,6 +33,10 @@ namespace SupplyChain.App.Controllers
         {
             var categories = await _productService.GetAllPagedProductsAsync(page, pageSize);
             var vm = _mapper.Map<List<ProductViewModel>>(categories);
+            vm.ForEach(item =>
+            {
+                item.UnitName = new SelectList(_lookup.Units, "Code", "Name", item.UnitCode).FirstOrDefault().Text;
+            });
 
             var pagedModel = new PagedViewModel<ProductViewModel>
             {
@@ -53,6 +57,7 @@ namespace SupplyChain.App.Controllers
             vm.CountryOfOriginList = new SelectList(_lookup.Countries, "Code", "Name");
             vm.ManufacturerList = new SelectList(_lookup.Manufacturers, "Id", "Name");
             vm.CategoryList = new SelectList(_lookup.Categories, "Id", "Name");
+            vm.Units = new SelectList(_lookup.Units, "Code", "Name");
             return View(vm);
         }
 
