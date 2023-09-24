@@ -25,12 +25,11 @@
                                     <span class="badge badge-pill badge-secondary">@item.CategoryName</span>
                                     <span class="badge badge-pill badge-info">@item.ManufacturerName</span>
                                     <span class="badge badge-pill badge-dark">@item.CountryOfOriginName</span>
-                                    <p class="card-text">
+                                    <p>
                                         <small class="text-muted em"><strong>Production</strong> Date | @item.ProductionDate.ToString("dd/MM/yyyy")&sbquo; </small>
                                         <small class="text-muted em"><strong>Expiration</strong> Date | @item.ExpirationDate.ToString("dd/MM/yyyy")</small>
                                     </p>
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -43,11 +42,11 @@
                 <div class="container">
                     <h1 class="display-4">@Model.Title</h1>
                     <p class="lead">
-                        @Model.Description &sbquo; Start In <em class="text-muted text-bold">@Model.StartIn.ToString("dd/MM/yyyy hh:mm:ss tt")</em>
+                        @{@Model.Description}&sbquo; Start In |&ensp; <em class="text-muted text-bold">@Model.StartIn.ToString("dd/MM/yyyy hh:mm:ss tt")</em>
                     </p>
                     <hr class="my-4">
                     <p class="text-muted text-right h3">
-                        <span class="badge badge-pill badge-danger blink_me"><strong>End In</strong>&ensp;<em> @Model.EndIn.ToString("dd/MM/yyyy hh:mm:ss tt")</em></span>
+                        <span class="badge badge-pill badge-danger blink_me"><strong>End In |</strong>&ensp;<em> @Model.EndIn.ToString("dd/MM/yyyy hh:mm:ss tt")</em></span>
                     </p>
                 </div>
             </div>
