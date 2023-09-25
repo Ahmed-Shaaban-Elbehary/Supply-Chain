@@ -1,9 +1,6 @@
 ﻿@using SupplyChain.Services;
 @model SupplyChain.App.ViewModels.EventViewModel
 
-@{
-    bool inEditMode = ViewBag.isEdit;
-}
 <form asp-action="AddEditEvent" onsubmit="events.add_event(event)">
     <input type="hidden" asp-for="Id" />
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -54,7 +51,7 @@
             </div>
         </div>
     </div>
-    @if (inEditMode && await CurrentUser.HasPermissionAsync("HasPermissionToPublishEvent"))
+    @if (Model.IsInEditMode && await CurrentUser.HasPermissionAsync("HasPermissionToPublishEvent"))
     {
         <div class="row">
             <div class="col-md-6">
