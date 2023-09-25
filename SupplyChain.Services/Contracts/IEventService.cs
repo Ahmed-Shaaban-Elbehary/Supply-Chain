@@ -10,7 +10,7 @@ namespace SupplyChain.Services.Contracts
     public interface IEventService
     {
         Task<IEnumerable<Event>> GetAllEventsAsync();
-        Task<IEnumerable<Event>> GetAllPagedEventsAsync(int page, int pageSize, Func<IQueryable<Event>, IOrderedQueryable<Event>> func);
+        Task<IEnumerable<Event>> GetAllPagedEventsAsync();
         Task<Event> GetEventByIdAsync(int id);
         Task<IEnumerable<Event>> GetIntervalEvent(DateTime start, DateTime end);
         Task<int> CreateEventAsync(Event _event);
