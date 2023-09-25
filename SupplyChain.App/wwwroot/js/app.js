@@ -267,8 +267,13 @@ app.GetEventsList = () => {
     let url = '/Event/GetEventsList';
     app.ajax_request(url, 'GET', 'json', null)
         .then((response) => {
-            $.each(response, (index, val) => {
-                let html = `<blockquote id="event-blockqoute" onclick="events.on_event_block_quote_click(${val.id})" class="blockquote bg-cloudy">
+            console.log(response);
+            $("#notification-list-header").html(`${response.eventCount} Notifications`);
+            if (response.displayGreenLight) {
+                $("#notificationbadge").addClass('dot');
+            }
+            $.each(response.eventViewModels, (index, val) => {
+                let html = `<blockquote id="event-blockqoute" onclick="events.on_event_block_quote_click(${val.id})" class="blockquote ${val.backgroundColor}">
                                 <p class="mb-0 text-md text-muted">${val.description}</p>
                                 <footer class="blockquote-footer">
                                 ${app.getDateTimeFormat(val.publishedIn)} 
@@ -287,3 +292,7 @@ app.GetEventsList = () => {
             console.error(errorThrown);
         });
 }
+$('#notification-list').on('hidden.bs.dropdown', function (e) {
+    $('#notification-list').find('#notification-container').empty();
+    app.GetEventsList();
+})

@@ -29,6 +29,8 @@ namespace SupplyChain.App.ViewModels
 
         public bool IsReaded { get; set; }
 
+        public bool IsInEditMode { get; set; }
+
         [Required]
         public List<int> ProductIds { get; set; }
 

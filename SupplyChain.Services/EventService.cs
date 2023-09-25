@@ -4,6 +4,7 @@ using SupplyChain.Services.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -61,9 +62,14 @@ namespace SupplyChain.Services
             return await _unitOfWork.EventRepository.GetAllAsync();
         }
 
-        public async Task<IEnumerable<Event>> GetAllPagedEventsAsync(int page, int pageSize, Func<IQueryable<Event>, IOrderedQueryable<Event>> func)
+        public async Task<IEnumerable<Event>> GetAllPagedEventsAsync()
         {
-            var result = await _unitOfWork.EventRepository.GetPagedAsync(page, pageSize, null, func, true);
+            int page = 1;
+            int pageSize = 10;
+            Expression<Func<Event, bool>> predicate = e => e.Active == true;
+            Func<IQueryable<Event>, IOrderedQueryable<Event>> orderBy = q => q.OrderBy(e => e.PublishedIn);
+            
+            var result = await _unitOfWork.EventRepository.GetPagedAsync(page, pageSize, predicate, orderBy, true);
             return result;
         }
 

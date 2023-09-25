@@ -52,15 +52,15 @@ namespace SupplyChain.App.Controllers
 
                 if (id > 0) //edit
                 {
-                    ViewBag.isEdit = true;
                     var entity = await _eventService.GetEventByIdAsync(id);
                     vm = _mapper.Map<EventViewModel>(entity);
                     var productEvents = await _productEventService.GetProductEventByEventIdAsync(id);
                     vm.ProductIds = productEvents.Select(pe => pe.ProductId).ToList();
+                    vm.IsInEditMode = true;
                 }
                 else
                 {
-                    ViewBag.isEdit = false;
+                    vm.IsInEditMode = false;
                     vm.StartIn = DateTime.Now;
                     vm.EndIn = DateTime.Now;
                 }
@@ -136,16 +136,17 @@ namespace SupplyChain.App.Controllers
         {
             try
             {
-                var _events = await _eventService.GetAllPagedEventsAsync(1, 10, (e => e.OrderByDescending(e => e.PublishedIn)));
+                var _events = await _eventService.GetAllPagedEventsAsync();
                 var vm = _mapper.Map<List<EventViewModel>>(_events);
                 var currentUserId = CurrentUser.GetUserId();
                 int esCounter = 0;
-                vm.ForEach(async item =>
+                vm.ForEach(item =>
                 {
-                    var itemStatus = await _eventStatusService.GetEventStatusByEventIdAndUserIdAsync(item.Id, currentUserId);
+                    var itemStatus =  _eventStatusService.GetEventStatusByEventIdAndUserIdAsync(item.Id, currentUserId);
                     if (itemStatus != null)
                     {
                         item.IsReaded = itemStatus.MakeAsRead;
+                        item.BackgroundColor = itemStatus.MakeAsRead ? "#fff" : "bg-cloudy";
                         item.IsRemoved = itemStatus.Removed;
                         esCounter++;
                     }
@@ -154,7 +155,7 @@ namespace SupplyChain.App.Controllers
                 var model = new NotificationViewModel()
                 {
                     EventCount = vm.Count,
-                    DisplayGreenLight = vm.Count >= esCounter,
+                    DisplayGreenLight = vm.Count > esCounter,
                     EventViewModels = vm
                 };
 
