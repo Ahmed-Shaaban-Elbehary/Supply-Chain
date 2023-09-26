@@ -114,6 +114,20 @@ namespace SupplyChain.App.Controllers
                             await _notificationHubContext.Clients.All
                                 .SendAsync("sendToUser", vm);
                         }
+                        else
+                        {
+                            int userId = CurrentUser.GetUserId();
+                            var itemStatus = _eventStatusService.GetEventStatusByEventIdAndUserIdAsync(userId, vm.Id);
+                            if (itemStatus != null)
+                            {
+                                var eventStatus = new EventStatus
+                                {
+                                    UserId = userId,
+                                    EventId = vm.Id
+                                };
+                                await _eventStatusService.DeleteEventStatusAsync(eventStatus);
+                            }
+                        }
 
                         return Json(new ApiResponse<bool>(true, true, "An event was successfully updated!"));
                     }
@@ -142,13 +156,16 @@ namespace SupplyChain.App.Controllers
                 int esCounter = 0;
                 vm.ForEach(item =>
                 {
-                    var itemStatus =  _eventStatusService.GetEventStatusByEventIdAndUserIdAsync(item.Id, currentUserId);
+                    var itemStatus = _eventStatusService.GetEventStatusByEventIdAndUserIdAsync(item.Id, currentUserId);
                     if (itemStatus != null)
                     {
-                        item.IsReaded = itemStatus.MakeAsRead;
-                        item.BackgroundColor = itemStatus.MakeAsRead ? "#fff" : "bg-cloudy";
-                        item.IsRemoved = itemStatus.Removed;
+                        item.BackgroundColor = itemStatus.FirstOrDefault().MakeAsRead ? "#fff" : "bg-cloudy";
+                        item.IsRemoved = itemStatus.FirstOrDefault().Removed;
                         esCounter++;
+                    }
+                    else
+                    {
+                        item.BackgroundColor = "bg-cloudy";
                     }
                 });
 
@@ -214,7 +231,7 @@ namespace SupplyChain.App.Controllers
                     UserId = currentUserId,
                     EventId = eventId,
                     MakeAsRead = true,
-                    CreatedDate = DateTime.Now
+                    CreatedDate = DateTime.Now,
                 };
                 var eventStatus = _mapper.Map<EventStatus>(ESvm);
                 //Add New Event Status
