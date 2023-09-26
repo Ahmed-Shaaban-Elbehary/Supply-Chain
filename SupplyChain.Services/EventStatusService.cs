@@ -36,6 +36,10 @@ namespace SupplyChain.Services
 
         public async Task DeleteEventStatusAsync(EventStatus eventStatus)
         {
+            var user = await _unitOfWork.UserRepository.GetByIdAsync(eventStatus.UserId);
+            var _event = await _unitOfWork.EventRepository.GetByIdAsync(eventStatus.EventId);
+            eventStatus.User = user;
+            eventStatus.Event = _event;
             await _unitOfWork.EventStatusRepository.RemoveAsync(eventStatus);
             await _unitOfWork.CommitAsync();
             await _unitOfWork.CommitTransaction();
@@ -53,11 +57,11 @@ namespace SupplyChain.Services
             return result;
         }
 
-        public EventStatus? GetEventStatusByEventIdAndUserIdAsync(int eventId, int userId)
+        public IEnumerable<EventStatus>? GetEventStatusByEventIdAndUserIdAsync(int eventId, int userId)
         {
             var result = _unitOfWork.EventStatusRepository
-                .GetWhereAsync(e => e.EventId == eventId && e.UserId == userId).Result.FirstOrDefault();
-            return result;
+                .GetWhereAsync(e => e.EventId == eventId && e.UserId == userId);
+            return result.Result.Count() <= 0 ? null : result.Result;
         }
 
         public async Task<EventStatus> GetEventStatusByIdAsync(int id)

@@ -234,30 +234,14 @@ app.FailAlertMessage = (msg) => {
  * @returns toast
  */
 app.notification = (title, content, date) => {
-    toastr.info(`<div class="p-1">
-                    <p class="d-block text-truncate mb-0" style="max-width: 250px;">
-     		                ${content}
-    	            </p>
-                    <small class="d-block float-right">${date}</small>
-                </div>`,
-        `${title}`);
-    toastr.options = {
-        "closeButton": false,
-        "debug": false,
-        "newestOnTop": false,
-        "progressBar": false,
-        "positionClass": "toast-bottom-right",
-        "preventDuplicates": false,
-        "onclick": null,
-        "showDuration": "300",
-        "hideDuration": "1000",
-        "timeOut": "5000",
-        "extendedTimeOut": "1000",
-        "showEasing": "swing",
-        "hideEasing": "linear",
-        "showMethod": "fadeIn",
-        "hideMethod": "fadeOut"
-    }
+    $.toast({
+        heading: content,
+        text: content,
+        position: 'bottom-right',
+        showHideTransition: 'slide',
+        icon: 'info',
+        loader: false
+    })
 }
 
 /**
@@ -268,12 +252,22 @@ app.GetEventsList = () => {
     app.ajax_request(url, 'GET', 'json', null)
         .then((response) => {
             console.log(response);
-            $("#notification-list-header").html(`${response.eventCount} Notifications`);
+            $("#notification-list-header").html(`${response.eventCount} Notification(s)`);
             if (response.displayGreenLight) {
                 $("#notificationbadge").addClass('dot');
+            } else {
+                $("#notificationbadge").removeClass('dot');
             }
-            $.each(response.eventViewModels, (index, val) => {
-                let html = `<blockquote id="event-blockqoute" onclick="events.on_event_block_quote_click(${val.id})" class="blockquote ${val.backgroundColor}">
+            if (response.eventViewModels.length == 0) {
+                $('#notification-list').find('#notification-container')
+                    .append(`<p class="text-center pb-5 pt-5 text-bold"> 
+                                There's No Notifications Yet!
+                            <p>`);
+                $('#notification-list').find('#notification-container').css('overflow-y', 'hidden');
+                $('#notification-list').find('#see-all-notifications').css('display', 'none');
+            } else {
+                $.each(response.eventViewModels, (index, val) => {
+                    let html = `<blockquote id="event-blockqoute" onclick="events.on_event_block_quote_click(${val.id})" class="blockquote ${val.backgroundColor}">
                                 <p class="mb-0 text-md text-muted">${val.description}</p>
                                 <footer class="blockquote-footer">
                                 ${app.getDateTimeFormat(val.publishedIn)} 
@@ -282,16 +276,16 @@ app.GetEventsList = () => {
                                     </cite>
                                 </footer>
                             </blockquote>`;
-
-                $('#notification-list').find('#notification-container').append(html);
-            });
-
+                    $('#notification-list').find('#notification-container').append(html);
+                });
+            }
         })
         .catch((jqXHR, textStatus, errorThrown) => {
             console.error(jqXHR);
             console.error(errorThrown);
         });
 }
+
 $('#notification-list').on('hidden.bs.dropdown', function (e) {
     $('#notification-list').find('#notification-container').empty();
     app.GetEventsList();

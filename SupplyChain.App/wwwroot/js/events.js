@@ -19,7 +19,7 @@ var events = (() => {
                     app.reEnterFormData(formElement, formData);
                 } else {
                     app.closeGeneralPatialModal();
-                    app.SuccessAlertMessage(response.message);
+                    //app.SuccessAlertMessage(response.message);
                 }
             })
             .catch((xhr, status, error) => {
@@ -95,7 +95,6 @@ var events = (() => {
         let url = `/Event/UpdateEventAsRead/${eventId}`;
         app.ajax_request(url, 'GET', 'html', null)
             .then((res) => {
-                console.log(res);
                 $('#event-details-partial-modal').find('#event-details-modal-content').html(res);
                 $('#event-details-partial-modal').modal('show');
             })
