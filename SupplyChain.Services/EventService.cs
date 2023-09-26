@@ -67,7 +67,7 @@ namespace SupplyChain.Services
             int page = 1;
             int pageSize = 10;
             Expression<Func<Event, bool>> predicate = e => e.Active == true;
-            Func<IQueryable<Event>, IOrderedQueryable<Event>> orderBy = q => q.OrderBy(e => e.PublishedIn);
+            Func<IQueryable<Event>, IOrderedQueryable<Event>> orderBy = q => q.OrderByDescending(e => e.PublishedIn);
             
             var result = await _unitOfWork.EventRepository.GetPagedAsync(page, pageSize, predicate, orderBy, true);
             return result;

@@ -27,8 +27,6 @@ namespace SupplyChain.App.ViewModels
 
         public bool IsRemoved { get; set; }
 
-        public bool IsReaded { get; set; }
-
         public bool IsInEditMode { get; set; }
 
         [Required]
