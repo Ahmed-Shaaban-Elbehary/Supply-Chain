@@ -11,7 +11,7 @@ using SupplyChain.Services.Contracts;
 
 namespace SupplyChain.App.Controllers
 {
-    public class ProductController : Controller
+    public class ProductController : BaseController
     {
         private readonly IProductService _productService;
         private readonly IMapper _mapper;
