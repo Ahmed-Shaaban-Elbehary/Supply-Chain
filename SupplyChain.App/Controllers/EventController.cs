@@ -12,7 +12,7 @@ using SupplyChain.Services.Contracts;
 
 namespace SupplyChain.App.Controllers
 {
-    public class EventController : Controller
+    public class EventController : BaseController
     {
         private readonly IMapper _mapper;
         private readonly IProductService _productService;
