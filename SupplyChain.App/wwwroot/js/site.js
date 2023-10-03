@@ -19,7 +19,7 @@ $(() => {
     $('li[data-nav="' + currentPage + '"]').addClass('active');
 
     //Call Events On Page Load.
-    app.GetEventsList();
+    notification.get();
 
 });
 

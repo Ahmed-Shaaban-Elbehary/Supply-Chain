@@ -12,7 +12,7 @@ namespace SupplyChain.Services.Contracts
         Task<IEnumerable<EventStatus>> GetAllEventStatusAsync();
         Task<IEnumerable<EventStatus>> GetAllPagedEventStatusAsync(int page, int pageSize);
         Task<EventStatus> GetEventStatusByIdAsync(int id);
-        IEnumerable<EventStatus>? GetEventStatusByEventIdAndUserIdAsync(int eventId, int userId);
+        Task<IEnumerable<EventStatus>?> GetEventStatusByEventIdAndUserIdAsync(int eventId, int userId);
         Task CreateEventStatusAsync(EventStatus eventStatus);
         Task UpdateEventStatusAsync(EventStatus eventStatus);
         Task DeleteEventStatusAsync(EventStatus eventStatus);

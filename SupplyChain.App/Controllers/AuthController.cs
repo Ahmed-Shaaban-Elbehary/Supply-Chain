@@ -55,6 +55,8 @@ namespace SupplyChain.App.Controllers
                 }
                 var _user = _mapper.Map<User>(loggedInUser);
                 await CurrentUser.StartSession(_user, _userService);
+                HttpContext.Session.SetString("LoggedUserID", $"{_user}");
+
                 return RedirectToAction("Index", "Product");
             }
         }

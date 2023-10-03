@@ -50,6 +50,14 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpGet]
+        public async Task<ActionResult> ProductItem(int id)
+        {
+            var product = await _productService.GetProductByIdAsync(id);
+            var vm = _mapper.Map<ProductViewModel>(product);
+            return View(vm);
+        }
+
+        [HttpGet]
         [InRole("admin")]
         public IActionResult Add()
         {

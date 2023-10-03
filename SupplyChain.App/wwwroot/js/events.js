@@ -1,12 +1,13 @@
 ﻿var base_url = "/Event";
-var events = (() => {
 
-    OpenGeneralModal = () => {
+const events = (() => {
+
+    const OpenGeneralModal = () => {
         $('#general-modal-content').empty();
         $('#general-modal-content').load('/Event/AddEditEvent');
     }
 
-    AddEvent = (event) => {
+    const AddEvent = (event) => {
         event.preventDefault();
         const hideloader = app.showloader('event-card');
         var formElement = event.target.closest('form');
@@ -34,7 +35,7 @@ var events = (() => {
             })
     }
 
-    DeleteSelectedItem = (eventId) => {
+    const DeleteSelectedItem = (eventId) => {
         const hideloader = app.showloader('page-content');
         app.DeleteConfirmMessage().then((result) => {
             if (result.isConfirmed) {
@@ -66,7 +67,7 @@ var events = (() => {
         })
     }
 
-    OpenGeneralModalForEdit = (eventId) => {
+    const OpenGeneralModalForEdit = (eventId) => {
         let url = base_url + "/AddEditEvent"
         let data = { id: eventId };
         app.ajax_request(url, 'GET', 'html', data)
@@ -79,7 +80,7 @@ var events = (() => {
             })
     }
 
-    GetEventById = (eventId) => {
+    const GetEventById = (eventId) => {
         let url = base_url + "/GetEventById/" + eventId;
         app.ajax_request(url, 'GET', 'json', null)
             .then((response) => {
@@ -91,7 +92,7 @@ var events = (() => {
 
     }
 
-    OnEventBlockQuoteClick = (eventId) => {
+    const OnEventBlockQuoteClick = (eventId) => {
         let url = `/Event/UpdateEventAsRead/${eventId}`;
         app.ajax_request(url, 'GET', 'html', null)
             .then((res) => {
@@ -126,6 +127,6 @@ var events = (() => {
 })();
 
 //self-invoking
-(function () {
+(() => {
     events.show_modal_init();
 })();

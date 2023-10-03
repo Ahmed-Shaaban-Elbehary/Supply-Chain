@@ -124,7 +124,11 @@ a {
 }
 
 .bg-cloudy {
-    background-color: #ecf0f1;
+    background-color: #ecf0f1 !important;
+}
+
+.bg-milky {
+    background-color: #ffffff !important;
 }
 
 .dropdown-menu-lg {
