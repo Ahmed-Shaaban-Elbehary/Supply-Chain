@@ -7,7 +7,7 @@ using SupplyChain.Services.Contracts;
 
 namespace SupplyChain.App.Controllers
 {
-    public class AuthController : Controller
+    public class AuthController : BaseController
     {
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
@@ -55,7 +55,7 @@ namespace SupplyChain.App.Controllers
                 }
                 var _user = _mapper.Map<User>(loggedInUser);
                 await CurrentUser.StartSession(_user, _userService);
-                HttpContext.Session.SetString("LoggedUserID", $"{_user}");
+                HttpContext.Session.SetString("userObj", $"{_user}");
 
                 return RedirectToAction("Index", "Product");
             }

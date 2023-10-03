@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SupplyChain.Core.Interfaces
 {
-    public interface IUnitOfWork : IDisposable
+    public interface IUnitOfWork
     {
         IProductRepository ProductRepository { get; }
         IProductCategoryRepository ProductCategoryRepository { get; }

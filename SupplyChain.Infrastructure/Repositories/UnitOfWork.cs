@@ -74,11 +74,6 @@ namespace SupplyChain.Infrastructure.Repositories
             }
         }
 
-        public void Dispose()
-        {
-            _context.Dispose();
-        }
-
         public async Task Detach<T>(T entity) where T : class
         {
             var entry = _context.Entry(entity);

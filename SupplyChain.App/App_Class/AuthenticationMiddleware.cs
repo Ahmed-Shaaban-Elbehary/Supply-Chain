@@ -12,12 +12,7 @@ namespace SupplyChain.App.App_Class
         }
         public async Task Invoke(HttpContext context)
         {
-            var userId = context.Session.Keys.Count() > 0 ?
-                context.Session.GetString("LoggedUserID").ToString() :
-                string.Empty;
-
-            if ((!CurrentUser.IsLoggedIn() && string.IsNullOrEmpty(userId))
-                && !context.Request.Path.StartsWithSegments("/Auth/Login"))
+            if (!CurrentUser.IsLoggedIn() && !context.Request.Path.StartsWithSegments("/Auth/Login"))
             {
                 string url = $"{context.Request.Scheme}://{context.Request.Host}/Auth/Login";
                 context.Response.Redirect(url);
