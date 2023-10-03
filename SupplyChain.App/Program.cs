@@ -15,6 +15,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddMvc();
 
+//using session state
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromSeconds(10);
+});
+
 //Infrastructure Services
 builder.Services.InfrastructureServices(builder.Configuration);
 
@@ -52,6 +59,9 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
 }
+
+app.UseSession();
+
 app.UseStaticFiles();
 
 app.UseRouting();
