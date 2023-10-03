@@ -227,66 +227,20 @@ app.FailAlertMessage = (msg) => {
 }
 
 /**
- * Show Real Time Notification
+ * Show Real Time toaster
  * @param {string} title
  * @param {string} content
  * @param {date} date
  * @returns toast
  */
-app.notification = (title, content, date) => {
+app.toaster = (title, content, date) => {
+    const publishedIn = app.getDateTimeFormat(date);
     $.toast({
-        heading: content,
-        text: content,
+        heading: title,
+        text: content + publishedIn,
         position: 'bottom-right',
         showHideTransition: 'slide',
         icon: 'info',
         loader: false
     })
 }
-
-/**
- * Get List Of Event For The Notification Dropdown List.
- */
-app.GetEventsList = () => {
-    let url = '/Event/GetEventsList';
-    app.ajax_request(url, 'GET', 'json', null)
-        .then((response) => {
-            console.log(response);
-            $("#notification-list-header").html(`${response.eventCount} Notification(s)`);
-            if (response.displayGreenLight) {
-                $("#notificationbadge").addClass('dot');
-            } else {
-                $("#notificationbadge").removeClass('dot');
-            }
-            if (response.eventViewModels.length == 0) {
-                $('#notification-list').find('#notification-container')
-                    .append(`<p class="text-center pb-5 pt-5 text-bold"> 
-                                There's No Notifications Yet!
-                            <p>`);
-                $('#notification-list').find('#notification-container').css('overflow-y', 'hidden');
-                $('#notification-list').find('#see-all-notifications').css('display', 'none');
-            } else {
-                $.each(response.eventViewModels, (index, val) => {
-                    let html = `<blockquote id="event-blockqoute" onclick="events.on_event_block_quote_click(${val.id})" class="blockquote ${val.backgroundColor}">
-                                <p class="mb-0 text-md text-muted">${val.description}</p>
-                                <footer class="blockquote-footer">
-                                ${app.getDateTimeFormat(val.publishedIn)} 
-                                    <cite title="Source Title">
-                                    <i class="fas fa-calendar-check mr-2"></i> ${val.title}
-                                    </cite>
-                                </footer>
-                            </blockquote>`;
-                    $('#notification-list').find('#notification-container').append(html);
-                });
-            }
-        })
-        .catch((jqXHR, textStatus, errorThrown) => {
-            console.error(jqXHR);
-            console.error(errorThrown);
-        });
-}
-
-$('#notification-list').on('hidden.bs.dropdown', function (e) {
-    $('#notification-list').find('#notification-container').empty();
-    app.GetEventsList();
-})

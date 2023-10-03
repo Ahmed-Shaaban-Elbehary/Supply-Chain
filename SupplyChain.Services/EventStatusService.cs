@@ -23,6 +23,7 @@ namespace SupplyChain.Services
 
         public async Task CreateEventStatusAsync(EventStatus eventStatus)
         {
+            await _unitOfWork.BeginTransaction();
             var isEventAlreadyExist = await _unitOfWork.EventStatusRepository
                 .GetWhereAsync(e => e.UserId == eventStatus.UserId && e.EventId == eventStatus.EventId);
 
@@ -36,13 +37,8 @@ namespace SupplyChain.Services
 
         public async Task DeleteEventStatusAsync(EventStatus eventStatus)
         {
-            var user = await _unitOfWork.UserRepository.GetByIdAsync(eventStatus.UserId);
-            var _event = await _unitOfWork.EventRepository.GetByIdAsync(eventStatus.EventId);
-            eventStatus.User = user;
-            eventStatus.Event = _event;
             await _unitOfWork.EventStatusRepository.RemoveAsync(eventStatus);
             await _unitOfWork.CommitAsync();
-            await _unitOfWork.CommitTransaction();
         }
 
         public async Task<IEnumerable<EventStatus>> GetAllEventStatusAsync()
@@ -57,11 +53,11 @@ namespace SupplyChain.Services
             return result;
         }
 
-        public IEnumerable<EventStatus>? GetEventStatusByEventIdAndUserIdAsync(int eventId, int userId)
+        public async Task<IEnumerable<EventStatus>?> GetEventStatusByEventIdAndUserIdAsync(int eventId, int userId)
         {
-            var result = _unitOfWork.EventStatusRepository
+            var result = await _unitOfWork.EventStatusRepository
                 .GetWhereAsync(e => e.EventId == eventId && e.UserId == userId);
-            return result.Result.Count() <= 0 ? null : result.Result;
+            return result.Count() <= 0 ? null : result;
         }
 
         public async Task<EventStatus> GetEventStatusByIdAsync(int id)

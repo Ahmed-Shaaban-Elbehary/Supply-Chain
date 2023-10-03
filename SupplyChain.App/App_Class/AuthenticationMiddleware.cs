@@ -1,4 +1,5 @@
 ﻿using SupplyChain.Services;
+using System.Security.Policy;
 
 namespace SupplyChain.App.App_Class
 {
@@ -9,10 +10,14 @@ namespace SupplyChain.App.App_Class
         {
             _next = next;
         }
-
         public async Task Invoke(HttpContext context)
         {
-            if (!CurrentUser.IsLoggedIn() && !context.Request.Path.StartsWithSegments("/Auth/Login"))
+            var userId = context.Session.Keys.Count() > 0 ?
+                context.Session.GetString("LoggedUserID").ToString() :
+                string.Empty;
+
+            if ((!CurrentUser.IsLoggedIn() && string.IsNullOrEmpty(userId))
+                && !context.Request.Path.StartsWithSegments("/Auth/Login"))
             {
                 string url = $"{context.Request.Scheme}://{context.Request.Host}/Auth/Login";
                 context.Response.Redirect(url);
