@@ -6,7 +6,7 @@ using SupplyChain.Services.Contracts;
 
 namespace SupplyChain.App.Controllers
 {
-    public class SetupController : Controller
+    public class SetupController : BaseController
     {
         private readonly IProductCategoryService _productCategoryService;
         private readonly IManufacturerService _manufacturerService;
