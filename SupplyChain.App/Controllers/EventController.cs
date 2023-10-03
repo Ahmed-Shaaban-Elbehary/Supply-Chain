@@ -84,11 +84,11 @@ namespace SupplyChain.App.Controllers
             if (ModelState.IsValid)
             {
                 var ev = _mapper.Map<Event>(vm);
-
                 if (ev.Id == 0) // Adding a new event
                 {
                     try
                     {
+                        ev.CreatedBy = CurrentUser.GetUserId();
                         var newId = await _eventService.CreateEventAsync(ev);
                         var newProductEvent = await _productEventService.AddProductEventAsync(ev, vm.ProductIds);
                         return Json(new ApiResponse<bool>(true, true, "An event was successfully created!"));
@@ -117,15 +117,10 @@ namespace SupplyChain.App.Controllers
                         else
                         {
                             int userId = CurrentUser.GetUserId();
-                            var itemStatus = _eventStatusService.GetEventStatusByEventIdAndUserIdAsync(userId, vm.Id);
+                            var itemStatus = await _eventStatusService.GetEventStatusByEventIdAndUserIdAsync(vm.Id, userId);
                             if (itemStatus != null)
                             {
-                                var eventStatus = new EventStatus
-                                {
-                                    UserId = userId,
-                                    EventId = vm.Id
-                                };
-                                await _eventStatusService.DeleteEventStatusAsync(eventStatus);
+                                await _eventStatusService.DeleteEventStatusAsync(itemStatus.FirstOrDefault());
                             }
                         }
 
@@ -154,12 +149,12 @@ namespace SupplyChain.App.Controllers
                 var vm = _mapper.Map<List<EventViewModel>>(_events);
                 var currentUserId = CurrentUser.GetUserId();
                 int esCounter = 0;
-                vm.ForEach(item =>
+                foreach (var item in vm)
                 {
-                    var itemStatus = _eventStatusService.GetEventStatusByEventIdAndUserIdAsync(item.Id, currentUserId);
+                    var itemStatus = await _eventStatusService.GetEventStatusByEventIdAndUserIdAsync(item.Id, currentUserId);
                     if (itemStatus != null)
                     {
-                        item.BackgroundColor = itemStatus.FirstOrDefault().MakeAsRead ? "#fff" : "bg-cloudy";
+                        item.BackgroundColor = itemStatus.FirstOrDefault().MakeAsRead ? "bg-milky" : "bg-cloudy";
                         item.IsRemoved = itemStatus.FirstOrDefault().Removed;
                         esCounter++;
                     }
@@ -167,7 +162,8 @@ namespace SupplyChain.App.Controllers
                     {
                         item.BackgroundColor = "bg-cloudy";
                     }
-                });
+                }
+               
 
                 var model = new NotificationViewModel()
                 {

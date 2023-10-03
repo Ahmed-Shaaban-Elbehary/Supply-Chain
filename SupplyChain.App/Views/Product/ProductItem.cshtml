@@ -3,7 +3,6 @@
 @{
     ViewData["Title"] = Model.ProductName;
     Layout = "~/Views/Shared/_Layout.cshtml";
-    bool hasEvent = @Model.events.Count > 0;
 }
 @section Styles {
     <style>
@@ -19,25 +18,7 @@
         <img src="@Model.ImageUrl" class="product-img-card" alt="@Model.ProductName">
     </div>
     <div class="col-md-8 align-self-center px-5">
-        <h1 class="display-5 fw-bolder mb-4">@Model.ProductName</h1>
-        <div class="fs-5 mb-5">
-            <span>&pound; @Model.Price</span>
-        </div>
-        <p class="lead">@Model.Description</p>
-        <div class="d-flex">
-            <input class="form-control text-center mr-3" id="@Model.InputQuantity" name="@Model.InputQuantity" type="number" value="1" style="max-width: 3rem">
-            <button class="btn btn-outline-dark flex-shrink-0" type="button">
-                <i class="fas fa-cart-plus mr-1"></i>
-                Add to cart
-            </button>
-        </div>
+        <h5 class="card-title mb-4">@Model.ProductName</h5>
+        <p class="card-text">@Model.Description</p>
     </div>
 </div>
-
-<input type="hidden" id="eventsCount" value="@hasEvent.ToString()">
-<input type="hidden" id="productId" value="@Model.Id">
-@if (hasEvent)
-{
-    <partial name="~/Views/Product/PartialViews/_EventsModalPartialView.cshtml" for="@Model.events" />
-}
-
