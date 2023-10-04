@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
 using SupplyChain.App.Notification;
 using SupplyChain.App.Utils.Contracts;
+using SupplyChain.App.Utils.Validations;
 using SupplyChain.App.ViewModels;
 using SupplyChain.Core.Models;
 using SupplyChain.Services;
@@ -37,13 +38,14 @@ namespace SupplyChain.App.Controllers
             _notificationHubContext = notificationHubContext;
             _lookup = lookup;
         }
-
+        [SessionExpire]
         public IActionResult Index()
         {
             return View();
         }
 
         [HttpGet]
+        [SessionExpire]
         public async Task<IActionResult> AddEditEvent(int id)
         {
             try
@@ -78,6 +80,7 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpPost]
+        [SessionExpire]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddEditEvent(EventViewModel vm)
         {
@@ -141,6 +144,7 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpGet]
+        [SessionExpire]
         public async Task<IActionResult> GetEventsList()
         {
             try
@@ -181,6 +185,7 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpGet]
+        [SessionExpire]
         public async Task<string> GetEvents(string start, string end)
         {
             DateTime _s = DateTime.Parse(start);
@@ -215,6 +220,7 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpGet]
+        [SessionExpire]
         public async Task<IActionResult> UpdateEventAsRead(int id)
         {
             try

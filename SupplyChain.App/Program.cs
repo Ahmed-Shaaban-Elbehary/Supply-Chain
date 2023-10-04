@@ -70,13 +70,13 @@ app.UseAuthorization();
 
 app.UseAuthentication();
 
-app.UseAuthenticationMiddleware();
+//app.UseAuthenticationMiddleware();
 
 app.MapHub<NotificationHub>("/notificationHub");
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Auth}/{action=Login}/{id?}"
+    pattern: "{controller=Auth}/{action=TimeOut}/{id?}"
     );
 
 app.Run();
