@@ -29,6 +29,7 @@ namespace SupplyChain.App.Controllers
             _uploadFile = uploadFile;
         }
 
+        [SessionExpire]
         public async Task<ActionResult> Index(int page = 1, int pageSize = 10)
         {
             var categories = await _productService.GetAllPagedProductsAsync(page, pageSize);
@@ -50,6 +51,7 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpGet]
+        [SessionExpire]
         public async Task<ActionResult> ProductItem(int id)
         {
             var product = await _productService.GetProductByIdAsync(id);
@@ -59,6 +61,7 @@ namespace SupplyChain.App.Controllers
 
         [HttpGet]
         [InRole("admin")]
+        [SessionExpire]
         public IActionResult Add()
         {
             var vm = new ProductViewModel();
@@ -70,6 +73,7 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpPost]
+        [SessionExpire]
         public async Task<IActionResult> AddNewProduct(ProductViewModel vm, IFormFile file)
         {
             var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
