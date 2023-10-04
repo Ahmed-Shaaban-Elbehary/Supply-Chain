@@ -61,6 +61,11 @@ namespace SupplyChain.App.Controllers
             }
         }
 
+        public IActionResult TimeOut()
+        {
+            return View();
+        }
+
         public IActionResult Logout()
         {
             CurrentUser.Logout();
