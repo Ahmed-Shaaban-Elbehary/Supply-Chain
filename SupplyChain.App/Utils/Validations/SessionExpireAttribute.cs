@@ -11,7 +11,7 @@ namespace SupplyChain.App.Utils.Validations
             // check  sessions here
             if (context.Session.GetString("userObj") == null)
             {
-                filterContext.Result = new RedirectResult("~/Auth/Logout");
+                filterContext.Result = new RedirectResult("~/Auth/TimeOut");
                 return;
             }
             base.OnActionExecuting(filterContext);

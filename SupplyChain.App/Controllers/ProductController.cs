@@ -27,6 +27,7 @@ namespace SupplyChain.App.Controllers
             _mapper = mapper;
             _lookup = lookUp;
             _uploadFile = uploadFile;
+
         }
 
         [SessionExpire]
