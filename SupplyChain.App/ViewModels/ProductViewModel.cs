@@ -23,6 +23,7 @@ namespace SupplyChain.App.ViewModels
         [Required(ErrorMessage = "The Quantity field is required.")]
         [Range(1, int.MaxValue, ErrorMessage = "The Quantity field must be greater than or equal to 1.")]
         public decimal Quantity { get; set; }
+        public decimal InputQuantity { get; set; }
 
         [Required(ErrorMessage = "Please Select Unit!")]
         [DisplayName("Unit")]

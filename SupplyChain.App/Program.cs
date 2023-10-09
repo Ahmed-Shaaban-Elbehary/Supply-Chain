@@ -16,10 +16,12 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddMvc();
 
 //using session state
+// Using the GetValue<type>(string key) method
+double sessionTimeout = builder.Configuration.GetValue<double>("SessionTimeOut");
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromSeconds(10);
+    options.IdleTimeout = TimeSpan.FromMinutes(sessionTimeout);
 });
 
 //Infrastructure Services
@@ -76,7 +78,7 @@ app.MapHub<NotificationHub>("/notificationHub");
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Auth}/{action=TimeOut}/{id?}"
+    pattern: "{controller=Auth}/{action=Login}/{id?}"
     );
 
 app.Run();
