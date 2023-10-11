@@ -14,20 +14,23 @@ namespace SupplyChain.App.Controllers
     public class ProductController : BaseController
     {
         private readonly IProductService _productService;
+        private readonly IEventService _eventService;
         private readonly IMapper _mapper;
         private readonly ILookUp _lookup;
         private readonly IUploadFile _uploadFile;
-        public ProductController(IProductService productService,
+        public ProductController(
+            IProductService productService,
+            IEventService eventService,
             IMapper mapper,
             ILookUp lookUp,
             IUploadFile uploadFile
             )
         {
             _productService = productService;
+            _eventService = eventService;
             _mapper = mapper;
             _lookup = lookUp;
             _uploadFile = uploadFile;
-
         }
 
         [SessionExpire]
@@ -56,7 +59,9 @@ namespace SupplyChain.App.Controllers
         public async Task<ActionResult> ProductItem(int id)
         {
             var product = await _productService.GetProductByIdAsync(id);
+            var _events = await _eventService.GetProductEventsAsync(product.Id);
             var vm = _mapper.Map<ProductViewModel>(product);
+            vm.events = _mapper.Map<List<EventViewModel>>(_events);
             return View(vm);
         }
 
