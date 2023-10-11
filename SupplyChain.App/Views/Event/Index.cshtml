@@ -2,6 +2,7 @@
 @{
     ViewData["Title"] = "Country";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    string modalTitle = "Add Event";
 }
 
 @section Styles {
@@ -36,5 +37,5 @@
         </div>
     </div>
 </div>
-@await Html.PartialAsync("_PartialModal", new ViewDataDictionary(ViewData) { { "ModalTitle", "Add/Edit Event" } })
+<partial name="_PartialModal" for="@modalTitle" />
 <script src="~/js/calendar.js"></script>

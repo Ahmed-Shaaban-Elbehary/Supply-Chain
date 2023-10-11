@@ -84,6 +84,17 @@ namespace SupplyChain.Services
                 .GetWhereAsync(e => e.StartIn >= start && e.EndIn <= end);
         }
 
+        public async Task<IEnumerable<Event>> GetProductEventsAsync(int productId)
+        {
+            string query = $@"SELECT E.* FROM Events as E
+                              LEFT JOIN ProductEvent as PE ON PE.EventId = E.Id
+                              LEFT JOIN Products as P ON PE.ProductId = P.Id
+                              WHERE P.Id = {productId} AND E.Active = 1 ";
+
+            var result = await _unitOfWork.EventRepository.ExecSqlQuery(query);
+            return result;
+        }
+
         public async Task RollbackTransaction()
         {
             await _unitOfWork.RollbackAsync();
@@ -105,7 +116,6 @@ namespace SupplyChain.Services
             }
 
         }
-
 
     }
 }

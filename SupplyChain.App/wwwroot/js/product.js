@@ -1,6 +1,7 @@
 ﻿/******************************
 ******* EVENT LISTENERS *******
 *******************************/
+
 var fileInput = document.getElementById('image-input');
 if (fileInput != null) {
     var fileLabel = fileInput.nextElementSibling;
@@ -13,3 +14,12 @@ if (fileInput != null) {
             fileLabel.innerHTML = "Choose Image";
     });
 }
+
+
+var events_count = $("#eventsCount").val();
+if (events_count == "True") {
+    setTimeout(() => {
+        $("#eventsModal").modal('show');
+    }, 1000);
+};
+

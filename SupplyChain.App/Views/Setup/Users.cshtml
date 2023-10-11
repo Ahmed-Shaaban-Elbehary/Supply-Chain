@@ -4,7 +4,7 @@
 @{
     ViewData["Title"] = "Users";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewData["mTitle"] = "Add/Edit Users";
+    string modalTitle = "Add/Edit Users";
     int count = 1;
 }
 <div class="card" id="user-card">
@@ -78,4 +78,4 @@
         @await Html.PartialAsync("~/Views/Pagers/_PagerUser.cshtml", Model)
     </div>
 </div>
-@await Html.PartialAsync("_PartialModal", new ViewDataDictionary(ViewData) { { "ModalTitle", "Add/Edit User" } })
+<partial name="_PartialModal" for="@modalTitle" />
