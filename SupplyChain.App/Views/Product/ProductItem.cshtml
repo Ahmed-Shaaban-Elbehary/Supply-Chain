@@ -1,8 +1,10 @@
 ﻿@using SupplyChain.App.ViewModels;
+@inject IJsonHelper Json;
 @model ProductViewModel;
 @{
     ViewData["Title"] = Model.ProductName;
     Layout = "~/Views/Shared/_Layout.cshtml";
+    bool hasEvent = @Model.events.Count > 0;
 }
 @section Styles {
     <style>
@@ -32,3 +34,10 @@
         </div>
     </div>
 </div>
+
+<input type="hidden" id="eventsCount" value="@hasEvent.ToString()">
+@if (hasEvent)
+{
+    <partial name="~/Views/Product/PartialViews/_EventsModalPartialView.cshtml" for="@Model.events" />
+}
+

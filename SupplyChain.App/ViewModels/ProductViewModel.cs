@@ -63,5 +63,7 @@ namespace SupplyChain.App.ViewModels
         public string CategoryName { get; set; }
 
         public SelectList CategoryList { get; set; }
+
+        public ICollection<EventViewModel> events { get; set; }
     }
 }
