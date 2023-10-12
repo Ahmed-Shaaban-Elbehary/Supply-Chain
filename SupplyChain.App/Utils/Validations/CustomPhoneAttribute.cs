@@ -2,6 +2,10 @@
 
 namespace SupplyChain.App.Utils.Validations
 {
+    /// <summary>
+    ///Specifies that the class or method that this attribute, to check if the phone number in right format.
+    ///the format is | +X-XXX-XXXX-XXXX
+    /// </summary>
     public class CustomPhoneAttribute : RegularExpressionAttribute
     {
         /// <summary>
