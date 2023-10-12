@@ -33,6 +33,7 @@ namespace SupplyChain.App.Controllers
             _uploadFile = uploadFile;
         }
 
+        [NoCache]
         [SessionExpire]
         public async Task<ActionResult> Index(int page = 1, int pageSize = 10)
         {
@@ -55,6 +56,7 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpGet]
+        [NoCache]
         [SessionExpire]
         public async Task<ActionResult> ProductItem(int id)
         {
@@ -67,6 +69,7 @@ namespace SupplyChain.App.Controllers
 
         [HttpGet]
         [InRole("admin")]
+        [NoCache]
         [SessionExpire]
         public IActionResult Add()
         {
@@ -79,6 +82,7 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpPost]
+        [NoCache]
         [SessionExpire]
         public async Task<IActionResult> AddNewProduct(ProductViewModel vm, IFormFile file)
         {

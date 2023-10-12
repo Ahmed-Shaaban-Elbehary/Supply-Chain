@@ -1,5 +1,4 @@
 ﻿@using SupplyChain.App.ViewModels;
-@inject IJsonHelper Json;
 @model ProductViewModel;
 @{
     ViewData["Title"] = Model.ProductName;
@@ -36,6 +35,7 @@
 </div>
 
 <input type="hidden" id="eventsCount" value="@hasEvent.ToString()">
+<input type="hidden" id="productId" value="@Model.Id">
 @if (hasEvent)
 {
     <partial name="~/Views/Product/PartialViews/_EventsModalPartialView.cshtml" for="@Model.events" />

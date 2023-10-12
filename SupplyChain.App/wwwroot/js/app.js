@@ -1,4 +1,6 @@
-﻿var app = app || {}
+﻿$('.collapse').collapse()
+
+var app = app || {}
 
 // Object to keep track of loader status for each element
 var loaderStatus = {};
@@ -243,4 +245,17 @@ app.toaster = (title, content, date) => {
         icon: 'info',
         loader: false
     })
+}
+
+/**
+ * Show hide target modalm by pass modal id.
+ * @param {string} targetModal
+ */
+app.showhideModal = (targetId) => {
+    let isIn = $(`${targetId}`).hasClass('show');
+    if (isIn) {
+        $(`${targetId}`).modal('hide');
+    } else {
+        $(`${targetId}`).modal('show');
+    }
 }
