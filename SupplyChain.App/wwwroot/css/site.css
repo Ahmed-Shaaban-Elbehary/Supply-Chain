@@ -153,3 +153,11 @@ a {
     background-color: #bdc3c7;
     cursor: pointer;
 }
+
+.no-padding {
+    padding: 0px !important;
+}
+
+.no-margin {
+    margin: 0px !important;
+}

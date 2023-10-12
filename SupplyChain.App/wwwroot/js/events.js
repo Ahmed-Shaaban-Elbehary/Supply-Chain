@@ -73,7 +73,8 @@ const events = (() => {
         app.ajax_request(url, 'GET', 'html', data)
             .then((resonse) => {
                 $('#general-partial-modal').find('#general-modal-content').html(resonse);
-                $('#general-partial-modal').modal('show');
+                app.showhideModal('general-partial-modal');
+                //$('#general-partial-modal').modal('show');
             })
             .catch((xhr, status, error) => {
                 console.error(error);
