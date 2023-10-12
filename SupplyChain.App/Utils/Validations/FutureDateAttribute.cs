@@ -2,6 +2,9 @@
 
 namespace SupplyChain.App.Utils.Validations
 {
+    /// <summary>
+    ///  Specifies that the class or method that this attribute, to validate if the date in future.
+    /// </summary>
     public class FutureDateAttribute : ValidationAttribute
     {
         /// <summary>

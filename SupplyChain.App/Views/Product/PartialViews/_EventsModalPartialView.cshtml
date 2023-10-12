@@ -1,25 +1,47 @@
 ﻿@using SupplyChain.App.ViewModels;
 @model ICollection<EventViewModel>
-
+@{
+    int counter = 1;
+}
 <div class="modal fade" id="eventsModal" role="dialog" aria-labelledby="event-modal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-            <div class="modal-header bg-blue">
+            <div class="modal-header bg-warning">
                 <h5 class="modal-title">Current Active Event(s)</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
+                <p class="font-weight-bold">
+                    Due to that event(s), you can request additional quantities of that product 
+                    <a href="javascript:products.request_additional_product_quantities();" class="btn btn-link" style="padding:0px;">here</a>.
+                </p>
+                <hr />
                 <!-- Add the partial view here -->
                 @foreach (var item in Model)
                 {
-                    <div class="jumbotron jumbotron-fluid">
-                        <div class="container">
-                            <h1 class="display-4">@item.Title</h1>
-                            <p class="lead">@item.Description</p>
+                    string heading = $"heading{counter}";
+                    string collapse = $"collapse{counter}";
+
+                    <div id="accordion">
+                      <div class="card">
+                        <div class="card-header" id="@heading" style="padding:0px;">
+                          <h5 class="mb-0">
+                            <button class="btn btn-link text-left" data-toggle="collapse" data-target="#@collapse" aria-expanded="true" aria-controls="@collapse">
+                                <div> @item.Title #@counter </div>
+                                <span class="badge badge-danger">end | @item.EndIn.ToShortDateString()</span>
+                            </button>
+                          </h5>
                         </div>
+                        <div id="@collapse" class="collapse show" aria-labelledby="@heading" data-parent="#accordion">
+                          <div class="card-body">
+                            @item.Description
+                          </div>
+                        </div>
+                      </div>
                     </div>
+                    counter++;
                 }
             </div>
             <div class="modal-footer">

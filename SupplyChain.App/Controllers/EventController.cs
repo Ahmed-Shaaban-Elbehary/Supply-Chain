@@ -38,6 +38,8 @@ namespace SupplyChain.App.Controllers
             _notificationHubContext = notificationHubContext;
             _lookup = lookup;
         }
+
+        [NoCache]
         [SessionExpire]
         public IActionResult Index()
         {
@@ -45,6 +47,7 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpGet]
+        [NoCache]
         [SessionExpire]
         public async Task<IActionResult> AddEditEvent(int id)
         {
@@ -80,6 +83,7 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpPost]
+        [NoCache]
         [SessionExpire]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddEditEvent(EventViewModel vm)
@@ -144,6 +148,7 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpGet]
+        [NoCache]
         [SessionExpire]
         public async Task<IActionResult> GetEventsList()
         {
@@ -185,6 +190,7 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpGet]
+        [NoCache]
         [SessionExpire]
         public async Task<string> GetEvents(string start, string end)
         {
@@ -220,6 +226,7 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpGet]
+        [NoCache]
         [SessionExpire]
         public async Task<IActionResult> UpdateEventAsRead(int id)
         {

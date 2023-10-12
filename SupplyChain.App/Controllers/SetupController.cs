@@ -30,6 +30,7 @@ namespace SupplyChain.App.Controllers
             _userRoleService = userRoleService;
         }
 
+        [NoCache]
         [SessionExpire]
         public IActionResult Index()
         {
@@ -38,6 +39,7 @@ namespace SupplyChain.App.Controllers
 
         #region Category
         [HttpGet]
+        [NoCache]
         [SessionExpire]
         public async Task<ActionResult> Category(int page = 1, int pageSize = 10)
         {
@@ -56,6 +58,7 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpGet]
+        [NoCache]
         [SessionExpire]
         public async Task<ActionResult> AddEditCategory(int id)
         {
@@ -72,6 +75,7 @@ namespace SupplyChain.App.Controllers
 
         [HttpPost]
         [SessionExpire]
+        [NoCache]
         [ValidateAntiForgeryToken]
         public async Task<JsonResult> AddEditCategory(ProductCategoryViewModel vm)
         {
@@ -94,6 +98,7 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpDelete]
+        [NoCache]
         [SessionExpire]
         public async Task<JsonResult> DeleteCategory(int id)
         {
@@ -112,6 +117,7 @@ namespace SupplyChain.App.Controllers
 
         #region Manufacturer
         [HttpGet]
+        [NoCache]
         [SessionExpire]
         public async Task<IActionResult> Manufacturer(int page = 1, int pageSize = 10)
         {
@@ -130,6 +136,7 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpGet]
+        [NoCache]
         [SessionExpire]
         public async Task<ActionResult> AddEditManufacturer(int id)
         {
@@ -145,6 +152,7 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpPost]
+        [NoCache]
         [SessionExpire]
         [ValidateAntiForgeryToken]
         public async Task<JsonResult> AddEditManufacturer(ManufacturerViewModel vm)
@@ -172,6 +180,7 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpDelete]
+        [NoCache]
         [SessionExpire]
         public async Task<JsonResult> DeleteManufacturer(int id)
         {
@@ -191,6 +200,7 @@ namespace SupplyChain.App.Controllers
         #region Users
 
         [HttpGet]
+        [NoCache]
         [SessionExpire]
         public async Task<IActionResult> Users(int page = 1, int pageSize = 10)
         {
@@ -207,6 +217,7 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpGet]
+        [NoCache]
         [SessionExpire]
         public async Task<ActionResult> AddEditUser(int id)
         {
@@ -239,6 +250,7 @@ namespace SupplyChain.App.Controllers
 
         [HttpPost]
         [SessionExpire]
+        [NoCache]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> AddEditUser(UserViewModel vm)
         {
@@ -284,6 +296,7 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpDelete]
+        [NoCache]
         [SessionExpire]
         public async Task<JsonResult> DeleteUser(int id)
         {
@@ -309,6 +322,7 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpGet]
+        [NoCache]
         [SessionExpire]
         public async Task<IActionResult> GetRoles(string q)
         {
@@ -329,15 +343,16 @@ namespace SupplyChain.App.Controllers
         #endregion Users
 
         #region ROLES
+        [NoCache]
         [SessionExpire]
         public IActionResult Roles()
         {
             return View();
         }
-        [SessionExpire]
         #endregion ROLES
 
         #region PERMISSIONS
+        [NoCache]
         [SessionExpire]
         public IActionResult Permissions()
         {
