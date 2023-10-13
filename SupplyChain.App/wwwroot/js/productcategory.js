@@ -13,7 +13,7 @@ var prcartegory = (() => {
         let url = $(formElement).attr('action');
         app.SubmitForm(url, formData)
             .then((response) => {
-                app.closeGeneralPatialModal();
+                app.showhideModal('general-partial-modal');
                 app.SuccessAlertMessage(response.message);
                 hideloader();
             })

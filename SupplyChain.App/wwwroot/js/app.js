@@ -1,4 +1,34 @@
-﻿$('.collapse').collapse()
+﻿/*******************************
+ ***** GENERAL JAVASCRIPT ******
+ *******************************/
+
+$(() => {
+    // Write your JavaScript code.
+    var inputs = document.querySelectorAll("input[type='number']");
+    inputs.forEach(function (input) {
+        input.addEventListener("keydown", function (event) {
+            if (event.key === "e") {
+                event.preventDefault();
+            }
+        });
+    });
+
+    // Get the current page or section name
+    var currentPage = $('#currentPage').val();
+
+    // Set the active nav-item
+    $('li[data-nav="' + currentPage + '"]').addClass('active');
+
+    //Call Events On Page Load.
+    notification.get();
+
+    $('.collapse').collapse()
+
+});
+
+/*******************************
+ ***** APP MODULE ******
+ *******************************/
 
 var app = app || {}
 
@@ -75,11 +105,6 @@ app.getDateTimeFormat = (strDate) => {
 
     let fullDate = `${dd}/${mm}/${yyyy} ${h}:${m}:${s}`;
     return fullDate;
-}
-
-/** */
-app.closeGeneralPatialModal = () => {
-    $('#general-partial-modal').modal('hide');
 }
 
 /**
@@ -175,7 +200,7 @@ app.SuccessAlertMessage = (msg) => {
             toast.addEventListener('mouseleave', Swal.resumeTimer)
         },
         didClose: () => {
-            location.reload();
+            //location.reload();
         }
     })
 
@@ -218,7 +243,7 @@ app.FailAlertMessage = (msg) => {
             toast.addEventListener('mouseleave', Swal.resumeTimer)
         },
         didClose: () => {
-            location.reload();
+            //location.reload();
         }
     })
 
@@ -251,11 +276,32 @@ app.toaster = (title, content, date) => {
  * Show hide target modalm by pass modal id.
  * @param {string} targetModal
  */
-app.showhideModal = (targetId) => {
-    let isIn = $(`${targetId}`).hasClass('show');
+app.showhideModal = (targetModal) => {
+    let isIn = $(`#${targetModal}`).hasClass('show');
     if (isIn) {
-        $(`${targetId}`).modal('hide');
+        $(`#${targetModal}`).modal('hide');
     } else {
-        $(`${targetId}`).modal('show');
+        $(`#${targetModal}`).modal('show');
     }
+}
+
+/**
+ * mehtod specified to refreshing an element from server side, using Ajax, to avoid view postback.
+ * @param {string} targetElement
+ * @param {string} controller
+ * @param {string} action
+ */
+app.refreshElement = (targetElement, controller, action) => {
+    let url = `/${controller}/${action}`;
+    app.ajax_request(url, 'GET', 'html', null)
+        .then((resonse) => {
+            debugger;
+            $(`#${targetElement}`).empty();
+            $(`#${targetElement}`).html(resonse);
+        })
+        .catch((xhr, status, error) => {
+            console.error(error);
+        })
+
+    //$(`#${targetElement}`).load(`/${controller}/${action}`);
 }

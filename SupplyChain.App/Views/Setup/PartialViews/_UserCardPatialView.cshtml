@@ -1,0 +1,61 @@
+﻿@using SupplyChain.App.ViewModels;
+@using SupplyChain.Services;
+@model PagedViewModel<UserViewModel>
+@{
+    int count = 1;
+}
+
+<table id="user-data-table" class="table table-bordered">
+    <thead>
+        <tr>
+            <th>I</th>
+            <th>User Name</th>
+            <th>Email</th>
+            <th>Address</th>
+            <th>Phone</th>
+            <th>Type</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Model)
+        {
+
+            <tr>
+                <td>@count </td>
+                <td>@item.Username</td>
+                <td>@item.Email</td>
+                <td>@item.Address</td>
+                <td>@item.Phone</td>
+                <td>
+                    @if (item.IsSupplier)
+                    {
+                        <span class="badge badge-success">Supplier</span>
+                    }
+                    else
+                    {
+                        <span class="badge badge-warning">Buyer</span>
+                    }
+                </td>
+                <td>
+                    @if (await CurrentUser.HasPermissionAsync("CanEditUser"))
+                    {
+                        <button type="button" aria-label="edit-btn" class="btn btn-sm btn-warning" data-id="@item.Id"
+                                onclick="users.load_edit_modal(this.getAttribute('data-id'))">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    }
+                    @if (await CurrentUser.HasPermissionAsync("CanDeleteUser"))
+                    {
+                        <button type="button" aria-label="delete-btn" class="btn btn-sm btn-danger text-light ml-1" data-id="@item.Id"
+                                onclick="users.delete_user_item(this.getAttribute('data-id'))">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    }
+                </td>
+            </tr>
+            { count++; }
+        }
+    </tbody>
+</table>
+

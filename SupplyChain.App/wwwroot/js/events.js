@@ -19,7 +19,7 @@ const events = (() => {
                     app.fillErrorMessageContainer(response.message);
                     app.reEnterFormData(formElement, formData);
                 } else {
-                    app.closeGeneralPatialModal();
+                    app.showhideModal('general-partial-modal');
                     //app.SuccessAlertMessage(response.message);
                 }
             })
