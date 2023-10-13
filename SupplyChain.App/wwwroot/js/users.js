@@ -1,15 +1,14 @@
-﻿var base_url = "/Setup";
-var users = (() => {
+﻿var users = (() => {
 
     OpenGeneralModal = () => {
         $('#general-modal-content').empty();
         $('#general-modal-content').load('/Setup/AddEditUser');
     }
 
-    AddUser = (event) => {
-        event.preventDefault();
+    AddUser = (e) => {
+        e.preventDefault();
         const hideloader = app.showloader('user-card');
-        var formElement = event.target.closest('form');
+        var formElement = e.target.closest('form');
         var formData = new FormData(formElement);
         let url = $(formElement).attr('action');
         app.SubmitForm(url, formData)
@@ -18,8 +17,10 @@ var users = (() => {
                     app.fillErrorMessageContainer(response.message);
                     app.reEnterFormData(formElement, formData);
                 } else {
-                    app.closeGeneralPatialModal();
+                    app.showhideModal('general-partial-modal');
+                    app.refreshElement('user-card-body', 'Setup', 'GetUserCardData');
                     app.SuccessAlertMessage(response.message);
+                    hideloader();
                 }
             })
             .catch((xhr, status, error) => {
@@ -35,19 +36,15 @@ var users = (() => {
     }
 
     DeleteSelectedItem = (userId) => {
-        const hideloader = app.showloader('page-content');
+        const hideloader = app.showloader('user-data-table');
         app.DeleteConfirmMessage().then((result) => {
             if (result.isConfirmed) {
-                let url = base_url + "/DeleteUser/" + userId;
+                let url = `/Setup/DeleteUser/${userId}`;
                 app.ajax_request(url, 'DELETE', 'json', null)
                     .then((resonse) => {
                         if (resonse.success == true) {
-                            app.SuccessAlertMessage('Delete User Compeleted Successfully!')
-                                .then((result) => {
-                                    if (result.dismiss === Swal.DismissReason.timer) {
-                                        location.reload();
-                                    }
-                                });
+                            app.SuccessAlertMessage('Delete User Compeleted Successfully!');
+                            app.refreshElement('user-card-body', 'Setup', 'GetUserCardData');
                         } else {
                             hideloader();
                             app.FailAlertMessage('Fail To Delete Item, Please Try Again!');

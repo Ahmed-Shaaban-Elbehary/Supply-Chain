@@ -340,6 +340,24 @@ namespace SupplyChain.App.Controllers
             return Json(new { items = vm });
         }
 
+        [HttpGet]
+        [NoCache]
+        [SessionExpire]
+        public async Task<IActionResult> GetUserCardData()
+        {
+            const int page = 1;
+            const int pageSize = 10;
+            var users = await _userService.GetAllPagedUsersAsync(page, pageSize);
+            var vm = _mapper.Map<List<UserViewModel>>(users);
+            var pagedModel = new PagedViewModel<UserViewModel>
+            {
+                Model = vm,
+                CurrentPage = page,
+                PageSize = pageSize,
+                TotalItems = await _userService.CountUserAsync()
+            };
+            return PartialView("~/Views/Setup/PartialViews/_UserCardPatialView.cshtml", pagedModel);
+        }
         #endregion Users
 
         #region ROLES
