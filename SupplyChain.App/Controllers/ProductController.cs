@@ -98,5 +98,10 @@ namespace SupplyChain.App.Controllers
             await _productService.CreateProductAsync(_mapper.Map<Product>(vm));
             return RedirectToAction(nameof(Index));
         }
+
+        public async Task<IActionResult> RequestAdditionProductQuantities()
+        {
+            return PartialView();
+        }
     }
 }
