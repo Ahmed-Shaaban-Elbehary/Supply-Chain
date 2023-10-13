@@ -1,12 +1,10 @@
-﻿var prcartegory = (() => {
-
-    const OpenGeneralModal = () => {
-        $('#general-partial-modal').find('.modal-title').text('Add Category');
+﻿var base_url = "/Setup"
+var prcartegory = (() => {
+    function OpenGeneralModal() {
         $('#general-modal-content').empty();
         $('#general-modal-content').load('/Setup/AddEditCategory');
     }
-
-    const AddProductCategory = (event) => {
+    function AddProductCategory(event) {
         event.preventDefault();
         const hideloader = app.showloader('category-card');
         // Get the form element and create FormData object
@@ -16,30 +14,49 @@
         app.SubmitForm(url, formData)
             .then((response) => {
                 app.showhideModal('general-partial-modal');
-                app.refreshElement('category-card-body', 'Setup', 'GetCategoriesCardData')
                 app.SuccessAlertMessage(response.message);
                 hideloader();
             })
             .catch((xhr, status, error) => {
-                if (error != undefined) {
-                    app.FailAlertMessage(error.responseJSON.message);
-                    app.reEnterFormData(formElement, formData);
-                    hideloader();
-                } else {
-                    console.error(xhr)
-                    app.FailAlertMessage("Oops, Error Occurred, Please Try Again!", xhr);
-                    hideloader();
-                }
+                hideloader();
+                app.FailAlertMessage(error);
             })
 
     }
-
-    const OpenGeneralModalForEdit = (categoryId) =>  {
+    function DeleteSelectedItem(categoryId) {
+        const hideloader = app.showloader('page-content');
+        app.DeleteConfirmMessage().then((result) => {
+            if (result.isConfirmed) {
+                let url = base_url + "/DeleteCategory/" + categoryId;
+                app.ajax_request(url, 'DELETE', 'json', null)
+                    .then((resonse) => {
+                        if (resonse.success == true) {
+                            app.SuccessAlertMessage('Delete Category Item Process Compeleted Successfully!')
+                                .then((result) => {
+                                    if (result.dismiss === Swal.DismissReason.timer) {
+                                        location.reload();
+                                    }
+                                });
+                        } else {
+                            hideloader();
+                            app.FailAlertMessage('Fail To Delete Item, Please Try Again!');
+                        }
+                    })
+                    .catch((xhr, status, error) => {
+                        hideloader();
+                        app.FailAlertMessage(error);
+                    });
+                hideloader();
+            } else {
+                hideloader();
+            }
+        })
+    }
+    function OpenGeneralModalForEdit(categoryId) {
         let url = "/Setup/AddEditCategory"
         let data = { id: categoryId };
         app.ajax_request(url, 'GET', 'html', data)
             .then((resonse) => {
-                $('#general-partial-modal').find('.modal-title').text('Eidt Category');
                 $('#general-partial-modal').find('#general-modal-content').html(resonse);
                 $('#general-partial-modal').modal('show');
             })

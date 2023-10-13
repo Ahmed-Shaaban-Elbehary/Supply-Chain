@@ -1,13 +1,10 @@
-﻿
+﻿var base_url = "/Setup"
 var prmanufacturer = (() => {
-
-    const OpenGeneralModal = () => {
-        $('#general-partial-modal').find('.modal-title').text('Add Manufacturer');
+    function OpenGeneralModal() {
         $('#general-modal-content').empty();
         $('#general-modal-content').load('/Setup/AddEditManufacturer');
     }
-
-    const AddProductManufacturer = (event) => {
+    function AddProductManufacturer(event) {
         event.preventDefault();
         const hideloader = app.showloader('manufacturer-card');
         // Get the form element and create FormData object
@@ -16,50 +13,38 @@ var prmanufacturer = (() => {
         let url = $(formElement).attr('action');
         app.SubmitForm(url, formData)
             .then((response) => {
+                app.showhideModal('general-partial-modal');
                 app.SuccessAlertMessage(response.message);
-                app.refreshElement('manufacturer-card-body', 'Setup', 'GetManufacturerCardData')
                 hideloader();
             })
             .catch((xhr, status, error) => {
-                if (error != undefined) {
-                    app.FailAlertMessage(error.responseJSON.message);
-                    app.reEnterFormData(formElement, formData);
-                    hideloader();
-                } else {
-                    console.error(xhr)
-                    app.FailAlertMessage("Oops, Error Occurred, Please Try Again!", xhr);
-                    hideloader();
-                }
+                hideloader();
+                app.FailAlertMessage(error);
             })
 
     }
-
-    const DeleteSelectedItem = (manufacturerId) => {
-        const hideloader = app.showloader('manufacturer-card');
+    function DeleteSelectedItem(manufacturerId) {
+        const hideloader = app.showloader('page-content');
         app.DeleteConfirmMessage().then((result) => {
             if (result.isConfirmed) {
-                let url = `/Setup/DeleteManufacturer/${manufacturerId}`;
+                let url = base_url + "/DeleteManufacturer/" + manufacturerId;
                 app.ajax_request(url, 'DELETE', 'json', null)
                     .then((resonse) => {
                         if (resonse.success == true) {
-                            app.SuccessAlertMessage(`${resonse.message}`);
-                            app.refreshElement('manufacturer-card-body', 'Setup', 'GetManufacturerCardData')
-                            hideloader();
+                            app.SuccessAlertMessage('Delete manufacturer Item Process Compeleted Successfully!')
+                                .then((result) => {
+                                    if (result.dismiss === Swal.DismissReason.timer) {
+                                        location.reload();
+                                    }
+                                });
                         } else {
-                            app.FailAlertMessage(`${resonse.message}`);
                             hideloader();
+                            app.FailAlertMessage('Fail To Delete Item, Please Try Again!');
                         }
                     })
                     .catch((xhr, status, error) => {
-                        if (error != undefined) {
-                            app.FailAlertMessage(error.responseJSON.message);
-                            app.reEnterFormData(formElement, formData);
-                            hideloader();
-                        } else {
-                            console.error(xhr)
-                            app.FailAlertMessage("Oops, Error Occurred, Please Try Again!", xhr);
-                            hideloader();
-                        }
+                        hideloader();
+                        app.FailAlertMessage(error);
                     });
                 hideloader();
             } else {
@@ -67,13 +52,11 @@ var prmanufacturer = (() => {
             }
         })
     }
-
-    const OpenGeneralModalForEdit = (manufacturerId) => {
+    function OpenGeneralModalForEdit(manufacturerId) {
         let url = "/Setup/AddEditmanufacturer"
         let data = { id: manufacturerId };
         app.ajax_request(url, 'GET', 'html', data)
             .then((resonse) => {
-                $('#general-partial-modal').find('.modal-title').text('Edit Manufacturer');
                 $('#general-partial-modal').find('#general-modal-content').html(resonse);
                 $('#general-partial-modal').modal('show');
             })
