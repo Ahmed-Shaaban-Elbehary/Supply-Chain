@@ -85,13 +85,32 @@ namespace SupplyChain.App.Controllers
 
                 if (category.Id == 0) // Adding a new category
                 {
-                    await _productCategoryService.CreateProductCategoryAsync(category);
-                    return Json(new { message = "Add New Category Successed!" });
+                    try
+                    {
+                        await _productCategoryService.CreateProductCategoryAsync(category);
+                        return Json(new ApiResponse<bool>(true, true, "Add New Category Successed!"));
+                    }
+                    catch (Exception ex)
+                    {
+                        //rollback the transaction that caused the exception
+                        await _productCategoryService.RollbackTransaction();
+                        return Json(new ApiResponse<bool>(false, false, $"Failed to add category \n {ex.InnerException.Message.Trim()}", "ERR001"));
+                    }
                 }
                 else // Editing an existing category
                 {
-                    await _productCategoryService.UpdateProductCategoryAsync(category);
-                    return Json(new { message = "Edit Category Successed!" });
+                    try
+                    {
+                        await _productCategoryService.UpdateProductCategoryAsync(category);
+                        return Json(new ApiResponse<bool>(true, true, "Edit Category Successed!"));
+                    }
+                    catch (Exception ex)
+                    {
+                        //rollback the transaction that caused the exception
+                        await _productCategoryService.RollbackTransaction();
+                        return Json(new ApiResponse<bool>(false, false, $"Failed to edit category \n {ex.InnerException.Message.Trim()}", "ERR001"));
+                    }
+
                 }
             }
             return Json(new { message = "Oops, Error Occurred, Please Try Again!" });
@@ -104,15 +123,43 @@ namespace SupplyChain.App.Controllers
         {
             if (id > 0)
             {
-                var productCategory = await _productCategoryService.GetProductCategoryByIdAsync(id);
-                await _productCategoryService.DeleteProductCategoryAsync(productCategory);
-                return Json(new { success = true });
+                try
+                {
+                    var productCategory = await _productCategoryService.GetProductCategoryByIdAsync(id);
+                    await _productCategoryService.DeleteProductCategoryAsync(productCategory);
+                    return Json(new ApiResponse<bool>(true, true, "A category was Successfully Deleted"));
+                }
+                catch (Exception ex)
+                {
+                    await _userService.RollbackTransaction();
+                    return Json(new ApiResponse<bool>(false, false, $"Failed to delete category \n {ex.InnerException.Message}"));
+                }
             }
             else
             {
                 return Json(new { success = false });
             }
         }
+
+        [HttpGet]
+        [NoCache]
+        [SessionExpire]
+        public async Task<IActionResult> GetCategoriesCardData()
+        {
+            const int page = 1;
+            const int pageSize = 10;
+            var categories = await _productCategoryService.GetAllPagedProductCategoriesAsync(page, pageSize);
+            var vm = _mapper.Map<List<ProductCategoryViewModel>>(categories);
+            var pagedModel = new PagedViewModel<ProductCategoryViewModel>
+            {
+                Model = vm,
+                CurrentPage = page,
+                PageSize = pageSize,
+                TotalItems = await _productCategoryService.CountProductCategoryAsync()
+            };
+            return PartialView("~/Views/Setup/PartialViews/_CategoryCardPatialView.cshtml", pagedModel);
+        }
+
         #endregion Category
 
         #region Manufacturer
@@ -123,7 +170,6 @@ namespace SupplyChain.App.Controllers
         {
             var manufacturers = await _manufacturerService.GetAllPagedManufacturerAsync(page, pageSize);
             var vm = _mapper.Map<List<ManufacturerViewModel>>(manufacturers);
-
             var pagedModel = new PagedViewModel<ManufacturerViewModel>
             {
                 Model = vm,
@@ -163,13 +209,31 @@ namespace SupplyChain.App.Controllers
 
                 if (manufacturer.Id == 0) // Adding a new category
                 {
-                    await _manufacturerService.CreateManufacturerAsync(manufacturer);
-                    return Json(new { message = "Add New Manufacturer Successed!" });
+                    try
+                    {
+                        await _manufacturerService.CreateManufacturerAsync(manufacturer);
+                        return Json(new ApiResponse<bool>(true, true, "Add New Manufacturer Successed!"));
+
+                    }
+                    catch (Exception ex)
+                    {
+                        await _userService.RollbackTransaction();
+                        return Json(new ApiResponse<bool>(false, false, $"Failed to add manufacturer \n {ex.InnerException.Message}"));
+                    }
                 }
                 else // Editing an existing category
                 {
-                    await _manufacturerService.UpdateManufacturerAsync(manufacturer);
-                    return Json(new { message = "Edit Manufacturer Successed!" });
+                    try
+                    {
+                        await _manufacturerService.UpdateManufacturerAsync(manufacturer);
+                        return Json(new { message = "Edit Manufacturer Successed!" });
+                    }
+                    catch (Exception ex)
+                    {
+                        await _userService.RollbackTransaction();
+                        return Json(new ApiResponse<bool>(false, false, $"Failed to edit manufacturer \n {ex.InnerException.Message}"));
+                    }
+
                 }
 
             }
@@ -186,15 +250,44 @@ namespace SupplyChain.App.Controllers
         {
             if (id > 0)
             {
-                var manufacturer = await _manufacturerService.GetManufacturerByIdAsync(id);
-                await _manufacturerService.DeleteManufacturerAsync(manufacturer);
-                return Json(new { success = true });
+                try
+                {
+                    var manufacturer = await _manufacturerService.GetManufacturerByIdAsync(id);
+                    await _manufacturerService.DeleteManufacturerAsync(manufacturer);
+                    return Json(new { success = true });
+                }
+                catch (Exception ex)
+                {
+                    await _manufacturerService.RollbackTransaction();
+                    return Json(new ApiResponse<bool>(false, false, $"Failed to delete manufacturer \n {ex.InnerException.Message}"));
+                }
+
             }
             else
             {
                 return Json(new { success = false });
             }
         }
+
+        [HttpGet]
+        [NoCache]
+        [SessionExpire]
+        public async Task<IActionResult> GetManufacturerCardData()
+        {
+            const int page = 1;
+            const int pageSize = 10;
+            var manufacturers = await _manufacturerService.GetAllPagedManufacturerAsync(page, pageSize);
+            var vm = _mapper.Map<List<ManufacturerViewModel>>(manufacturers);
+            var pagedModel = new PagedViewModel<ManufacturerViewModel>
+            {
+                Model = vm,
+                CurrentPage = page,
+                PageSize = pageSize,
+                TotalItems = await _manufacturerService.CountManufacturerAsync()
+            };
+            return PartialView("~/Views/Setup/PartialViews/_ManufacturerCardPatialView.cshtml", pagedModel);
+        }
+
         #endregion Manufacturer
 
         #region Users

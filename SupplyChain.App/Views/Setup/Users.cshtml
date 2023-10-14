@@ -4,7 +4,6 @@
 @{
     ViewData["Title"] = "Users";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    string modalTitle = "Add/Edit Users";
     int count = 1;
 }
 <div class="card" id="user-card">
@@ -76,4 +75,4 @@
         <partial name="~/Views/Pagers/_PagerUser.cshtml" for="@Model" />
     </div>
 </div>
-<partial name="_PartialModal" for="@modalTitle" />
+<partial name="_PartialModal"/>
