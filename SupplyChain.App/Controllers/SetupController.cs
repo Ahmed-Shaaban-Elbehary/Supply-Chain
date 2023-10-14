@@ -254,7 +254,7 @@ namespace SupplyChain.App.Controllers
                 {
                     var manufacturer = await _manufacturerService.GetManufacturerByIdAsync(id);
                     await _manufacturerService.DeleteManufacturerAsync(manufacturer);
-                    return Json(new { success = true });
+                    return Json(new ApiResponse<bool>(true, true, "A manufacturer was Successfully Deleted"));
                 }
                 catch (Exception ex)
                 {

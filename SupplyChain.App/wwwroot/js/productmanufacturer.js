@@ -16,6 +16,7 @@ var prmanufacturer = (() => {
         let url = $(formElement).attr('action');
         app.SubmitForm(url, formData)
             .then((response) => {
+                app.showhideModal('general-partial-modal');
                 app.SuccessAlertMessage(response.message);
                 app.refreshElement('manufacturer-card-body', 'Setup', 'GetManufacturerCardData')
                 hideloader();
@@ -40,13 +41,13 @@ var prmanufacturer = (() => {
             if (result.isConfirmed) {
                 let url = `/Setup/DeleteManufacturer/${manufacturerId}`;
                 app.ajax_request(url, 'DELETE', 'json', null)
-                    .then((resonse) => {
-                        if (resonse.success == true) {
-                            app.SuccessAlertMessage(`${resonse.message}`);
+                    .then((response) => {
+                        if (response.success == true) {
+                            app.SuccessAlertMessage(`${response.message}`);
                             app.refreshElement('manufacturer-card-body', 'Setup', 'GetManufacturerCardData')
                             hideloader();
                         } else {
-                            app.FailAlertMessage(`${resonse.message}`);
+                            app.FailAlertMessage(`${response.message}`);
                             hideloader();
                         }
                     })
@@ -72,9 +73,9 @@ var prmanufacturer = (() => {
         let url = "/Setup/AddEditmanufacturer"
         let data = { id: manufacturerId };
         app.ajax_request(url, 'GET', 'html', data)
-            .then((resonse) => {
+            .then((response) => {
                 $('#general-partial-modal').find('.modal-title').text('Edit Manufacturer');
-                $('#general-partial-modal').find('#general-modal-content').html(resonse);
+                $('#general-partial-modal').find('#general-modal-content').html(response);
                 $('#general-partial-modal').modal('show');
             })
             .catch((xhr, status, error) => {
