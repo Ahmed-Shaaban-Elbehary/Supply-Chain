@@ -3,13 +3,14 @@
 const events = (() => {
 
     const OpenGeneralModal = () => {
+        $('#general-partial-modal').find('.modal-title').text('Add Event');
         $('#general-modal-content').empty();
         $('#general-modal-content').load('/Event/AddEditEvent');
     }
 
     const AddEvent = (event) => {
         event.preventDefault();
-        const hideloader = app.showloader('event-card');
+        const hideloader = app.showloader('calendar');
         var formElement = event.target.closest('form');
         var formData = new FormData(formElement);
         let url = $(formElement).attr('action');
@@ -20,7 +21,11 @@ const events = (() => {
                     app.reEnterFormData(formElement, formData);
                 } else {
                     app.showhideModal('general-partial-modal');
-                    //app.SuccessAlertMessage(response.message);
+                    app.SuccessAlertMessage(response.message);
+                    if (calendar) {
+                        calendar.refetchEvents();
+                        setTimeout(() => { hideloader() }, 1000)
+                    }
                 }
             })
             .catch((xhr, status, error) => {
@@ -29,6 +34,7 @@ const events = (() => {
                     app.reEnterFormData(formElement, formData);
                     hideloader();
                 } else {
+                    console.error(xhr);
                     app.FailAlertMessage("Oops, Error Occurred, Please Try Again!");
                     hideloader();
                 }
@@ -72,9 +78,9 @@ const events = (() => {
         let data = { id: eventId };
         app.ajax_request(url, 'GET', 'html', data)
             .then((resonse) => {
+                $('#general-partial-modal').find('.modal-title').text('Edit Event');
                 $('#general-partial-modal').find('#general-modal-content').html(resonse);
                 app.showhideModal('general-partial-modal');
-                //$('#general-partial-modal').modal('show');
             })
             .catch((xhr, status, error) => {
                 console.error(error);
