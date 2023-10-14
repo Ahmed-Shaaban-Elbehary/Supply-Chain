@@ -2,7 +2,6 @@
 @{
     ViewData["Title"] = "Country";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    string modalTitle = "Add Event";
 }
 
 @section Styles {
@@ -37,5 +36,5 @@
         </div>
     </div>
 </div>
-<partial name="_PartialModal" for="@modalTitle" />
+<partial name="_PartialModal" />
 <script src="~/js/calendar.js"></script>

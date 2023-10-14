@@ -24,6 +24,9 @@ $(() => {
 
     $('.collapse').collapse()
 
+    ////setInterval(() => {
+    ////    app.checkCookieIfExist()
+    ////}, 60000); //check cookie each 1 min.
 });
 
 /*******************************
@@ -118,7 +121,7 @@ app.fillErrorMessageContainer = (msg) => {
 }
 
 /**
- * 
+ * ajax request provide promise, used in crud operation client side.
  * @param {string} url
  * @param {string} method
  * @param {string} datatype
@@ -145,7 +148,7 @@ app.ajax_request = (url, method, datatype, data) => {
 }
 
 /**
- * 
+ * Subnmit from data server side.
  * @param {any} url
  * @param {any} formData
  * @returns
@@ -231,7 +234,7 @@ app.DeleteConfirmMessage = () => {
  * @param {string} msg
  * @returns alert
  */
-app.FailAlertMessage = (msg) => {
+app.FailAlertMessage = (message) => {
     const Toast = Swal.mixin({
         toast: true,
         position: 'top-end',
@@ -249,7 +252,9 @@ app.FailAlertMessage = (msg) => {
 
     return Toast.fire({
         icon: 'error',
-        title: 'error: ' + msg + '',
+        title: `error`,
+        text: `${message}`
+        
     })
 }
 
@@ -304,4 +309,42 @@ app.refreshElement = (targetElement, controller, action) => {
         })
 
     //$(`#${targetElement}`).load(`/${controller}/${action}`);
+}
+
+/**
+ * method specified to get cookies by name.
+ * @param {stirng} cookieName
+ * @returns
+ */
+app.getCookie = (cookieName) => {
+    var dc = document.cookie;
+    var prefix = cookieName + "=";
+    var begin = dc.indexOf("; " + prefix);
+    if (begin == -1) {
+        begin = dc.indexOf(prefix);
+        if (begin != 0) return null;
+    }
+    else {
+        begin += 2;
+        var end = document.cookie.indexOf(";", begin);
+        if (end == -1) {
+            end = dc.length;
+        }
+    }
+    // because unescape has been deprecated, replaced with decodeURI
+    //return unescape(dc.substring(begin + prefix.length, end));
+    return decodeURI(dc.substring(begin + prefix.length, end));
+}
+
+/**
+ * Check cookie if it exist or not if not will redirect to a specific path.
+ * @param {string} cookieName
+ * @param {string} controller
+ * @param {string} action
+ */
+app.checkCookieIfExist = (cookieName, controller, action) => {
+    var myCookie = getCookie(`${cookieName}`); //check if browser has the specific cookie name 
+    if (myCookie == null) {
+        window.location.href = `/${controller}/${action}`;
+    }
 }
