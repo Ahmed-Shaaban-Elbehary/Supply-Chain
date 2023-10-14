@@ -29,16 +29,16 @@
     {
         <div class="col-md-4">
             <div class="card">
-                <img class="card-img-top" src="@item.ImageUrl" alt="product-image-@item.Name">
+                <img class="card-img-top" src="@item.ImageUrl" alt="product-image-@item.ProductName">
                 <div class="card-body">
-                    <h4 class="card-title text-bold">@item.Name</h4>
+                    <h4 class="card-title text-bold">@item.ProductName</h4>
                     <p class="card-text text-truncate" style="max-width: 250px;">@item.Description</p>
                     <div>
-                        <h5>&pound; @item.Price / Roll</h5>
+                        <h5>&pound; @item.Price &frasl; @item.UnitName</h5>
                         <p>
                             @if (item.Quantity > 0)
                             {
-                                <span class="available">In Stock <i class="fas fa-layer-group"></i> @item.Quantity Roll</span>
+                                <span class="available">In Stock <i class="fas fa-layer-group"></i> @item.Quantity &frasl; @item.UnitName</span>
                             }
                             else
                             {

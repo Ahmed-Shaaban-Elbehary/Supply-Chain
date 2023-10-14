@@ -35,6 +35,10 @@ namespace SupplyChain.Services
 
         public async Task CreateProductAsync(Product product)
         {
+            var productCategory = await _unitOfWork.ProductCategoryRepository.GetByIdAsync(product.CategoryId);
+            var manufacturer = await _unitOfWork.ManufacturerRepository.GetByIdAsync(product.ManufacturerId);
+            product.Category = productCategory;
+            product.Manufacturer = manufacturer;
             await _unitOfWork.ProductRepository.AddAsync(product);
             await _unitOfWork.CommitAsync();
             await _unitOfWork.CommitTransaction();

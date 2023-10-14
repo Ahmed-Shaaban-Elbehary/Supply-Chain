@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using SupplyChain.Core.Interfaces;
+using SupplyChain.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,6 +47,7 @@ namespace SupplyChain.Infrastructure.Repositories
         {
             await _context.Database.ExecuteSqlRawAsync(sql, parameters);
         }
+        
         public async Task<IEnumerable<T>> GetAllAsync()
         {
             return await _set.ToListAsync();

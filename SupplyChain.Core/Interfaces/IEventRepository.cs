@@ -9,5 +9,7 @@ namespace SupplyChain.Core.Interfaces
 {
     public interface IEventRepository : IGenericRepository<Event>
     {
+        Task<int> AddEventAsync(Event _event);
+        Task<IEnumerable<Event>> ExecSqlQuery(string sql, params object[] parameters);
     }
 }

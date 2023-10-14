@@ -126,18 +126,11 @@ namespace SupplyChain.Infrastructure.Migrations
                     b.Property<DateTime>("EndIn")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("Published")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
+                    b.Property<DateTime?>("PublishedIn")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("StartIn")
                         .HasColumnType("datetime2");
-
-                    b.Property<bool>("Suspended")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -145,7 +138,43 @@ namespace SupplyChain.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Event");
+                    b.ToTable("Events");
+                });
+
+            modelBuilder.Entity("SupplyChain.Core.Models.EventStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("EventId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("MakeAsRead")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<bool>("Removed")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EventId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("EventStatuses", (string)null);
                 });
 
             modelBuilder.Entity("SupplyChain.Core.Models.Manufacturer", b =>
@@ -184,42 +213,6 @@ namespace SupplyChain.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Manufacturers");
-                });
-
-            modelBuilder.Entity("SupplyChain.Core.Models.Notification", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<int>("RecipientUserId")
-                        .HasMaxLength(128)
-                        .HasColumnType("int");
-
-                    b.Property<int>("SenderUserId")
-                        .HasMaxLength(128)
-                        .HasColumnType("int");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RecipientUserId");
-
-                    b.HasIndex("SenderUserId");
-
-                    b.ToTable("Notifications", (string)null);
                 });
 
             modelBuilder.Entity("SupplyChain.Core.Models.Permission", b =>
@@ -289,6 +282,9 @@ namespace SupplyChain.Infrastructure.Migrations
 
                     b.Property<decimal>("Quantity")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("UnitCode")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -549,23 +545,23 @@ namespace SupplyChain.Infrastructure.Migrations
                     b.Navigation("SourceWarehouse");
                 });
 
-            modelBuilder.Entity("SupplyChain.Core.Models.Notification", b =>
+            modelBuilder.Entity("SupplyChain.Core.Models.EventStatus", b =>
                 {
-                    b.HasOne("SupplyChain.Core.Models.User", "RecipientUser")
+                    b.HasOne("SupplyChain.Core.Models.Event", "Event")
                         .WithMany()
-                        .HasForeignKey("RecipientUserId")
+                        .HasForeignKey("EventId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("SupplyChain.Core.Models.User", "SenderUser")
+                    b.HasOne("SupplyChain.Core.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("SenderUserId")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("RecipientUser");
+                    b.Navigation("Event");
 
-                    b.Navigation("SenderUser");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SupplyChain.Core.Models.Product", b =>

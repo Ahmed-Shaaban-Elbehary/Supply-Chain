@@ -1,15 +1,15 @@
-﻿var base_url = "/Setup";
-var users = (() => {
+﻿var users = (() => {
 
-    OpenGeneralModal = () => {
+    const OpenGeneralModal = () => {
+        $('#general-partial-modal').find('.modal-title').text('Add User');
         $('#general-modal-content').empty();
         $('#general-modal-content').load('/Setup/AddEditUser');
     }
 
-    AddUser = (event) => {
-        event.preventDefault();
+    const AddUser = (e) => {
+        e.preventDefault();
         const hideloader = app.showloader('user-card');
-        var formElement = event.target.closest('form');
+        var formElement = e.target.closest('form');
         var formData = new FormData(formElement);
         let url = $(formElement).attr('action');
         app.SubmitForm(url, formData)
@@ -18,8 +18,10 @@ var users = (() => {
                     app.fillErrorMessageContainer(response.message);
                     app.reEnterFormData(formElement, formData);
                 } else {
-                    app.closeGeneralPatialModal();
+                    app.showhideModal('general-partial-modal');
+                    app.refreshElement('user-card-body', 'Setup', 'GetUserCardData');
                     app.SuccessAlertMessage(response.message);
+                    hideloader();
                 }
             })
             .catch((xhr, status, error) => {
@@ -28,34 +30,39 @@ var users = (() => {
                     app.reEnterFormData(formElement, formData);
                     hideloader();
                 } else {
-                    app.FailAlertMessage("Oops, Error Occurred, Please Try Again!");
+                    console.error(xhr)
+                    app.FailAlertMessage("Oops, Error Occurred, Please Try Again!", xhr);
                     hideloader();
                 }
             })
     }
 
-    DeleteSelectedItem = (userId) => {
-        const hideloader = app.showloader('page-content');
+    const DeleteSelectedItem = (userId) => {
+        const hideloader = app.showloader('user-data-table');
         app.DeleteConfirmMessage().then((result) => {
             if (result.isConfirmed) {
-                let url = base_url + "/DeleteUser/" + userId;
+                let url = `/Setup/DeleteUser/${userId}`;
                 app.ajax_request(url, 'DELETE', 'json', null)
                     .then((resonse) => {
                         if (resonse.success == true) {
-                            app.SuccessAlertMessage('Delete User Compeleted Successfully!')
-                                .then((result) => {
-                                    if (result.dismiss === Swal.DismissReason.timer) {
-                                        location.reload();
-                                    }
-                                });
-                        } else {
+                            app.SuccessAlertMessage(`${resonse.message}`);
+                            app.refreshElement('user-card-body', 'Setup', 'GetUserCardData');
                             hideloader();
-                            app.FailAlertMessage('Fail To Delete Item, Please Try Again!');
+                        } else {
+                            app.FailAlertMessage(`${resonse.message}`);
+                            hideloader();
                         }
                     })
                     .catch((xhr, status, error) => {
-                        hideloader();
-                        app.FailAlertMessage(error);
+                        if (error != undefined) {
+                            app.FailAlertMessage(error.responseJSON.message);
+                            app.reEnterFormData(formElement, formData);
+                            hideloader();
+                        } else {
+                            console.error(xhr)
+                            app.FailAlertMessage("Oops, Error Occurred, Please Try Again!", xhr);
+                            hideloader();
+                        }
                     });
                 hideloader();
             } else {
@@ -65,20 +72,29 @@ var users = (() => {
         })
     }
 
-    OpenGeneralModalForEdit = (userId) => {
+    const OpenGeneralModalForEdit = (userId) => {
         let url = "/Setup/AddEditUser"
         let data = { id: userId };
         app.ajax_request(url, 'GET', 'html', data)
             .then((resonse) => {
+                $('#general-partial-modal').find('.modal-title').text('Edit User');
                 $('#general-partial-modal').find('#general-modal-content').html(resonse);
                 $('#general-partial-modal').modal('show');
             })
             .catch((xhr, status, error) => {
-                console.error(error);
+                if (error != undefined) {
+                    app.FailAlertMessage(error.responseJSON.message);
+                    app.reEnterFormData(formElement, formData);
+                    hideloader();
+                } else {
+                    console.error(xhr)
+                    app.FailAlertMessage("Oops, Error Occurred, Please Try Again!", xhr);
+                    hideloader();
+                }
             })
     }
 
-    PasswordChanged = () => {
+    const PasswordChanged = () => {
         $('#IsPasswordChanged').val(true);
     }
 
