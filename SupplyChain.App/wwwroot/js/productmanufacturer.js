@@ -16,6 +16,7 @@ var prmanufacturer = (() => {
         let url = $(formElement).attr('action');
         app.SubmitForm(url, formData)
             .then((response) => {
+                app.closeGeneralPatialModal();
                 app.SuccessAlertMessage(response.message);
                 app.refreshElement('manufacturer-card-body', 'Setup', 'GetManufacturerCardData')
                 hideloader();
