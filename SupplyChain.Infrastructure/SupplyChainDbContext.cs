@@ -26,6 +26,7 @@ namespace SupplyChain.Infrastructure
         public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<EventStatus> EventStatuses { get; set; }
         public DbSet<Event> Events { get; set; }
+        public DbSet<ProductQuantityRequest> ProductQuantityRequests { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new ProductConfiguration());
@@ -44,6 +45,7 @@ namespace SupplyChain.Infrastructure
             modelBuilder.ApplyConfiguration(new EventConfiguration());
             modelBuilder.ApplyConfiguration(new UserEventConfiguration());
             modelBuilder.ApplyConfiguration(new ProductEventConfiguration());
+            modelBuilder.ApplyConfiguration(new ProductQuantityRequestConfiguration());
         }
     }
 }
