@@ -15,12 +15,14 @@ namespace SupplyChain.App.Controllers
     {
         private readonly IProductService _productService;
         private readonly IEventService _eventService;
+        private readonly IProductQuantityRequestService _productQuantityRequestService;
         private readonly IMapper _mapper;
         private readonly ILookUp _lookup;
         private readonly IUploadFile _uploadFile;
         public ProductController(
             IProductService productService,
             IEventService eventService,
+            IProductQuantityRequestService productQuantityRequestService,
             IMapper mapper,
             ILookUp lookUp,
             IUploadFile uploadFile
@@ -28,6 +30,7 @@ namespace SupplyChain.App.Controllers
         {
             _productService = productService;
             _eventService = eventService;
+            _productQuantityRequestService = productQuantityRequestService;
             _mapper = mapper;
             _lookup = lookUp;
             _uploadFile = uploadFile;
@@ -125,11 +128,54 @@ namespace SupplyChain.App.Controllers
             return View(pagedModel);
         }
 
-        public async Task<IActionResult> RequestAdditionProductQuantities()
+        [HttpGet]
+        [NoCache]
+        [SessionExpire]
+        public async Task<IActionResult> RequestAdditionProductQuantities(int id)
         {
-            return PartialView();
-        }
+            try
+            {
+                var vm = new ProductQuantityRequestViewModel();
+                var product = await _productService.GetProductByIdAsync(id);
+                vm.ProductViewModel = new ProductViewModel();
+                vm.ProductViewModel.Id = product.Id;
+                vm.ProductViewModel.ProductName = product.Name;
+                vm.ProductViewModel.Quantity = product.Quantity;
+                vm.ProductViewModel.Price = product.Price;
+                vm.ProductViewModel.ImageUrl = product.ImageUrl;
+                vm.ProductViewModel.UnitName = _lookup.Units.FirstOrDefault(u => u.Code == product.UnitCode.ToString()).Name;
 
+                return PartialView("~/Views/Product/PartialViews/_AddProductQuantity.cshtml", vm);
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("Index", "Error", ErrorResponse.PreException(ex));
+            }
+        }
+        [HttpPost]
+        [NoCache]
+        [SessionExpire]
+        public async Task<IActionResult> CreateProductQuantityRequest(ProductQuantityRequestViewModel vm)
+        {
+            if (vm.QuantityToAdd <= 0)
+            {
+                try
+                {
+
+                    return Json(new ApiResponse<bool>(true, true, "request send success"));
+                }
+                catch (Exception ex)
+                {
+                    await _productQuantityRequestService.RollbackTransaction();
+                    return Json(new ApiResponse<bool>(false, false, $"Failed to update user \n {ex.InnerException.Message}"));
+                }
+            }
+            else
+            {
+                return Json(new ApiResponse<bool>(false, false, $"Please enter Additional Quantity!"));
+            }
+            return View(vm);
+        }
         #endregion Additional Quantity Requests
     }
 }

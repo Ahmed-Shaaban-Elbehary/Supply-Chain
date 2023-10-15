@@ -120,6 +120,6 @@
 })();
 
 //self-invoking
-(function () {
+(() => {
     users.show_modal_init();
 })();

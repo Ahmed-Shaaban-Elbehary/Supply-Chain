@@ -1,19 +1,27 @@
-﻿var base_url = "/Product";
-
+﻿
 const products = (() => {
 
     const RequestAdditionProductQuantities = () => {
-        let productId = $("#productId").find().val();
-        let url = base_url + "/RequestAdditionProductQuantities";
+        let productId = $("#productId").val();
+        let url = "/Product/RequestAdditionProductQuantities";
         let data = { id: productId };
         app.ajax_request(url, 'GET', 'html', data)
             .then((resonse) => {
+                $('#general-partial-modal').find('.modal-title').text('Request Additional Quantity');
+                $('#general-partial-modal').find('.modal-dialog').addClass('modal-sm');
                 $('#general-partial-modal').find('#general-modal-content').html(resonse);
                 app.showhideModal('general-partial-modal');
-                //$('#general-partial-modal').modal('show');
             })
             .catch((xhr, status, error) => {
-                console.error(error);
+                if (error != undefined) {
+                    app.FailAlertMessage(error.responseJSON.message);
+                    app.reEnterFormData(formElement, formData);
+                    hideloader();
+                } else {
+                    console.error(xhr)
+                    app.FailAlertMessage("Oops, Error Occurred, Please Try Again!", xhr);
+                    hideloader();
+                }
             })
     }
 
@@ -22,8 +30,7 @@ const products = (() => {
             RequestAdditionProductQuantities();
         }
     }
-});
-
+})();
 
 
 //self-invoking
