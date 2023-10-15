@@ -11,7 +11,6 @@ namespace SupplyChain.Infrastructure.Repositories
 {
     public class ProductEventRepository : GenericRepository<ProductEvent>, IProductEventRepository
     {
-        private readonly SupplyChainDbContext _dbContext;
-        public ProductEventRepository(SupplyChainDbContext dbContext) : base(dbContext) { _dbContext = dbContext; }
+        public ProductEventRepository(SupplyChainDbContext dbContext) : base(dbContext) { }
     }
 }

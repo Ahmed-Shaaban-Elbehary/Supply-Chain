@@ -21,6 +21,7 @@ namespace SupplyChain.Core.Interfaces
         IEventStatusRepository EventStatusRepository { get; }
         IEventRepository EventRepository { get; }
         IProductEventRepository ProductEventRepository { get; }
+        IProductQuantityRequestRepository ProductQuantityRequestRepository { get; }
         Task<int> CommitAsync();
         Task Detach<T>(T entity) where T : class;
         Task RollbackAsync();
