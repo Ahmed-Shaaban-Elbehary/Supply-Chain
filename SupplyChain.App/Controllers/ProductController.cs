@@ -33,6 +33,7 @@ namespace SupplyChain.App.Controllers
             _uploadFile = uploadFile;
         }
 
+        [HttpGet]
         [NoCache]
         [SessionExpire]
         public async Task<ActionResult> Index(int page = 1, int pageSize = 10)
@@ -99,9 +100,36 @@ namespace SupplyChain.App.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        #region Additional Quantity Requests
+
+        [HttpGet]
+        [NoCache]
+        [SessionExpire]
+        public async Task<ActionResult> Requests(int page = 1, int pageSize = 10)
+        {
+            var categories = await _productService.GetAllPagedProductsAsync(page, pageSize);
+            var vm = _mapper.Map<List<ProductViewModel>>(categories);
+            vm.ForEach(item =>
+            {
+                item.UnitName = new SelectList(_lookup.Units, "Code", "Name", item.UnitCode).FirstOrDefault().Text;
+            });
+
+            var pagedModel = new PagedViewModel<ProductViewModel>
+            {
+                Model = vm,
+                CurrentPage = page,
+                PageSize = pageSize,
+                TotalItems = await _productService.CountProductsAsync()
+            };
+
+            return View(pagedModel);
+        }
+
         public async Task<IActionResult> RequestAdditionProductQuantities()
         {
             return PartialView();
         }
+
+        #endregion Additional Quantity Requests
     }
 }
