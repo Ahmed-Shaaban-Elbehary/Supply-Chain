@@ -3,7 +3,6 @@
 @{
     ViewData["Title"] = "Manufacturer";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewData["mTitle"] = "Add/Edit Manufacturer";
     int count = 1;
 }
 
@@ -15,41 +14,41 @@
         </button>
     </div>
     <div id="manufacturer-card-body" class="card-body">
-        <div>
-            <table id="page-content" class="table table-bordered">
-                <thead>
+        <table id="manufacturer-data-table" class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>I</th>
+                    <th>Name</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var manufacturer in Model.Model)
+                {
                     <tr>
-                        <th>I</th>
-                        <th>Name</th>
-                        <th>Actions</th>
+                        <td>@count</td>
+                        <td>@manufacturer.Name</td>
+                        <td>
+                            <button id="edit-form-modal" type="button" class="btn btn-sm btn-warning" data-id="@manufacturer.Id"
+                                    onclick="prmanufacturer.load_edit_modal(this.getAttribute('data-id'))">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button id="delete-item" type="button" class="btn btn-sm btn-danger text-light ml-1" data-id="@manufacturer.Id"
+                                    onclick="prmanufacturer.delete_manufacturer_item(this.getAttribute('data-id'))">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
                     </tr>
-                </thead>
-                <tbody>
-                    @foreach (var manufacturer in Model.Model)
-                    {
-                        <tr>
-                            <td>@count</td>
-                            <td>@manufacturer.Name</td>
-                            <td>
-                                <button id="edit-form-modal" type="button" class="btn btn-sm btn-warning" data-id="@manufacturer.Id"
-                                        onclick="prmanufacturer.load_edit_modal(this.getAttribute('data-id'))">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button id="delete-item" type="button" class="btn btn-sm btn-danger text-light ml-1" data-id="@manufacturer.Id"
-                                        onclick="prmanufacturer.delete_manufacturer_item(this.getAttribute('data-id'))">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        { count++; }
-                    }
-                    </>
-                </tbody>
-            </table>
-        </div>
+                    { count++; }
+                }
+                </>
+            </tbody>
+        </table>
     </div>
     <div class="card-footer clearfix">
         @await Html.PartialAsync("~/Views/Pagers/_PagerManufacturer.cshtml", Model)
     </div>
 </div>
-@await Html.PartialAsync("_PartialModal", new ViewDataDictionary(ViewData) { { "ModalTitle", "Add/Edit Manufacturer" } })
+
+<partial name="_PartialModal" />
+

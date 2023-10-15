@@ -17,9 +17,10 @@ namespace SupplyChain.Infrastructure.Repositories
         private readonly IRoleRepository _roleRepository;
         private readonly IRolePermissionRepository _rolePermissionRepository;
         private readonly IUserRoleRepository _userRoleRepository;
-        private readonly INotifcationRepository _notifcationRepository;
+        private readonly IEventStatusRepository _eventStatusRepository;
         private readonly IEventRepository _eventRepository;
         private readonly IProductEventRepository _productEventRepository;
+        private readonly IProductQuantityRequestRepository _productQuantityRequestRepository;
         private IDbContextTransaction _transaction;
         public UnitOfWork(SupplyChainDbContext context)
         {
@@ -33,9 +34,10 @@ namespace SupplyChain.Infrastructure.Repositories
             _roleRepository = new RoleRepository(_context);
             _rolePermissionRepository = new RolePermissionRepository(_context);
             _userRoleRepository = new UserRoleRepository(_context);
-            _notifcationRepository = new NotificationRepository(_context);
+            _eventStatusRepository = new EventStatusRepository(_context);
             _eventRepository = new EventRepository(_context);
             _productEventRepository = new ProductEventRepository(_context);
+            _productQuantityRequestRepository = new ProductQuantityRequestRepository(_context);
             _transaction = _context.Database.BeginTransactionAsync().Result;
         }
 
@@ -48,9 +50,10 @@ namespace SupplyChain.Infrastructure.Repositories
         public IRoleRepository RoleRepository => _roleRepository;
         public IRolePermissionRepository RolePermissionRepository => _rolePermissionRepository;
         public IUserRoleRepository UserRoleRepository => _userRoleRepository;
-        public INotifcationRepository NotifcationRepository => _notifcationRepository;
+        public IEventStatusRepository EventStatusRepository => _eventStatusRepository;
         public IEventRepository EventRepository => _eventRepository;
         public IProductEventRepository ProductEventRepository => _productEventRepository;
+        public IProductQuantityRequestRepository ProductQuantityRequestRepository => _productQuantityRequestRepository;
 
         public async Task<int> CommitAsync()
         {
@@ -72,11 +75,6 @@ namespace SupplyChain.Infrastructure.Repositories
                         break;
                 }
             }
-        }
-
-        public void Dispose()
-        {
-            _context.Dispose();
         }
 
         public async Task Detach<T>(T entity) where T : class

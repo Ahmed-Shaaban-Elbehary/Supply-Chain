@@ -1,4 +1,39 @@
-﻿var app = app || {}
+﻿/*******************************
+ ***** GENERAL JAVASCRIPT ******
+ *******************************/
+
+$(() => {
+    // Write your JavaScript code.
+    var inputs = document.querySelectorAll("input[type='number']");
+    inputs.forEach(function (input) {
+        input.addEventListener("keydown", function (event) {
+            if (event.key === "e") {
+                event.preventDefault();
+            }
+        });
+    });
+
+    // Get the current page or section name
+    var currentPage = $('#currentPage').val();
+
+    // Set the active nav-item
+    $('li[data-nav="' + currentPage + '"]').addClass('active');
+
+    //Call Events On Page Load.
+    notification.get();
+
+    $('.collapse').collapse()
+
+    ////setInterval(() => {
+    ////    app.checkCookieIfExist()
+    ////}, 60000); //check cookie each 1 min.
+});
+
+/*******************************
+ ***** APP MODULE ******
+ *******************************/
+
+var app = app || {}
 
 // Object to keep track of loader status for each element
 var loaderStatus = {};
@@ -31,6 +66,7 @@ app.showloader = (targetId) => {
 
     // Add the spinner to the container element
     var spinner = document.getElementById('spinner').cloneNode(true);
+    spinner.classList.remove("d-none");
     spinner.removeAttribute('id');
     spinnerContainer.appendChild(spinner);
 
@@ -50,10 +86,34 @@ app.showloader = (targetId) => {
     };
 };
 
-app.closeGeneralPatialModal = () => {
-    $('#general-partial-modal').modal('hide');
+/**
+ * 
+ * @param {any} strDate
+ * @returns
+ */
+app.getDateTimeFormat = (strDate) => {
+    let date = new Date(strDate);
+
+    const yyyy = date.getFullYear();
+    let mm = date.getMonth() + 1; // Months start at 0!
+    let dd = date.getDate();
+    let h = date.getHours();
+    let m = date.getMinutes();
+    let s = date.getSeconds();
+
+    if (dd < 10) dd = '0' + dd;
+    if (mm < 10) mm = '0' + mm;
+    if (h < 10) mm = '0' + h;
+    if (s < 10) mm = '0' + s;
+
+    let fullDate = `${dd}/${mm}/${yyyy} ${h}:${m}:${s}`;
+    return fullDate;
 }
 
+/**
+ * 
+ * @param {any} msg
+ */
 app.fillErrorMessageContainer = (msg) => {
     var linkElement = $('#error-message-content');
     linkElement.parent().removeClass('d-none');
@@ -61,7 +121,7 @@ app.fillErrorMessageContainer = (msg) => {
 }
 
 /**
- * 
+ * ajax request provide promise, used in crud operation client side.
  * @param {string} url
  * @param {string} method
  * @param {string} datatype
@@ -87,6 +147,12 @@ app.ajax_request = (url, method, datatype, data) => {
     });
 }
 
+/**
+ * Subnmit from data server side.
+ * @param {any} url
+ * @param {any} formData
+ * @returns
+ */
 app.SubmitForm = (url, formData) => {
     return new Promise((resolve, reject) => {
         $.ajax({
@@ -105,6 +171,11 @@ app.SubmitForm = (url, formData) => {
     })
 }
 
+/**
+ * 
+ * @param {any} formElement
+ * @param {any} formData
+ */
 app.reEnterFormData = (formElement, formData) => {
     $(formElement).find('input[type!="checkbox"], select, textarea')
         .each(function () {
@@ -132,7 +203,7 @@ app.SuccessAlertMessage = (msg) => {
             toast.addEventListener('mouseleave', Swal.resumeTimer)
         },
         didClose: () => {
-            location.reload();
+            //location.reload();
         }
     })
 
@@ -163,7 +234,7 @@ app.DeleteConfirmMessage = () => {
  * @param {string} msg
  * @returns alert
  */
-app.FailAlertMessage = (msg) => {
+app.FailAlertMessage = (message) => {
     const Toast = Swal.mixin({
         toast: true,
         position: 'top-end',
@@ -175,13 +246,105 @@ app.FailAlertMessage = (msg) => {
             toast.addEventListener('mouseleave', Swal.resumeTimer)
         },
         didClose: () => {
-            location.reload();
+            //location.reload();
         }
     })
 
     return Toast.fire({
         icon: 'error',
-        title: 'error: ' + msg + '',
+        title: `error`,
+        text: `${message}`
+        
     })
 }
 
+/**
+ * Show Real Time toaster
+ * @param {string} title
+ * @param {string} content
+ * @param {date} date
+ * @returns toast
+ */
+app.toaster = (title, content, date) => {
+    const publishedIn = app.getDateTimeFormat(date);
+    $.toast({
+        heading: title,
+        text: content + publishedIn,
+        position: 'bottom-right',
+        showHideTransition: 'slide',
+        icon: 'info',
+        loader: false
+    })
+}
+
+/**
+ * Show hide target modalm by pass modal id.
+ * @param {string} targetModal
+ */
+app.showhideModal = (targetModal) => {
+    let isIn = $(`#${targetModal}`).hasClass('show');
+    if (isIn) {
+        $(`#${targetModal}`).modal('hide');
+    } else {
+        $(`#${targetModal}`).modal('show');
+    }
+}
+
+/**
+ * mehtod specified to refreshing an element from server side, using Ajax, to avoid view postback.
+ * @param {string} targetElement
+ * @param {string} controller
+ * @param {string} action
+ */
+app.refreshElement = (targetElement, controller, action) => {
+    let url = `/${controller}/${action}`;
+    app.ajax_request(url, 'GET', 'html', null)
+        .then((resonse) => {
+            debugger;
+            $(`#${targetElement}`).empty();
+            $(`#${targetElement}`).html(resonse);
+        })
+        .catch((xhr, status, error) => {
+            console.error(error);
+        })
+
+    //$(`#${targetElement}`).load(`/${controller}/${action}`);
+}
+
+/**
+ * method specified to get cookies by name.
+ * @param {stirng} cookieName
+ * @returns
+ */
+app.getCookie = (cookieName) => {
+    var dc = document.cookie;
+    var prefix = cookieName + "=";
+    var begin = dc.indexOf("; " + prefix);
+    if (begin == -1) {
+        begin = dc.indexOf(prefix);
+        if (begin != 0) return null;
+    }
+    else {
+        begin += 2;
+        var end = document.cookie.indexOf(";", begin);
+        if (end == -1) {
+            end = dc.length;
+        }
+    }
+    // because unescape has been deprecated, replaced with decodeURI
+    //return unescape(dc.substring(begin + prefix.length, end));
+    return decodeURI(dc.substring(begin + prefix.length, end));
+}
+
+/**
+ * Check cookie if it exist or not if not will redirect to a specific path.
+ * @param {string} cookieName
+ * @param {string} controller
+ * @param {string} action
+ */
+app.checkCookieIfExist = (cookieName, controller, action) => {
+    var myCookie = getCookie(`${cookieName}`); //check if browser has the specific cookie name 
+    if (myCookie == null) {
+        window.location.href = `/${controller}/${action}`;
+    }
+}

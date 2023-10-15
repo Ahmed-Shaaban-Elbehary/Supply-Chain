@@ -1,0 +1,59 @@
+﻿@model SupplyChain.App.ViewModels.EventViewModel
+
+
+<div class="modal-header bg-blue">
+    <h5 class="modal-title">@Model.Title</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <div>
+        @foreach (var item in Model.ProductViewModels)
+        {
+            <div class="col-md-12">
+                <div class="card mb-3">
+                    <div class="row no-gutters">
+                        <div class="col-md-4">
+                            <img src="@item.ImageUrl" class="card-img-top" alt="@item.ProductName" style="height: 100%">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <div class="product-section">
+                                    <h4 class="card-title font-weight-bold mb-2">@item.ProductName</h4>
+                                    <p class="card-text">@item.Description</p>
+                                    <span class="badge badge-pill badge-secondary">@item.CategoryName</span>
+                                    <span class="badge badge-pill badge-info">@item.ManufacturerName</span>
+                                    <span class="badge badge-pill badge-dark">@item.CountryOfOriginName</span>
+                                    <p>
+                                        <small class="text-muted em"><strong>Production</strong> Date | @item.ProductionDate.ToString("dd/MM/yyyy")&sbquo; </small>
+                                        <small class="text-muted em"><strong>Expiration</strong> Date | @item.ExpirationDate.ToString("dd/MM/yyyy")</small>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        <div class="dropdown-divider"></div>
+        <div class="event-section">
+            <div class="jumbotron">
+                <div class="container">
+                    <h1 class="display-4">@Model.Title</h1>
+                    <p class="lead">
+                        @{@Model.Description}&sbquo; Start In |&ensp; <em class="text-muted text-bold">@Model.StartIn.ToString("dd/MM/yyyy hh:mm:ss tt")</em>
+                    </p>
+                    <hr class="my-4">
+                    <p class="text-muted text-right h3">
+                        <span class="badge badge-pill badge-danger blink_me"><strong>End In |</strong>&ensp;<em> @Model.EndIn.ToString("dd/MM/yyyy hh:mm:ss tt")</em></span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+</div>
+
