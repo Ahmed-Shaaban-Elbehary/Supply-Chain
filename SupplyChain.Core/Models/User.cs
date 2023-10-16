@@ -13,5 +13,7 @@
         public virtual ICollection<UserRole> UserRoles { get; set; }
         public virtual ICollection<Cart> Carts { get; set; }
         public virtual ICollection<UserEvent> UserEvents { get; set; }
+        public virtual ICollection<Product> Products { get; set; }
+
     }
 }

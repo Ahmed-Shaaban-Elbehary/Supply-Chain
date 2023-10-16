@@ -20,6 +20,7 @@ namespace SupplyChain.Infrastructure.Configurations
             builder.Property(p => p.Deleted).IsRequired().HasDefaultValue(false);
             builder.HasOne(p => p.Category).WithMany(c => c.Products).HasForeignKey(p => p.CategoryId).OnDelete(DeleteBehavior.Restrict);
             builder.HasOne(p => p.Manufacturer).WithMany(m => m.Products).HasForeignKey(p => p.ManufacturerId).OnDelete(DeleteBehavior.Restrict);
+            builder.HasOne(p => p.Supplier).WithMany(u => u.Products).HasForeignKey(p => p.SupplyId).OnDelete(DeleteBehavior.Restrict);
 
         }
     }
