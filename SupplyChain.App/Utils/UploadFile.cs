@@ -23,45 +23,74 @@ namespace SupplyChain.App.Utils
                 return true;
             else
                 return false;
-            
         }
         public async Task<string> UploadImage(IFormFile file)
         {
-            string filePath = string.Empty;
-            int width = int.Parse(_configuration["ImageDimensions:Width"] ?? "150");
-            int height = int.Parse(_configuration["ImageDimensions:Height"] ?? "150");
+            if (file == null || file.Length == 0)
+            {
+                throw new ArgumentException("Invalid file.");
+            }
+
+            int targetWidth = _configuration.GetValue<int>("ImageDimensions:targetWidth", 150);
+            int targetHeight = _configuration.GetValue<int>("ImageDimensions:targetHeight", 150);
+            int cropWidth = _configuration.GetValue<int>("ImageDimensions:cropWidth", 150);
+            int cropHeight = _configuration.GetValue<int>("ImageDimensions:cropHeight", 150);
+
+
             using (var memoryStream = new MemoryStream())
             {
                 await file.CopyToAsync(memoryStream);
                 byte[] imageData = memoryStream.ToArray();
-                byte[] croppedImageData = await CropImageAsync(imageData, width, height);
-                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, @"images\products");
-                if (!Directory.Exists(uploadsFolder))
-                {
-                    Directory.CreateDirectory(uploadsFolder);
-                }
-                string fileName = file.FileName;
-                filePath = Path.Combine(uploadsFolder, fileName);
+                byte[] croppedImageData = await CropAndResizeImageAsync(imageData, targetWidth, targetHeight, cropWidth, cropHeight);
 
-                using (FileStream fileStream = new FileStream(filePath, FileMode.Create))
-                {
-                    await fileStream.WriteAsync(croppedImageData);
-                }
-                //to save in Database
-                filePath = @$"\images\products\{fileName}";
+                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "products");
+                Directory.CreateDirectory(uploadsFolder);
+
+                string fileName = Path.GetFileName(file.FileName);
+                string filePath = Path.Combine(uploadsFolder, fileName);
+
+                File.WriteAllBytes(filePath, croppedImageData);
+
+                // Return the relative path for database storage
+                return Path.Combine("images", "products", fileName).Replace("\\", "/");
             }
-            return filePath;
         }
-        private async Task<byte[]> CropImageAsync(byte[] imageData, int width, int height)
+        private async Task<byte[]> CropAndResizeImageAsync(byte[] imageData, int targetWidth, int targetHeight, int cropWidth, int cropHeight)
         {
-            using (var image = SixLabors.ImageSharp.Image.Load<Rgba32>(imageData))
+            try
             {
-                image.Mutate(x => x.Resize(new Size(200, 200)).Crop(new Rectangle(0, 0, width, height)));
-                using (var memoryStream = new MemoryStream())
+                if (imageData == null || imageData.Length == 0)
                 {
-                    await image.SaveAsync(memoryStream, new PngEncoder());
-                    return memoryStream.ToArray();
+                    throw new ArgumentException("Image data is empty or null.");
                 }
+
+                if (targetWidth <= 0 || targetHeight <= 0 || cropWidth <= 0 || cropHeight <= 0)
+                {
+                    throw new ArgumentException("Invalid target or crop dimensions.");
+                }
+
+                using (var image = SixLabors.ImageSharp.Image.Load<Rgba32>(imageData))
+                {
+                    // Ensure the specified crop dimensions are within the bounds of the source image.
+                    if (cropWidth > image.Width || cropHeight > image.Height)
+                    {
+                        throw new ArgumentException("Crop dimensions exceed source image size.");
+                    }
+
+                    image.Mutate(x => x
+                        .Resize(new Size(targetWidth, targetHeight))
+                        .Crop(new Rectangle(0, 0, cropWidth, cropHeight)));
+
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        await image.SaveAsync(memoryStream, new PngEncoder());
+                        return memoryStream.ToArray();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
         }
     }

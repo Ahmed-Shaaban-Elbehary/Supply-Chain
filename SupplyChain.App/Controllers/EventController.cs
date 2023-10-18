@@ -78,7 +78,9 @@ namespace SupplyChain.App.Controllers
             }
             catch (Exception ex)
             {
-                return RedirectToAction("Index", "Error", ErrorResponse.PreException(ex));
+                await _productService.RollbackTransaction();
+                CustomException(ex);
+                return RedirectToAction("Index", "Error");
             }
         }
 
@@ -185,7 +187,9 @@ namespace SupplyChain.App.Controllers
             }
             catch (Exception ex)
             {
-                return RedirectToAction("Index", "Error", ErrorResponse.PreException(ex));
+                await _eventService.RollbackTransaction();
+                CustomException(ex);
+                return RedirectToAction("Index", "Error");
             }
         }
 
@@ -270,7 +274,8 @@ namespace SupplyChain.App.Controllers
             catch (Exception ex)
             {
                 await _eventStatusService.RollbackTransaction();
-                return RedirectToAction("Index", "Error", ErrorResponse.PreException(ex));
+                CustomException(ex);
+                return RedirectToAction("Index", "Error");
             }
         }
     }

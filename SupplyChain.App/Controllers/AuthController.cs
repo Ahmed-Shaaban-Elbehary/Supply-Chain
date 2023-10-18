@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using SupplyChain.App.ViewModels;
 using SupplyChain.Core.Models;
 using SupplyChain.Services;
@@ -37,32 +38,43 @@ namespace SupplyChain.App.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel user)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                ViewBag.ErrorMessage = "Invalid Username Or Password!";
-                return View();
-            }
-            bool isValid = await _userService.ValidateUserCredentialsAsync(user.Email, user.Password);
-            if (!isValid)
-            {
-                ViewBag.ErrorMessage = "Invalid User, Try again with different Credential";
-                return View();
-            }
-            else
-            {
-                bool ImSupplier = user.IsSupplier; //I supplier checked.
-                var loggedInUser = await _userService.GetUserByEmailAsync(user.Email);
-
-                if (loggedInUser.IsSupplier == true && ImSupplier != true)
+                if (!ModelState.IsValid)
                 {
-                    ViewBag.ErrorMessage = "You are supplier, please login as a supplier!";
+                    ViewBag.ErrorMessage = "Invalid Username Or Password!";
                     return View();
                 }
-                var _user = _mapper.Map<User>(loggedInUser);
-                await CurrentUser.StartSession(_user, _userService);
-                HttpContext.Session.SetString("userObj", $"{_user}");
+                bool isValid = await _userService.ValidateUserCredentialsAsync(user.Email, user.Password);
+                if (!isValid)
+                {
+                    ViewBag.ErrorMessage = "Invalid User, Try again with different Credential";
+                    return View();
+                }
+                else
+                {
+                    bool ImSupplier = user.IsSupplier; //I supplier checked.
+                    var loggedInUser = await _userService.GetUserByEmailAsync(user.Email);
 
-                return RedirectToAction("Index", "Product");
+                    if (loggedInUser.IsSupplier == true && ImSupplier != true)
+                    {
+                        ViewBag.ErrorMessage = "You are supplier, please login as a supplier!";
+                        return View();
+                    }
+                    var _user = _mapper.Map<User>(loggedInUser);
+                    await CurrentUser.StartSession(_user, _userService);
+                    HttpContext.Session.SetString("userObj", $"{_user}");
+
+                    return RedirectToAction("Index", "Product");
+                }
+            }
+            catch (Exception ex)
+            {
+                var errorResponse = ErrorResponse.PreException(ex);
+                var errorResponseJson = JsonConvert.SerializeObject(errorResponse);
+                TempData["ErrorResponse"] = errorResponseJson;
+                await _userService.RollbackTransaction();
+                return RedirectToAction("Index", "Error");
             }
         }
 

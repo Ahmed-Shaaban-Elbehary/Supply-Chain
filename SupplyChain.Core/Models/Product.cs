@@ -20,7 +20,7 @@
         public virtual ICollection<ProductComponent> Components { get; set; }
         public virtual ICollection<ProductEvent> ProductEvents { get; set; }
 
-        public int SupplyId { get; set; }
+        public int SupplierId { get; set; }
         public virtual User Supplier { get; set; }
     }
 }

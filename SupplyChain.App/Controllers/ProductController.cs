@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using SupplyChain.App.Utils.Contracts;
 using SupplyChain.App.Utils.Validations;
 using SupplyChain.App.ViewModels;
@@ -90,17 +91,27 @@ namespace SupplyChain.App.Controllers
         [SessionExpire]
         public async Task<IActionResult> AddNewProduct(ProductViewModel vm, IFormFile file)
         {
-            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
-            var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
-            if (file == null || file.Length == 0 || !allowedExtensions.Contains(extension))
+            try
             {
-                return BadRequest("Invalid file type.");
+                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
+                var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+                if (file == null || file.Length == 0 || !allowedExtensions.Contains(extension))
+                {
+                    return BadRequest("Invalid file type.");
+                }
+                vm.ImageUrl = await _uploadFile.UploadImage(file);
+                vm.Description.Trim();
+                vm.ProductName.Trim();
+                vm.SupplierId = CurrentUser.GetUserId();
+                await _productService.CreateProductAsync(_mapper.Map<Product>(vm));
+                return RedirectToAction(nameof(Index));
             }
-            vm.ImageUrl = await _uploadFile.UploadImage(file);
-            vm.Description.Trim();
-            vm.ProductName.Trim();
-            await _productService.CreateProductAsync(_mapper.Map<Product>(vm));
-            return RedirectToAction(nameof(Index));
+            catch (Exception ex)
+            {
+                await _productService.RollbackTransaction();
+                CustomException(ex);
+                return RedirectToAction("Index", "Error");
+            }
         }
 
         #region Additional Quantity Requests
@@ -110,22 +121,31 @@ namespace SupplyChain.App.Controllers
         [SessionExpire]
         public async Task<ActionResult> Requests(int page = 1, int pageSize = 10)
         {
-            var categories = await _productService.GetAllPagedProductsAsync(page, pageSize);
-            var vm = _mapper.Map<List<ProductViewModel>>(categories);
-            vm.ForEach(item =>
+            try
             {
-                item.UnitName = new SelectList(_lookup.Units, "Code", "Name", item.UnitCode).FirstOrDefault().Text;
-            });
+                var categories = await _productService.GetAllPagedProductsAsync(page, pageSize);
+                var vm = _mapper.Map<List<ProductViewModel>>(categories);
+                vm.ForEach(item =>
+                {
+                    item.UnitName = new SelectList(_lookup.Units, "Code", "Name", item.UnitCode).FirstOrDefault().Text;
+                });
 
-            var pagedModel = new PagedViewModel<ProductViewModel>
+                var pagedModel = new PagedViewModel<ProductViewModel>
+                {
+                    Model = vm,
+                    CurrentPage = page,
+                    PageSize = pageSize,
+                    TotalItems = await _productService.CountProductsAsync()
+                };
+
+                return View(pagedModel);
+            }
+            catch (Exception ex)
             {
-                Model = vm,
-                CurrentPage = page,
-                PageSize = pageSize,
-                TotalItems = await _productService.CountProductsAsync()
-            };
-
-            return View(pagedModel);
+                await _productService.RollbackTransaction();
+                CustomException(ex);
+                return RedirectToAction("Index", "Error");
+            }
         }
 
         [HttpGet]
@@ -149,7 +169,9 @@ namespace SupplyChain.App.Controllers
             }
             catch (Exception ex)
             {
-                return RedirectToAction("Index", "Error", ErrorResponse.PreException(ex));
+                await _productService.RollbackTransaction();
+                CustomException(ex);
+                return RedirectToAction("Index", "Error");
             }
         }
         [HttpPost]
@@ -174,7 +196,6 @@ namespace SupplyChain.App.Controllers
             {
                 return Json(new ApiResponse<bool>(false, false, $"Please enter Additional Quantity!"));
             }
-            return View(vm);
         }
         #endregion Additional Quantity Requests
     }

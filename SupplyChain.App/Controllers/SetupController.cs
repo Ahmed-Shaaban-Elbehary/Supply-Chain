@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SupplyChain.App.Utils.Validations;
 using SupplyChain.App.ViewModels;
 using SupplyChain.Core.Models;
+using SupplyChain.Services;
 using SupplyChain.Services.Contracts;
 
 namespace SupplyChain.App.Controllers
@@ -337,7 +338,10 @@ namespace SupplyChain.App.Controllers
             }
             catch (Exception ex)
             {
-                return RedirectToAction("Index", "Error", ErrorResponse.PreException(ex));
+                await _userService.RollbackTransaction();
+                await _roleService.RollbackTransaction();
+                CustomException(ex);
+                return RedirectToAction("Index", "Error");
             }
         }
 

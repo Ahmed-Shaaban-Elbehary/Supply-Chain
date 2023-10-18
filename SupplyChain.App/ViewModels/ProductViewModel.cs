@@ -11,9 +11,11 @@ namespace SupplyChain.App.ViewModels
         public int Id { get; set; }
 
         [Required(ErrorMessage = "The Name field is required.")]
+        [MaxLength(100, ErrorMessage = "The Name field cannot exceed 50 characters.")]
         public string ProductName { get; set; }
 
         [Required(ErrorMessage = "The Description field is required.")]
+        [MaxLength(1500, ErrorMessage = "The Name field cannot exceed 50 characters.")]
         public string Description { get; set; }
 
         [Required(ErrorMessage = "The Price field is required.")]
@@ -65,5 +67,6 @@ namespace SupplyChain.App.ViewModels
         public SelectList CategoryList { get; set; }
 
         public ICollection<EventViewModel> events { get; set; }
+        public int SupplierId { get; set; }
     }
 }
