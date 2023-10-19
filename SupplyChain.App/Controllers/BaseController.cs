@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
 using Newtonsoft.Json;
+using SupplyChain.App.Utils.Validations;
 using SupplyChain.App.ViewModels;
-using SupplyChain.Core.Models;
 
 namespace SupplyChain.App.Controllers
 {
+    [ServiceFilter(typeof(NoCacheAttribute))]
+    [ServiceFilter(typeof(SessionExpireAttribute))]
     public class BaseController : Controller
     {
         public void CustomException(Exception ex)

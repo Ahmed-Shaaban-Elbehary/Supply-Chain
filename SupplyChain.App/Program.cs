@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.DependencyInjection;
 using SupplyChain.App.App_Class;
@@ -5,6 +6,7 @@ using SupplyChain.App.Notification;
 using SupplyChain.App.Profiles;
 using SupplyChain.App.Utils;
 using SupplyChain.App.Utils.Contracts;
+using SupplyChain.App.Utils.Validations;
 using SupplyChain.Infrastructure;
 using SupplyChain.Services;
 using SupplyChain.Services.Contracts;
@@ -46,6 +48,14 @@ builder.Services.AddScoped<IEventService, EventService>();
 builder.Services.AddScoped<IEventStatusService, EventStatusService>();
 builder.Services.AddScoped<IProductEventService, ProductEventService>();
 builder.Services.AddScoped<IProductQuantityRequestService, ProductQuantityRequestService>();
+builder.Services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
+#endregion
+
+#region Attributes
+builder.Services.AddScoped<SessionExpireAttribute>();
+builder.Services.AddScoped<NoCacheAttribute>();
+builder.Services.AddScoped<FutureDateAttribute>();
+builder.Services.AddScoped<CustomPhoneAttribute>();
 #endregion
 
 #region Utils

@@ -12,6 +12,8 @@ using SupplyChain.Services.Contracts;
 
 namespace SupplyChain.App.Controllers
 {
+    [ServiceFilter(typeof(SessionExpireAttribute))]
+    [ServiceFilter(typeof(NoCacheAttribute))]
     public class ProductController : BaseController
     {
         private readonly IProductService _productService;
@@ -38,8 +40,6 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpGet]
-        [NoCache]
-        [SessionExpire]
         public async Task<ActionResult> Index(int page = 1, int pageSize = 10)
         {
             var categories = await _productService.GetAllPagedProductsAsync(page, pageSize);
@@ -61,8 +61,6 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpGet]
-        [NoCache]
-        [SessionExpire]
         public async Task<ActionResult> ProductItem(int id)
         {
             var product = await _productService.GetProductByIdAsync(id);
@@ -74,8 +72,6 @@ namespace SupplyChain.App.Controllers
 
         [HttpGet]
         [InRole("admin")]
-        [NoCache]
-        [SessionExpire]
         public IActionResult Add()
         {
             var vm = new ProductViewModel();
@@ -87,8 +83,6 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpPost]
-        [NoCache]
-        [SessionExpire]
         public async Task<IActionResult> AddNewProduct(ProductViewModel vm, IFormFile file)
         {
             try
@@ -117,8 +111,6 @@ namespace SupplyChain.App.Controllers
         #region Additional Quantity Requests
 
         [HttpGet]
-        [NoCache]
-        [SessionExpire]
         public async Task<ActionResult> Requests(int page = 1, int pageSize = 10)
         {
             try
@@ -149,8 +141,6 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpGet]
-        [NoCache]
-        [SessionExpire]
         public async Task<IActionResult> RequestAdditionProductQuantities(int id)
         {
             try
@@ -175,8 +165,6 @@ namespace SupplyChain.App.Controllers
             }
         }
         [HttpPost]
-        [NoCache]
-        [SessionExpire]
         public async Task<IActionResult> CreateProductQuantityRequest(ProductQuantityRequestViewModel vm)
         {
             if (vm.QuantityToAdd <= 0)

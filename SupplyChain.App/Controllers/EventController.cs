@@ -13,6 +13,8 @@ using SupplyChain.Services.Contracts;
 
 namespace SupplyChain.App.Controllers
 {
+    [ServiceFilter(typeof(NoCacheAttribute))]
+    [ServiceFilter(typeof(SessionExpireAttribute))]
     public class EventController : BaseController
     {
         private readonly IMapper _mapper;
@@ -39,16 +41,12 @@ namespace SupplyChain.App.Controllers
             _lookup = lookup;
         }
 
-        [NoCache]
-        [SessionExpire]
         public IActionResult Index()
         {
             return View();
         }
 
         [HttpGet]
-        [NoCache]
-        [SessionExpire]
         public async Task<IActionResult> AddEditEvent(int id)
         {
             try
@@ -85,8 +83,6 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpPost]
-        [NoCache]
-        [SessionExpire]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddEditEvent(EventViewModel vm)
         {
@@ -150,8 +146,6 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpGet]
-        [NoCache]
-        [SessionExpire]
         public async Task<IActionResult> GetEventsList()
         {
             try
@@ -194,8 +188,6 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpGet]
-        [NoCache]
-        [SessionExpire]
         public async Task<string> GetEvents(string start, string end)
         {
             DateTime _s = DateTime.Parse(start);
@@ -230,8 +222,6 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpGet]
-        [NoCache]
-        [SessionExpire]
         public async Task<IActionResult> UpdateEventAsRead(int id)
         {
             try

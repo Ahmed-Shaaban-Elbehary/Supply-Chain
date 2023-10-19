@@ -7,8 +7,6 @@ namespace SupplyChain.App.Controllers
 {
     public class ErrorController : BaseController
     {
-        [NoCache]
-        [SessionExpire]
         public IActionResult Index()
         {
             if (TempData.TryGetValue("ErrorResponse", out var errorResponseJson))

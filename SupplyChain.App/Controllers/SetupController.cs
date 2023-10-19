@@ -8,6 +8,8 @@ using SupplyChain.Services.Contracts;
 
 namespace SupplyChain.App.Controllers
 {
+    [ServiceFilter(typeof(NoCacheAttribute))]
+    [ServiceFilter(typeof(SessionExpireAttribute))]
     public class SetupController : BaseController
     {
         private readonly IProductCategoryService _productCategoryService;
@@ -31,8 +33,6 @@ namespace SupplyChain.App.Controllers
             _userRoleService = userRoleService;
         }
 
-        [NoCache]
-        [SessionExpire]
         public IActionResult Index()
         {
             return View();
@@ -40,8 +40,6 @@ namespace SupplyChain.App.Controllers
 
         #region Category
         [HttpGet]
-        [NoCache]
-        [SessionExpire]
         public async Task<ActionResult> Category(int page = 1, int pageSize = 10)
         {
             var categories = await _productCategoryService.GetAllPagedProductCategoriesAsync(page, pageSize);
@@ -59,8 +57,6 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpGet]
-        [NoCache]
-        [SessionExpire]
         public async Task<ActionResult> AddEditCategory(int id)
         {
             var vm = new ProductCategoryViewModel();
@@ -75,8 +71,6 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpPost]
-        [SessionExpire]
-        [NoCache]
         [ValidateAntiForgeryToken]
         public async Task<JsonResult> AddEditCategory(ProductCategoryViewModel vm)
         {
@@ -118,8 +112,6 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpDelete]
-        [NoCache]
-        [SessionExpire]
         public async Task<JsonResult> DeleteCategory(int id)
         {
             if (id > 0)
@@ -143,8 +135,6 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpGet]
-        [NoCache]
-        [SessionExpire]
         public async Task<IActionResult> GetCategoriesCardData()
         {
             const int page = 1;
@@ -165,8 +155,6 @@ namespace SupplyChain.App.Controllers
 
         #region Manufacturer
         [HttpGet]
-        [NoCache]
-        [SessionExpire]
         public async Task<IActionResult> Manufacturer(int page = 1, int pageSize = 10)
         {
             var manufacturers = await _manufacturerService.GetAllPagedManufacturerAsync(page, pageSize);
@@ -183,8 +171,6 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpGet]
-        [NoCache]
-        [SessionExpire]
         public async Task<ActionResult> AddEditManufacturer(int id)
         {
             var vm = new ManufacturerViewModel();
@@ -199,8 +185,6 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpPost]
-        [NoCache]
-        [SessionExpire]
         [ValidateAntiForgeryToken]
         public async Task<JsonResult> AddEditManufacturer(ManufacturerViewModel vm)
         {
@@ -245,8 +229,6 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpDelete]
-        [NoCache]
-        [SessionExpire]
         public async Task<JsonResult> DeleteManufacturer(int id)
         {
             if (id > 0)
@@ -271,8 +253,6 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpGet]
-        [NoCache]
-        [SessionExpire]
         public async Task<IActionResult> GetManufacturerCardData()
         {
             const int page = 1;
@@ -294,8 +274,6 @@ namespace SupplyChain.App.Controllers
         #region Users
 
         [HttpGet]
-        [NoCache]
-        [SessionExpire]
         public async Task<IActionResult> Users(int page = 1, int pageSize = 10)
         {
             var users = await _userService.GetAllPagedUsersAsync(page, pageSize);
@@ -311,8 +289,6 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpGet]
-        [NoCache]
-        [SessionExpire]
         public async Task<ActionResult> AddEditUser(int id)
         {
             try
@@ -346,8 +322,6 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpPost]
-        [SessionExpire]
-        [NoCache]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> AddEditUser(UserViewModel vm)
         {
@@ -393,8 +367,6 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpDelete]
-        [NoCache]
-        [SessionExpire]
         public async Task<JsonResult> DeleteUser(int id)
         {
             if (id > 0)
@@ -419,8 +391,6 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpGet]
-        [NoCache]
-        [SessionExpire]
         public async Task<IActionResult> GetRoles(string q)
         {
             List<RolesViewModel> vm = new List<RolesViewModel>();
@@ -438,8 +408,6 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpGet]
-        [NoCache]
-        [SessionExpire]
         public async Task<IActionResult> GetUserCardData()
         {
             const int page = 1;
@@ -458,8 +426,6 @@ namespace SupplyChain.App.Controllers
         #endregion Users
 
         #region ROLES
-        [NoCache]
-        [SessionExpire]
         public IActionResult Roles()
         {
             return View();
@@ -467,8 +433,6 @@ namespace SupplyChain.App.Controllers
         #endregion ROLES
 
         #region PERMISSIONS
-        [NoCache]
-        [SessionExpire]
         public IActionResult Permissions()
         {
             return View();
