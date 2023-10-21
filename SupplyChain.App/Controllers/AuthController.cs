@@ -79,6 +79,7 @@ namespace SupplyChain.App.Controllers
             }
         }
 
+        [HttpGet]
         public IActionResult TimeOut()
         {
             double sessionTimeout = double.Parse(_configuration["SessionTimeOut"] ?? "20");
@@ -86,6 +87,15 @@ namespace SupplyChain.App.Controllers
             return View();
         }
 
+        [HttpGet]
+        public IActionResult TimeOutForJSON()
+        {
+            double sessionTimeout = double.Parse(_configuration["SessionTimeOut"] ?? "20");
+            ViewBag.SessionTimeout = sessionTimeout;
+            return PartialView("~/Views/Auth/PartialViews/_TimeOutPartialView.cshtml");
+        }
+
+        [HttpGet]
         public IActionResult Logout()
         {
             CurrentUser.Logout();

@@ -1,0 +1,23 @@
+﻿<div class="container">
+    <div class="row">
+        <div class="col">
+            <h1>Session Timeout</h1>
+            <div class="row justify-content-center mt-5 text-center">
+                <p class="lead">
+                    Due to browser inactivity for the past @ViewBag.SessionTimeout minutes your session has timed out and you must login again to access your data. <br />
+                    We apologize for the inconvenience, but session timeouts were added for security reasons to ensure that your data is protected.
+                </p>
+            </div>
+            <div class="row mt-5 justify-content-center">
+                <div class="col-12 text-center">
+                    <small>
+                        please click login button to return to login page
+                    </small>
+                </div>
+                <div class="col-12 mt-3 text-center">
+                    <a asp-action="Logout" asp-controller="Auth" class="btn btn-primary">Login Page</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

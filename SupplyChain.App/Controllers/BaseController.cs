@@ -9,6 +9,7 @@ namespace SupplyChain.App.Controllers
     [ServiceFilter(typeof(SessionExpireAttribute))]
     public class BaseController : Controller
     {
+        [HttpGet]
         public void CustomException(Exception ex)
         {
             var errorResponse = ErrorResponse.PreException(ex);

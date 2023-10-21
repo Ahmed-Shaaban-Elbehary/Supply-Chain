@@ -78,9 +78,15 @@ const events = (() => {
         let data = { id: eventId };
         app.ajax_request(url, 'GET', 'html', data)
             .then((resonse) => {
-                $('#general-partial-modal').find('.modal-title').text('Edit Event');
-                $('#general-partial-modal').find('#general-modal-content').html(resonse);
-                app.showhideModal('general-partial-modal');
+                // Check if the JSON response contains a redirect URL
+                if (resonse.redirectUrl && resonse.redirectUrl.length > 0) {
+                    // Redirect to the new location
+                    window.location.href = data.redirectUrl;
+                } else {
+                    $('#general-partial-modal').find('.modal-title').text('Edit Event');
+                    $('#general-partial-modal').find('#general-modal-content').html(resonse);
+                    app.showhideModal('general-partial-modal');
+                }
             })
             .catch((xhr, status, error) => {
                 console.error(error);
