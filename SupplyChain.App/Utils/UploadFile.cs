@@ -43,7 +43,7 @@ namespace SupplyChain.App.Utils
                 byte[] imageData = memoryStream.ToArray();
                 byte[] croppedImageData = await CropAndResizeImageAsync(imageData, targetWidth, targetHeight, cropWidth, cropHeight);
 
-                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "products");
+                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "/images", "products");
                 Directory.CreateDirectory(uploadsFolder);
 
                 string fileName = Path.GetFileName(file.FileName);
@@ -71,6 +71,8 @@ namespace SupplyChain.App.Utils
 
                 using (var image = SixLabors.ImageSharp.Image.Load<Rgba32>(imageData))
                 {
+                    int cropX = (image.Width - cropWidth) / 2;
+                    int cropY = (image.Height - cropHeight) / 2;
                     // Ensure the specified crop dimensions are within the bounds of the source image.
                     if (cropWidth > image.Width || cropHeight > image.Height)
                     {
@@ -78,8 +80,12 @@ namespace SupplyChain.App.Utils
                     }
 
                     image.Mutate(x => x
-                        .Resize(new Size(targetWidth, targetHeight))
-                        .Crop(new Rectangle(0, 0, cropWidth, cropHeight)));
+                        .Resize(new ResizeOptions
+                        {
+                            Size = new Size(targetWidth, targetHeight),
+                            Position = AnchorPositionMode.Center
+                        })
+                        .Crop(new Rectangle(cropX, cropY, cropWidth, cropHeight)));
 
                     using (var memoryStream = new MemoryStream())
                     {
