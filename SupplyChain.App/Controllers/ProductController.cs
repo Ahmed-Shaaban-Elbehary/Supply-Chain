@@ -154,7 +154,6 @@ namespace SupplyChain.App.Controllers
                 vm.ProductViewModel.Price = product.Price;
                 vm.ProductViewModel.ImageUrl = product.ImageUrl;
                 vm.ProductViewModel.UnitName = _lookup.Units.FirstOrDefault(u => u.Code == product.UnitCode.ToString()).Name;
-
                 return PartialView("~/Views/Product/PartialViews/_AddProductQuantity.cshtml", vm);
             }
             catch (Exception ex)
@@ -167,7 +166,7 @@ namespace SupplyChain.App.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateProductQuantityRequest(ProductQuantityRequestViewModel vm)
         {
-            if (vm.QuantityToAdd <= 0)
+            if (vm.QuantityToAdd >= 0)
             {
                 try
                 {
