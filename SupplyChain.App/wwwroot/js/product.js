@@ -16,11 +16,11 @@ const products = (() => {
                 if (error != undefined) {
                     app.FailAlertMessage(error.responseJSON.message);
                     app.reEnterFormData(formElement, formData);
-                    hideloader();
+                    //hideloader();
                 } else {
                     console.error(xhr)
                     app.FailAlertMessage("Oops, Error Occurred, Please Try Again!", xhr);
-                    hideloader();
+                    //hideloader();
                 }
             })
     }

@@ -2,6 +2,30 @@
  ***** GENERAL JAVASCRIPT ******
  *******************************/
 
+// Attach an event handler to the entire document to listen for the start of AJAX requests.
+$(document).ajaxStart(() => {
+    // This function is executed when an AJAX request starts.
+
+    // You can place code here to show your loader or perform other setup tasks.
+    // In this case, it shows the loader element with $('#loader').show().
+    $('#loader').show();
+    // You can add additional actions or logic here as needed.
+});
+
+// Attach an event handler to the entire document to listen for the end of AJAX requests.
+$(document).ajaxStop(() => {
+    // This function is executed when an AJAX request stops (completes).
+
+    // Use setTimeout to add a brief delay (0.5 seconds) before hiding the loader.
+    setTimeout(() => {
+        // Inside this setTimeout function, you can add code to hide the loader.
+        // In this case, it hides the loader element with $('#loader').hide().
+        $('#loader').hide();
+    }, 1000); // The delay is in milliseconds, so 0.5000 seconds is equivalent to 500 milliseconds.
+
+    // You can add additional actions or logic here as needed.
+});
+
 $(() => {
     // Write your JavaScript code.
     var inputs = document.querySelectorAll("input[type='number']");
@@ -27,6 +51,7 @@ $(() => {
     ////setInterval(() => {
     ////    app.checkCookieIfExist()
     ////}, 60000); //check cookie each 1 min.
+    
 });
 
 /*******************************

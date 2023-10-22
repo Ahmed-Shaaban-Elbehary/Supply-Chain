@@ -8,7 +8,7 @@
 
     const AddUser = (e) => {
         e.preventDefault();
-        const hideloader = app.showloader('user-card');
+        //const hideloader = app.showloader('user-card');
         var formElement = e.target.closest('form');
         var formData = new FormData(formElement);
         let url = $(formElement).attr('action');
@@ -21,24 +21,24 @@
                     app.showhideModal('general-partial-modal');
                     app.refreshElement('user-card-body', 'Setup', 'GetUserCardData');
                     app.SuccessAlertMessage(response.message);
-                    hideloader();
+                    //hideloader();
                 }
             })
             .catch((xhr, status, error) => {
                 if (error != undefined) {
                     app.FailAlertMessage(error.responseJSON.message);
                     app.reEnterFormData(formElement, formData);
-                    hideloader();
+                    //hideloader();
                 } else {
                     console.error(xhr)
                     app.FailAlertMessage("Oops, Error Occurred, Please Try Again!", xhr);
-                    hideloader();
+                    //hideloader();
                 }
             })
     }
 
     const DeleteSelectedItem = (userId) => {
-        const hideloader = app.showloader('user-data-table');
+        //const hideloader = app.showloader('user-data-table');
         app.DeleteConfirmMessage().then((result) => {
             if (result.isConfirmed) {
                 let url = `/Setup/DeleteUser/${userId}`;
@@ -47,26 +47,26 @@
                         if (resonse.success == true) {
                             app.SuccessAlertMessage(`${resonse.message}`);
                             app.refreshElement('user-card-body', 'Setup', 'GetUserCardData');
-                            hideloader();
+                            //hideloader();
                         } else {
                             app.FailAlertMessage(`${resonse.message}`);
-                            hideloader();
+                            //hideloader();
                         }
                     })
                     .catch((xhr, status, error) => {
                         if (error != undefined) {
                             app.FailAlertMessage(error.responseJSON.message);
                             app.reEnterFormData(formElement, formData);
-                            hideloader();
+                            //hideloader();
                         } else {
                             console.error(xhr)
                             app.FailAlertMessage("Oops, Error Occurred, Please Try Again!", xhr);
-                            hideloader();
+                            //hideloader();
                         }
                     });
-                hideloader();
+                //hideloader();
             } else {
-                hideloader();
+                //hideloader();
             }
 
         })
@@ -85,11 +85,11 @@
                 if (error != undefined) {
                     app.FailAlertMessage(error.responseJSON.message);
                     app.reEnterFormData(formElement, formData);
-                    hideloader();
+                    //hideloader();
                 } else {
                     console.error(xhr)
                     app.FailAlertMessage("Oops, Error Occurred, Please Try Again!", xhr);
-                    hideloader();
+                    //hideloader();
                 }
             })
     }

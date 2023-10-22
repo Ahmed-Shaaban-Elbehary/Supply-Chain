@@ -10,7 +10,7 @@ const events = (() => {
 
     const AddEvent = (event) => {
         event.preventDefault();
-        const hideloader = app.showloader('calendar');
+        /*const hideloader = app.showloader('calendar');*/
         var formElement = event.target.closest('form');
         var formData = new FormData(formElement);
         let url = $(formElement).attr('action');
@@ -24,7 +24,7 @@ const events = (() => {
                     app.SuccessAlertMessage(response.message);
                     if (calendar) {
                         calendar.refetchEvents();
-                        setTimeout(() => { hideloader() }, 1000)
+                        /*setTimeout(() => { hideloader() }, 1000)*/
                     }
                 }
             })
@@ -32,17 +32,17 @@ const events = (() => {
                 if (error != undefined) {
                     app.FailAlertMessage(error.responseJSON.message);
                     app.reEnterFormData(formElement, formData);
-                    hideloader();
+                    //hideloader();
                 } else {
                     console.error(xhr);
                     app.FailAlertMessage("Oops, Error Occurred, Please Try Again!");
-                    hideloader();
+                    //hideloader();
                 }
             })
     }
 
     const DeleteSelectedItem = (eventId) => {
-        const hideloader = app.showloader('page-content');
+        //const hideloader = app.showloader('page-content');
         app.DeleteConfirmMessage().then((result) => {
             if (result.isConfirmed) {
                 let url = base_url + "/DeleteEvent/" + eventId;
@@ -57,17 +57,17 @@ const events = (() => {
                                     }
                                 });
                         } else {
-                            hideloader();
+                            //hideloader();
                             app.FailAlertMessage('Fail To Delete Item, Please Try Again!');
                         }
                     })
                     .catch((xhr, status, error) => {
-                        hideloader();
+                        //hideloader();
                         app.FailAlertMessage(error);
                     });
-                hideloader();
+                //hideloader();
             } else {
-                hideloader();
+                //hideloader();
             }
 
         })

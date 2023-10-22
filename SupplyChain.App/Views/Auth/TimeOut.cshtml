@@ -1,4 +1,6 @@
-﻿@{
+﻿@inject IConfiguration Configuration
+
+@{
     Layout = null;
 }
 <!DOCTYPE html>
@@ -106,7 +108,7 @@
         </div>
         <div class="row justify-content-center mt-5 text-center">
             <p>
-                Due to browser inactivity for the past @ViewBag.SessionTimeout minutes your session has timed out and you must login again to access your data. <br />
+                Due to browser inactivity for the past @Configuration["SessionTimeOut"].ToString() minutes your session has timed out and you must login again to access your data. <br />
                 We apologize for the inconvenience, but session timeouts were added for security reasons to ensure that your data is protected.
             </p>
         </div>
