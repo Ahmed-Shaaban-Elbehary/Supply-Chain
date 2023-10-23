@@ -88,5 +88,59 @@ const products = (() => {
 
 })();
 
+var notificationModule = (() => {
+    //global connection for all module.
+    let connection;
+
+    const get_connection = () => {
+        connection = new signalR.HubConnectionBuilder().withUrl("/NotificationUserHub").build();
+    }
+
+    const get_sender_user_id = () => {
+        return "SenderUserID";
+    }
+
+    const get_receiver_user_id = () => {
+        return "ReceiverUserID";
+    }
+
+    const start_connection = () => {
+        connection.start().catch((err) => console.error(err));
+    }
+
+    const push_notification = () => {
+        if (!connection) {
+            get_connection();
+        }
+
+        connection.on("sendToUser", (articleHeading, articleContent) => {
+            // Rest of your code
+        });
+
+        start_connection();
+    }
+    
+    return {
+        GetConnection: () => {
+            return get_connection();
+        },
+        GetSenderUserId: () => {
+            return get_sender_user_id();
+        },
+        GetReceiverUserId: () => {
+            return get_receiver_user_id();
+        },
+        PushNotification: () => {
+            push_notification();
+        }
+    }
+
+})();
+
+
+
+
+
+
 
 

@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using SupplyChain.App.Notifcation;
 using SupplyChain.App.Utils.Contracts;
 using SupplyChain.App.Utils.Validations;
 using SupplyChain.App.ViewModels;
@@ -22,13 +24,16 @@ namespace SupplyChain.App.Controllers
         private readonly IMapper _mapper;
         private readonly ILookUp _lookup;
         private readonly IUploadFile _uploadFile;
+        private readonly IHubContext<NotificationUserHub> _notificationUserHubContext;
+
         public ProductController(
             IProductService productService,
             IEventService eventService,
             IProductQuantityRequestService productQuantityRequestService,
             IMapper mapper,
             ILookUp lookUp,
-            IUploadFile uploadFile
+            IUploadFile uploadFile,
+            IHubContext<NotificationUserHub> notificationUserHubContext
             )
         {
             _productService = productService;
@@ -37,6 +42,7 @@ namespace SupplyChain.App.Controllers
             _mapper = mapper;
             _lookup = lookUp;
             _uploadFile = uploadFile;
+            _notificationUserHubContext = notificationUserHubContext;
         }
 
         [HttpGet]
@@ -170,7 +176,7 @@ namespace SupplyChain.App.Controllers
             {
                 try
                 {
-
+                    var product = await _productService.GetProductByIdAsync(vm.ProductId);
                     return Json(new ApiResponse<bool>(true, true, "request send success"));
                 }
                 catch (Exception ex)
