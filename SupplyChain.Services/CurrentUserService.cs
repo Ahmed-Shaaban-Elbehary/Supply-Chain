@@ -88,7 +88,7 @@ namespace SupplyChain.Services
         }
     }
 
-    public class SessionData
+    internal record SessionData
     {
         public int UserId { get; set; }
         public string UserName { get; set; } = string.Empty;
