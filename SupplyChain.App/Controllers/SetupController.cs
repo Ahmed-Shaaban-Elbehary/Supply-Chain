@@ -296,14 +296,9 @@ namespace SupplyChain.App.Controllers
                 var vm = new UserViewModel();
                 if (id > 0)
                 {
-                    ViewBag.isEdit = true;
                     var user = await _userService.GetUserByIdAsync(id);
                     vm = _mapper.Map<UserViewModel>(user);
                     vm.RoleIds = user.UserRoles.Select(e => e.RoleId).ToList();
-                }
-                else
-                {
-                    ViewBag.isEdit = false;
                 }
                 var roles = await _roleService.GetAllRolesAsync();
                 foreach (var role in roles)

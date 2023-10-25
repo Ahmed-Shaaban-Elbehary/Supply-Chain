@@ -117,7 +117,7 @@ namespace SupplyChain.App.Controllers
                         {
                             vm.PublishedIn = DateTime.Now;
                             await _notificationHubContext.Clients.All
-                                .SendAsync("sendToAllUsers", vm);
+                                .SendAsync("ReceiveNotification", vm);
                         }
                         else
                         {

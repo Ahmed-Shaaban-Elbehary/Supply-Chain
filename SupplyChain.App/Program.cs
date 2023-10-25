@@ -62,7 +62,11 @@ builder.Services.AddScoped<CustomPhoneAttribute>();
 #region Utils
 builder.Services.AddScoped<IUploadFile, UploadFile>();
 builder.Services.AddScoped<ILookUp, Lookups>();
-builder.Services.AddSignalR();
+builder.Services.AddSignalR(options =>
+{
+    options.EnableDetailedErrors = true; // Enable detailed error messages for debugging
+    // Other SignalR options
+});
 string connString = builder.Configuration.GetConnectionString("DefaultConnection");
 #endregion
 
@@ -85,9 +89,10 @@ app.UseAuthorization();
 app.UseAuthentication();
 
 //app.UseAuthenticationMiddleware();
-
-app.MapHub<NotificationHub>("/notificationHub");
-app.MapHub<NotificationUserHub>("/notificationUserHub");
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapHub<NotificationHub>("/NotificationHub");
+});
 
 app.MapControllerRoute(
     name: "default",

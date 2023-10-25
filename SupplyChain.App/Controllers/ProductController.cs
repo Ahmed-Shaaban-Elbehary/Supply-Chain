@@ -170,14 +170,22 @@ namespace SupplyChain.App.Controllers
             }
         }
         [HttpPost]
-        public async Task<IActionResult> CreateProductQuantityRequest(ProductQuantityRequestViewModel vm)
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> CreateProductQuantityRequest(ProductQuantityRequestViewModel vm)
         {
             if (vm.QuantityToAdd >= 0)
             {
                 try
                 {
-                    var product = await _productService.GetProductByIdAsync(vm.ProductId);
-                    return Json(new ApiResponse<bool>(true, true, "request send success"));
+                    var product = await _productService.GetProductByIdAsync(vm.ProductViewModel.Id);
+                    var obj = new
+                    {
+                        SupplyId = product.SupplierId,
+                        From = CurrentUser.GetUserName(),
+                        ProductName = vm.ProductViewModel.ProductName,
+                        RequestedQuantity = vm.QuantityToAdd
+                    };
+                    return Json(new ApiResponse<object>(true, obj, "request send success"));
                 }
                 catch (Exception ex)
                 {

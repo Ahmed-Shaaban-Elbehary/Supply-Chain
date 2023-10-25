@@ -2,7 +2,7 @@
 const products = (() => {
 
     const RequestAdditionProductQuantities = () => {
-        let productId = $("#productId").val();
+        let productId = $("#ProductId").val();
         let url = "/Product/RequestAdditionProductQuantities";
         let data = { id: productId };
         app.ajax_request(url, 'GET', 'html', data)
@@ -23,7 +23,7 @@ const products = (() => {
             })
     }
 
-    const CreateProductQuantityRequest = (e) => {
+    const CreateRequest = (e) => {
         e.preventDefault();
         //const hideloader = app.showloader('user-card');
         var formElement = e.target.closest('form');
@@ -31,6 +31,12 @@ const products = (() => {
         let url = $(formElement).attr('action');
         app.SubmitForm(url, formData)
             .then((response) => {
+                let obj = {
+                    Title: response.data.title,
+                    Body: `You have a new request for a ${response.data.productName}, 
+                           from ${response.data.from}, which he wants an additional quantity ${response.data.requestedQuantity}`
+                }
+                signalRModule.sendNotificationToUser(response.data.supplyId.toString(), obj);
                 if (!response.success) {
                     app.fillErrorMessageContainer(response.message);
                     app.reEnterFormData(formElement, formData);
@@ -57,7 +63,7 @@ const products = (() => {
             RequestAdditionProductQuantities();
         },
         create_product_quantity_request: (e) => {
-            CreateProductQuantityRequest(e);
+            CreateRequest(e);
         }
     }
 })();
@@ -87,56 +93,6 @@ const products = (() => {
     };
 
 })();
-
-var notificationModule = (() => {
-    //global connection for all module.
-    let connection;
-
-    const get_connection = () => {
-        connection = new signalR.HubConnectionBuilder().withUrl("/NotificationUserHub").build();
-    }
-
-    const get_sender_user_id = () => {
-        return "SenderUserID";
-    }
-
-    const get_receiver_user_id = () => {
-        return "ReceiverUserID";
-    }
-
-    const start_connection = () => {
-        connection.start().catch((err) => console.error(err));
-    }
-
-    const push_notification = () => {
-        if (!connection) {
-            get_connection();
-        }
-
-        connection.on("sendToUser", (articleHeading, articleContent) => {
-            // Rest of your code
-        });
-
-        start_connection();
-    }
-    
-    return {
-        GetConnection: () => {
-            return get_connection();
-        },
-        GetSenderUserId: () => {
-            return get_sender_user_id();
-        },
-        GetReceiverUserId: () => {
-            return get_receiver_user_id();
-        },
-        PushNotification: () => {
-            push_notification();
-        }
-    }
-
-})();
-
 
 
 

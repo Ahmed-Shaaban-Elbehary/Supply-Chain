@@ -334,7 +334,6 @@ app.refreshElement = (targetElement, controller, action) => {
     let url = `/${controller}/${action}`;
     app.ajax_request(url, 'GET', 'html', null)
         .then((resonse) => {
-            debugger;
             $(`#${targetElement}`).empty();
             $(`#${targetElement}`).html(resonse);
         })
