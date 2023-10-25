@@ -31,12 +31,10 @@ const products = (() => {
         let url = $(formElement).attr('action');
         app.SubmitForm(url, formData)
             .then((response) => {
-                let obj = {
-                    Title: response.data.title,
-                    Body: `You have a new request for a ${response.data.productName}, 
-                           from ${response.data.from}, which he wants an additional quantity ${response.data.requestedQuantity}`
-                }
-                signalRModule.sendNotificationToUser(response.data.supplyId.toString(), obj);
+                let message = `You have a new request for a ${response.data.messageTitle}, from ${response.data.sender}, 
+                               which he wants an additional quantity ${response.data.messageBody}`;
+                SignalRModule.send_message(response.data.receiver.toString(), message);
+
                 if (!response.success) {
                     app.fillErrorMessageContainer(response.message);
                     app.reEnterFormData(formElement, formData);
@@ -44,6 +42,7 @@ const products = (() => {
                     app.showhideModal('general-partial-modal');
                     //hideloader();
                 }
+
             })
             .catch((xhr, status, error) => {
                 if (error != undefined) {

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using SupplyChain.App.Notifcation;
+using SupplyChain.App.Notification;
 using SupplyChain.App.Utils.Contracts;
 using SupplyChain.App.Utils.Validations;
 using SupplyChain.App.ViewModels;
@@ -24,16 +24,13 @@ namespace SupplyChain.App.Controllers
         private readonly IMapper _mapper;
         private readonly ILookUp _lookup;
         private readonly IUploadFile _uploadFile;
-        private readonly IHubContext<NotificationUserHub> _notificationUserHubContext;
-
         public ProductController(
             IProductService productService,
             IEventService eventService,
             IProductQuantityRequestService productQuantityRequestService,
             IMapper mapper,
             ILookUp lookUp,
-            IUploadFile uploadFile,
-            IHubContext<NotificationUserHub> notificationUserHubContext
+            IUploadFile uploadFile
             )
         {
             _productService = productService;
@@ -42,7 +39,6 @@ namespace SupplyChain.App.Controllers
             _mapper = mapper;
             _lookup = lookUp;
             _uploadFile = uploadFile;
-            _notificationUserHubContext = notificationUserHubContext;
         }
 
         [HttpGet]
@@ -178,14 +174,15 @@ namespace SupplyChain.App.Controllers
                 try
                 {
                     var product = await _productService.GetProductByIdAsync(vm.ProductViewModel.Id);
-                    var obj = new
+                    var mvm = new MessageViewModel()
                     {
-                        SupplyId = product.SupplierId,
-                        From = CurrentUser.GetUserName(),
-                        ProductName = vm.ProductViewModel.ProductName,
-                        RequestedQuantity = vm.QuantityToAdd
+                        Sender = CurrentUser.GetUserId(),
+                        Receiver = product.SupplierId,
+                        MessageTitle = product.Name,
+                        MessageBody = vm.QuantityToAdd.ToString()
                     };
-                    return Json(new ApiResponse<object>(true, obj, "request send success"));
+
+                    return Json(new ApiResponse<MessageViewModel>(true, mvm, "request send success"));
                 }
                 catch (Exception ex)
                 {

@@ -22,14 +22,12 @@ namespace SupplyChain.App.Controllers
         private readonly IEventService _eventService;
         private readonly IProductEventService _productEventService;
         private readonly IEventStatusService _eventStatusService;
-        private readonly IHubContext<NotificationHub> _notificationHubContext;
         private readonly ILookUp _lookup;
         public EventController(IMapper mapper,
             IProductService productService,
             IEventService eventService,
             IProductEventService productEventService,
             IEventStatusService eventStatusService,
-            IHubContext<NotificationHub> notificationHubContext,
             ILookUp lookup)
         {
             _mapper = mapper;
@@ -37,7 +35,6 @@ namespace SupplyChain.App.Controllers
             _eventService = eventService;
             _productEventService = productEventService;
             _eventStatusService = eventStatusService;
-            _notificationHubContext = notificationHubContext;
             _lookup = lookup;
         }
 
@@ -116,8 +113,6 @@ namespace SupplyChain.App.Controllers
                         if (vm.Active)
                         {
                             vm.PublishedIn = DateTime.Now;
-                            await _notificationHubContext.Clients.All
-                                .SendAsync("ReceiveNotification", vm);
                         }
                         else
                         {
@@ -129,7 +124,14 @@ namespace SupplyChain.App.Controllers
                             }
                         }
 
-                        return Json(new ApiResponse<bool>(true, true, "An event was successfully updated!"));
+                        var mvm = new MessageViewModel()
+                        {
+                            Sender = CurrentUser.GetUserId(),
+                            Receiver = 0,
+                            MessageTitle = vm.Title,
+                            MessageBody = vm.Description,
+                        };
+                        return Json(new ApiResponse<MessageViewModel>(true, mvm, "An event was successfully updated!"));
                     }
                     catch (Exception ex)
                     {

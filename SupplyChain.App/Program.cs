@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.DependencyInjection;
 using SupplyChain.App.App_Class;
-using SupplyChain.App.Notifcation;
 using SupplyChain.App.Notification;
 using SupplyChain.App.Profiles;
 using SupplyChain.App.Utils;
@@ -88,11 +87,9 @@ app.UseAuthorization();
 
 app.UseAuthentication();
 
+app.MapHub<NotificationHub>("/notificationHub");
+
 //app.UseAuthenticationMiddleware();
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapHub<NotificationHub>("/NotificationHub");
-});
 
 app.MapControllerRoute(
     name: "default",

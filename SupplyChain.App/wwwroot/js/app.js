@@ -299,11 +299,10 @@ app.FailAlertMessage = (message) => {
  * @param {date} date
  * @returns toast
  */
-app.toaster = (title, content, date) => {
-    const publishedIn = app.getDateTimeFormat(date);
+app.toaster = (title, content) => {
     $.toast({
         heading: title,
-        text: content + publishedIn,
+        text: content,
         position: 'bottom-right',
         showHideTransition: 'slide',
         icon: 'info',

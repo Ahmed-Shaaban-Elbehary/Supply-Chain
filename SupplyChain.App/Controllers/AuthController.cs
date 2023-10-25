@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
+using SupplyChain.App.Notification;
 using SupplyChain.App.Utils.Validations;
 using SupplyChain.App.ViewModels;
 using SupplyChain.Core.Models;
@@ -14,15 +16,17 @@ namespace SupplyChain.App.Controllers
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
-
+        private readonly IHubContext<NotificationHub> _notificationHubContext;
         public AuthController(
             IUserService userService,
             IConfiguration configuration,
+            IHubContext<NotificationHub> notificationHubContext,
             IMapper mapper)
         {
             _userService = userService;
             _mapper = mapper;
             _configuration = configuration;
+            _notificationHubContext = notificationHubContext;
         }
 
         [HttpGet]
@@ -65,7 +69,6 @@ namespace SupplyChain.App.Controllers
                     var _user = _mapper.Map<User>(loggedInUser);
                     await CurrentUser.StartSession(_user, _userService);
                     HttpContext.Session.SetString("userObj", $"{_user}");
-
                     return RedirectToAction("Index", "Product");
                 }
             }

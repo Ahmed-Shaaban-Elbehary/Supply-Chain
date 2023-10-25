@@ -1,19 +1,53 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using SupplyChain.Services;
+using System.Collections.Concurrent;
 
 namespace SupplyChain.App.Notification
 {
     public class NotificationHub : Hub
     {
-        // This method will be used for broadcasting to all users.
-        public async Task SendNotificationToAll(object message)
+        // This dictionary associates user IDs with their connection IDs.
+        private static readonly ConcurrentDictionary<string, string> ConnectedUsers = new ConcurrentDictionary<string, string>();
+
+        public override async Task OnConnectedAsync()
         {
-            await Clients.All.SendAsync("ReceiveNotification", message);
+            // Get the user ID after authentication (replace with your own logic)
+            var userId = CurrentUser.GetUserId().ToString();
+
+            if (!string.IsNullOrEmpty(userId))
+            {
+                ConnectedUsers.TryAdd(userId, Context.ConnectionId);
+            }
+
+            await base.OnConnectedAsync();
         }
 
-        // This method will be used for sending to a specific user.
-        public async Task SendNotificationToUser(string userId, object message)
+        public override async Task OnDisconnectedAsync(Exception exception)
         {
-            await Clients.User(userId).SendAsync("ReceiveNotification", message);
+            // Remove the association when a user disconnects
+            var userId = CurrentUser.GetUserId().ToString();
+
+            if (!string.IsNullOrEmpty(userId))
+            {
+                ConnectedUsers.TryRemove(userId, out _);
+            }
+
+            await base.OnDisconnectedAsync(exception);
+        }
+
+        public async Task SendNotification(string userId, string message)
+        {
+            if (!string.IsNullOrEmpty(userId))
+            {
+                if (ConnectedUsers.TryGetValue(userId, out var connectionId))
+                {
+                    await Clients.Client(connectionId).SendAsync("ReceiveNotification", message);
+                }
+            }
+            else
+            {
+                await Clients.All.SendAsync("ReceiveNotification", message);
+            }
         }
     }
 }
