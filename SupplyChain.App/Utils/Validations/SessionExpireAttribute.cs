@@ -49,7 +49,7 @@ namespace SupplyChain.App.Utils.Validations
             }
             else if (!isLoginAction && !isTimeoutAction && !isLogoutAction && isSessionNull)
             {
-                CurrentUser.Logout();
+                // CurrentUser.Logout();
 
                 if (isAjaxRequest)
                 {
