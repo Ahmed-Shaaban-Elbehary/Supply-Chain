@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="CurrentUserService.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\SupplyChain.Core\SupplyChain.Core.csproj" />
   </ItemGroup>
 

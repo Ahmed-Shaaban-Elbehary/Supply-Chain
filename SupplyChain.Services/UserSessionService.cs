@@ -9,46 +9,46 @@ namespace SupplyChain.Services
     public class UserSessionService : IUserSessionService
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IUserService _userService;
+        private const string UserSessionKey = "CurrentUser";
+        private User? currentUser;
+        private List<string> userPermissions = new List<string>();
+        private List<string> userRoles = new List<string>();
 
-        public UserSessionService(IHttpContextAccessor httpContextAccessor, 
-            IUserService userService
-            )
+        public UserSessionService(IHttpContextAccessor httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;
-            _userService = userService;
-
-            GetUserPermission();
-            GetUserRoles();
         }
-        private IList<string> UserPersmissions { get; set; } = new List<string>();
-        private IList<string> UserRoles { get; set; } = new List<string>();
 
-
-        public User? GetUser()
+        public async Task<User?> GetUserAsync()
         {
-            byte[] userBytes;
-            if (_httpContextAccessor.HttpContext.Session.TryGetValue("User", out userBytes))
+            byte[] userData;
+            if (_httpContextAccessor.HttpContext.Session.TryGetValue(UserSessionKey, out userData))
             {
-                var userJson = Encoding.UTF8.GetString(userBytes);
-                return JsonConvert.DeserializeObject<User>(userJson);
+                // Deserialize the user data from the session
+                var userJson = Encoding.UTF8.GetString(userData);
+                var result = Task.Run(() =>
+                {
+                    return JsonConvert.DeserializeObject<User>(userJson);
+                });
+                return await result;
             }
+
             return null;
         }
 
-        public List<string> GetUserRoles()
+        public Task<IEnumerable<string>> GetUserPermissionsAsync()
         {
             throw new NotImplementedException();
         }
 
-        public bool HasPermission(string permission)
+        public Task<IEnumerable<string>> GetUserRolesAsync()
         {
-            var user = GetUser();
-            if (user != null)
-            {
-                return UserPersmissions.Contains(permission);
-            }
-            return false;
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> HasPermissionAsync(string permission)
+        {
+            throw new NotImplementedException();
         }
 
         public Task<bool> IsInRoleAsync(string roleName)
@@ -56,43 +56,24 @@ namespace SupplyChain.Services
             throw new NotImplementedException();
         }
 
-        public bool IsUserLoggedIn()
-        {
-            return GetUser() != null;
-        }
-
-        public void Login(User user)
+        public Task<bool> IsUserLoggedInAsync()
         {
             throw new NotImplementedException();
         }
 
-        public void Logout()
+        public Task LoginAsync(User user)
         {
             throw new NotImplementedException();
         }
 
-        public void SetUser(User user)
+        public Task LogoutAsync()
         {
-            var userJson = JsonConvert.SerializeObject(user);
-            _httpContextAccessor.HttpContext.Session.Set("User", Encoding.UTF8.GetBytes(userJson));
+            throw new NotImplementedException();
         }
 
-        private void GetUserPermission()
+        public Task SetUserAsync(User user)
         {
-            var user = GetUser();
-            if (user != null)
-            {
-                this.UserPersmissions = _userService.GetUserPermissionsAsync(user.Id).Result.ToList();
-            }
-        }
-        private void GetUserRoles()
-        {
-            var user = GetUser();
-            if (user != null)
-            {
-                user.UserRoles = _userService.GetUserRolesAsync(user.Id).Result.ToList();
-                this.UserRoles = _userService.Get(user.Id).Result.ToList();
-            }
+            throw new NotImplementedException();
         }
     }
 }
