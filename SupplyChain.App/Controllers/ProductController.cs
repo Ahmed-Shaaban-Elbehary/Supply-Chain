@@ -24,13 +24,15 @@ namespace SupplyChain.App.Controllers
         private readonly IMapper _mapper;
         private readonly ILookUp _lookup;
         private readonly IUploadFile _uploadFile;
+        private readonly User _user;
         public ProductController(
             IProductService productService,
             IEventService eventService,
             IProductQuantityRequestService productQuantityRequestService,
             IMapper mapper,
             ILookUp lookUp,
-            IUploadFile uploadFile
+            IUploadFile uploadFile,
+            User user
             )
         {
             _productService = productService;
@@ -39,6 +41,7 @@ namespace SupplyChain.App.Controllers
             _mapper = mapper;
             _lookup = lookUp;
             _uploadFile = uploadFile;
+            _user = user; 
         }
 
         [HttpGet]
@@ -173,6 +176,11 @@ namespace SupplyChain.App.Controllers
             {
                 try
                 {
+                    //Add New Request.
+                    var productQuantityRequest = _mapper.Map<ProductQuantityRequest>(vm);
+                    await _productQuantityRequestService.CreateProductQuantityRequestAsync(productQuantityRequest);
+
+                    //Return Notification View Model.
                     var product = await _productService.GetProductByIdAsync(vm.ProductViewModel.Id);
                     var mvm = new MessageViewModel()
                     {

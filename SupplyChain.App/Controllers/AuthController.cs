@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
@@ -32,11 +33,6 @@ namespace SupplyChain.App.Controllers
         [HttpGet]
         public IActionResult Login()
         {
-            var userIsLoggedIn = CurrentUser.GetUserName();
-            if (!string.IsNullOrEmpty(userIsLoggedIn))
-            {
-                return RedirectToAction("Index", "Product");
-            }
             return View();
         }
 
@@ -67,7 +63,10 @@ namespace SupplyChain.App.Controllers
                         return View();
                     }
                     var _user = _mapper.Map<User>(loggedInUser);
-                    await CurrentUser.StartSession(_user, _userService);
+                    // Serialize the user object to JSON and store it in the session
+                    var userJson = JsonConvert.SerializeObject(_user); // You'll need to add a reference to Newtonsoft.Json
+                    HttpContext.Session.SetString("User", userJson);
+                    //await CurrentUser.StartSession(_user, _userService);
                     HttpContext.Session.SetString("userObj", $"{_user}");
                     return RedirectToAction("Index", "Product");
                 }

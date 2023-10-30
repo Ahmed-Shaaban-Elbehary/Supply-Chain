@@ -1,7 +1,4 @@
 using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.DependencyInjection;
-using SupplyChain.App.App_Class;
 using SupplyChain.App.Notification;
 using SupplyChain.App.Profiles;
 using SupplyChain.App.Utils;
@@ -23,7 +20,14 @@ double sessionTimeout = builder.Configuration.GetValue<double>("SessionTimeOut")
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(sessionTimeout);
+    options.IdleTimeout = TimeSpan.FromMinutes(sessionTimeout); // Adjust as needed
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.Cookie.HttpOnly = true;
+    options.Cookie.Name = $"{Guid.NewGuid()}"; // A unique name for your session cookie
+    options.Cookie.IsEssential = true; // Helps maintain the session even with limited cookie support
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.Cookie.MaxAge = TimeSpan.FromHours(1); // Adjust this as needed
+    options.Cookie.Expiration = TimeSpan.FromMinutes(30); // Adjust as needed
 });
 
 //Infrastructure Services
@@ -49,6 +53,9 @@ builder.Services.AddScoped<IEventStatusService, EventStatusService>();
 builder.Services.AddScoped<IProductEventService, ProductEventService>();
 builder.Services.AddScoped<IProductQuantityRequestService, ProductQuantityRequestService>();
 builder.Services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
+
+builder.Services.AddHttpContextAccessor();
+
 #endregion
 
 #region Attributes
