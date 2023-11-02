@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 using SupplyChain.App.App_Class;
 using SupplyChain.Services;
+using SupplyChain.Services.Contracts;
 
 namespace SupplyChain.App.Utils.Validations
 {
@@ -11,10 +12,14 @@ namespace SupplyChain.App.Utils.Validations
     public class InRoleAttribute : Attribute, IAsyncActionFilter
     {
         private readonly string _roleName;
-
+        private readonly IUserSessionService _userSessionService;
         public InRoleAttribute(string roleName)
         {
             _roleName = roleName;
+        }
+        public InRoleAttribute(IUserSessionService userSessionService)
+        {
+            _userSessionService = userSessionService;
         }
         /// <summary>
         /// Redirect to Un-authorization page, in case the user not authorized.
@@ -24,7 +29,7 @@ namespace SupplyChain.App.Utils.Validations
         /// <returns>Page</returns>
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            bool isAuthorized = await CurrentUser.IsInRoleAsync(_roleName);
+            bool isAuthorized = await _userSessionService.IsInRoleAsync(_roleName);
 
             if (!isAuthorized)
             {

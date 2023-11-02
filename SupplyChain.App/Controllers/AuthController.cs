@@ -18,16 +18,19 @@ namespace SupplyChain.App.Controllers
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
         private readonly IHubContext<NotificationHub> _notificationHubContext;
+        private readonly IUserSessionService _userSessionService;
         public AuthController(
             IUserService userService,
             IConfiguration configuration,
             IHubContext<NotificationHub> notificationHubContext,
-            IMapper mapper)
+            IUserSessionService userSessionService,
+            IMapper mapper) : base(userSessionService)
         {
             _userService = userService;
             _mapper = mapper;
             _configuration = configuration;
             _notificationHubContext = notificationHubContext;
+            _userSessionService = userSessionService;
         }
 
         [HttpGet]
@@ -63,11 +66,18 @@ namespace SupplyChain.App.Controllers
                         return View();
                     }
                     var _user = _mapper.Map<User>(loggedInUser);
-                    // Serialize the user object to JSON and store it in the session
-                    var userJson = JsonConvert.SerializeObject(_user); // You'll need to add a reference to Newtonsoft.Json
-                    HttpContext.Session.SetString("User", userJson);
-                    //await CurrentUser.StartSession(_user, _userService);
-                    HttpContext.Session.SetString("userObj", $"{_user}");
+                    var roles = await _userService.GetUserRolesAsync(_user.Id);
+                    if (roles.Any())
+                    {
+                        await _userSessionService.SetLoggedInUserRoles(roles.ToList());
+                    }
+                    var permissions = await _userService.GetUserPermissionsAsync(_user.Id);
+                    if (permissions.Any())
+                    {
+                        await _userSessionService.SetLoggedInUserPermissions(permissions.ToList());
+                    }
+                    //set user 
+                    await _userSessionService.SetUserAsync(_user);
                     return RedirectToAction("Index", "Product");
                 }
             }
@@ -88,9 +98,9 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpGet]
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
-            CurrentUser.Logout();
+            await _userSessionService.ClearUserSessionAsync();
             return RedirectToAction("Login");
         }
 

@@ -24,7 +24,6 @@ namespace SupplyChain.App.Controllers
         private readonly IMapper _mapper;
         private readonly ILookUp _lookup;
         private readonly IUploadFile _uploadFile;
-        private readonly User _user;
         public ProductController(
             IProductService productService,
             IEventService eventService,
@@ -32,8 +31,7 @@ namespace SupplyChain.App.Controllers
             IMapper mapper,
             ILookUp lookUp,
             IUploadFile uploadFile,
-            User user
-            )
+            IUserSessionService userSessionService) : base(userSessionService)
         {
             _productService = productService;
             _eventService = eventService;
@@ -41,7 +39,6 @@ namespace SupplyChain.App.Controllers
             _mapper = mapper;
             _lookup = lookUp;
             _uploadFile = uploadFile;
-            _user = user; 
         }
 
         [HttpGet]
@@ -101,7 +98,7 @@ namespace SupplyChain.App.Controllers
                 vm.ImageUrl = await _uploadFile.UploadImage(file);
                 vm.Description.Trim();
                 vm.ProductName.Trim();
-                vm.SupplierId = CurrentUser.GetUserId();
+                vm.SupplierId = GetLoggedInUserId();
                 await _productService.CreateProductAsync(_mapper.Map<Product>(vm));
                 return RedirectToAction(nameof(Index));
             }
@@ -184,7 +181,7 @@ namespace SupplyChain.App.Controllers
                     var product = await _productService.GetProductByIdAsync(vm.ProductViewModel.Id);
                     var mvm = new MessageViewModel()
                     {
-                        Sender = CurrentUser.GetUserId(),
+                        Sender = GetLoggedInUserId(),
                         Receiver = product.SupplierId,
                         MessageTitle = product.Name,
                         MessageBody = vm.QuantityToAdd.ToString()

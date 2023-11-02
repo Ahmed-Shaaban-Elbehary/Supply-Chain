@@ -23,7 +23,8 @@ namespace SupplyChain.App.Controllers
             IManufacturerService manufacturerService,
             IUserService userService,
             IRoleService roleService,
-            IUserRoleService userRoleService)
+            IUserRoleService userRoleService,
+            IUserSessionService userSessionService) : base(userSessionService)
         {
             _productCategoryService = productCategoryService;
             _mapper = mapper;

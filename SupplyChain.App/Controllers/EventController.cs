@@ -28,8 +28,9 @@ namespace SupplyChain.App.Controllers
             IEventService eventService,
             IProductEventService productEventService,
             IEventStatusService eventStatusService,
-            ILookUp lookup)
-        {
+            ILookUp lookup,
+            IUserSessionService userSessionService) : base(userSessionService)
+    {
             _mapper = mapper;
             _productService = productService;
             _eventService = eventService;
@@ -90,7 +91,7 @@ namespace SupplyChain.App.Controllers
                 {
                     try
                     {
-                        ev.CreatedBy = CurrentUser.GetUserId();
+                        ev.CreatedBy = GetLoggedInUserId();
                         var newId = await _eventService.CreateEventAsync(ev);
                         var newProductEvent = await _productEventService.AddProductEventAsync(ev, vm.ProductIds);
                         return Json(new ApiResponse<bool>(true, true, "An event was successfully created!"));
@@ -116,7 +117,7 @@ namespace SupplyChain.App.Controllers
                         }
                         else
                         {
-                            int userId = CurrentUser.GetUserId();
+                            int userId = GetLoggedInUserId();
                             var itemStatus = await _eventStatusService.GetEventStatusByEventIdAndUserIdAsync(vm.Id, userId);
                             if (itemStatus != null)
                             {
@@ -126,7 +127,7 @@ namespace SupplyChain.App.Controllers
 
                         var mvm = new MessageViewModel()
                         {
-                            Sender = CurrentUser.GetUserId(),
+                            Sender = GetLoggedInUserId(),
                             Receiver = 0,
                             MessageTitle = vm.Title,
                             MessageBody = vm.Description,
@@ -154,7 +155,7 @@ namespace SupplyChain.App.Controllers
             {
                 var _events = await _eventService.GetAllPagedEventsAsync();
                 var vm = _mapper.Map<List<EventViewModel>>(_events);
-                var currentUserId = CurrentUser.GetUserId();
+                var currentUserId = GetLoggedInUserId();
                 int esCounter = 0;
                 foreach (var item in vm)
                 {
@@ -229,7 +230,7 @@ namespace SupplyChain.App.Controllers
             try
             {
                 int eventId = id;
-                int currentUserId = CurrentUser.GetUserId();
+                int currentUserId = GetLoggedInUserId();
 
                 EventStatusViewModel ESvm = new EventStatusViewModel()
                 {

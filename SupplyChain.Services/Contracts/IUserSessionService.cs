@@ -9,14 +9,13 @@ namespace SupplyChain.Services.Contracts
 {
     public interface IUserSessionService
     {
-        Task<User?> GetUserAsync();
+        UserSession CurrentUser { get; }
         Task SetUserAsync(User user);
         Task<bool> IsUserLoggedInAsync();
-        Task<bool> HasPermissionAsync(string permission);
-        Task<IEnumerable<string>> GetUserPermissionsAsync();
-        Task<IEnumerable<string>> GetUserRolesAsync();
+        Task<bool> HasPermissionAsync(string permissionName);
         Task<bool> IsInRoleAsync(string roleName);
-        Task LoginAsync(User user);
-        Task LogoutAsync();
+        Task SetLoggedInUserRoles(List<string> userRoles);
+        Task SetLoggedInUserPermissions(List<string> userPermissions);
+        Task ClearUserSessionAsync();
     }
 }

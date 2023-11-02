@@ -10,7 +10,7 @@ namespace SupplyChain.Services
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private const string UserSessionKey = "CurrentUser";
-        private User? currentUser;
+        
         private List<string> userPermissions = new List<string>();
         private List<string> userRoles = new List<string>();
 
@@ -19,61 +19,64 @@ namespace SupplyChain.Services
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<User?> GetUserAsync()
+        public UserSession CurrentUser { get; set; } = new UserSession();
+
+        public async Task<bool> HasPermissionAsync(string permissionName)
+        {
+            return await Task.FromResult(this.userPermissions.Contains(permissionName));
+        }
+
+        public async Task<bool> IsInRoleAsync(string roleName)
+        {
+            return await Task.FromResult(this.userRoles.Contains(roleName));
+        }
+
+        public async Task<bool> IsUserLoggedInAsync()
         {
             byte[] userData;
-            if (_httpContextAccessor.HttpContext.Session.TryGetValue(UserSessionKey, out userData))
+            return await Task.FromResult(_httpContextAccessor.HttpContext.Session.TryGetValue(UserSessionKey, out userData));
+        }
+
+        public async Task SetUserAsync(User user)
+        {
+            var _user = new UserSession
             {
-                // Deserialize the user data from the session
-                var userJson = Encoding.UTF8.GetString(userData);
-                var result = Task.Run(() =>
-                {
-                    return JsonConvert.DeserializeObject<User>(userJson);
-                });
-                return await result;
-            }
-
-            return null;
+                UserId = user.Id,
+                UserName = user.Name,
+                Email = user.Email,
+                IsSupplier = user.IsSupplier
+            };
+            var userJson = JsonConvert.SerializeObject(_user);
+            _httpContextAccessor.HttpContext.Session.Set(UserSessionKey, Encoding.UTF8.GetBytes(userJson));
+            this.CurrentUser = _user;
+            await Task.CompletedTask;
         }
 
-        public Task<IEnumerable<string>> GetUserPermissionsAsync()
+        public async Task ClearUserSessionAsync()
         {
-            throw new NotImplementedException();
+            _httpContextAccessor.HttpContext.Session.Remove("CurrentUser");
+            await Task.CompletedTask;
         }
 
-        public Task<IEnumerable<string>> GetUserRolesAsync()
+        public async Task SetLoggedInUserRoles(List<string> userRoles)
         {
-            throw new NotImplementedException();
+            this.userRoles = userRoles;
+            await Task.CompletedTask;
         }
 
-        public Task<bool> HasPermissionAsync(string permission)
+        public async Task SetLoggedInUserPermissions(List<string> userPermissions)
         {
-            throw new NotImplementedException();
+            this.userPermissions = userPermissions;
+            await Task.CompletedTask;
         }
 
-        public Task<bool> IsInRoleAsync(string roleName)
-        {
-            throw new NotImplementedException();
-        }
+    }
 
-        public Task<bool> IsUserLoggedInAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task LoginAsync(User user)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task LogoutAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task SetUserAsync(User user)
-        {
-            throw new NotImplementedException();
-        }
+    public record UserSession
+    {
+        public int UserId { get; set; }
+        public string UserName { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public bool IsSupplier { get; set; }
     }
 }

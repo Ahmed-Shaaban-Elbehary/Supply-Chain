@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using SupplyChain.Services;
+using SupplyChain.Services.Contracts;
 using System.Collections.Concurrent;
 
 namespace SupplyChain.App.Notification
@@ -9,10 +10,15 @@ namespace SupplyChain.App.Notification
         // This dictionary associates user IDs with their connection IDs.
         private static readonly ConcurrentDictionary<string, string> ConnectedUsers = new ConcurrentDictionary<string, string>();
 
+        private readonly IUserSessionService _userSessionService;
+        public NotificationHub(IUserSessionService userSessionService)
+        {
+            _userSessionService = userSessionService;
+        }
         public override async Task OnConnectedAsync()
         {
             // Get the user ID after authentication (replace with your own logic)
-            var userId = CurrentUser.GetUserId().ToString();
+            string userId = _userSessionService.CurrentUser.UserId.ToString();
 
             if (!string.IsNullOrEmpty(userId))
             {
@@ -25,7 +31,7 @@ namespace SupplyChain.App.Notification
         public override async Task OnDisconnectedAsync(Exception exception)
         {
             // Remove the association when a user disconnects
-            var userId = CurrentUser.GetUserId().ToString();
+            var userId = _userSessionService.CurrentUser.UserId.ToString();
 
             if (!string.IsNullOrEmpty(userId))
             {

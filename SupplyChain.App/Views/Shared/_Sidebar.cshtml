@@ -1,4 +1,7 @@
 ﻿@using SupplyChain.Services;
+@using SupplyChain.Services.Contracts;
+@inject IUserSessionService iUserSession
+
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a asp-controller="Product" asp-action="index" class="brand-link">
@@ -14,7 +17,7 @@
             <img src="dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
             </div>*@
             <div class="info">
-                <a href="#" class="d-block">Welcome @CurrentUser.GetUserName()</a>
+                <a href="#" class="d-block">Welcome @iUserSession.CurrentUser.UserName</a>
             </div>
         </div>
         <!-- Sidebar Menu -->
@@ -29,7 +32,7 @@
                         </p>
                     </a>
                 </li>
-                @if (await CurrentUser.HasPermissionAsync("HasAccessToEvents"))
+                @if (await iUserSession.HasPermissionAsync("HasAccessToEvents"))
                 {
                     <li class="nav-item">
                         <a asp-controller="Event" asp-action="index" data-nav="index" class="nav-link">
@@ -38,7 +41,7 @@
                         </a>
                     </li>
                 }
-                @if (await CurrentUser.HasPermissionAsync("HasAccessToRequests"))
+                @if (await iUserSession.HasPermissionAsync("HasAccessToRequests"))
                 {
                     <li class="nav-item">
                         <a asp-controller="Product" asp-action="Requests" data-nav="index" class="nav-link">
@@ -50,7 +53,7 @@
                         </a>
                     </li>
                 }
-                @if (await CurrentUser.HasPermissionAsync("HasAccessToSetup"))
+                @if (await iUserSession.HasPermissionAsync("HasAccessToSetup"))
                 {
                     <li class="nav-item">
                         <a asp-controller="Setup" asp-action="index" data-nav="index" class="nav-link">

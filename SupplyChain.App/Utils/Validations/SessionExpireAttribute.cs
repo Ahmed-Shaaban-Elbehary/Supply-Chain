@@ -5,7 +5,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using SupplyChain.Core.Models;
 using SupplyChain.Services;
+using SupplyChain.Services.Contracts;
 using System.Security.Policy;
 namespace SupplyChain.App.Utils.Validations
 {
@@ -19,11 +21,15 @@ namespace SupplyChain.App.Utils.Validations
 
         private readonly IUrlHelperFactory _urlHelperFactory;
         private readonly IServiceProvider _serviceProvider;
+        private readonly IUserSessionService _userSessionService;
 
-        public SessionExpireAttribute(IUrlHelperFactory urlHelperFactory, IServiceProvider serviceProvider)
+        public SessionExpireAttribute(IUrlHelperFactory urlHelperFactory, 
+            IServiceProvider serviceProvider,
+            IUserSessionService userSessionService)
         {
             _urlHelperFactory = urlHelperFactory;
             _serviceProvider = serviceProvider;
+            _userSessionService = userSessionService;
         }
 
         /// <summary>
@@ -40,14 +46,14 @@ namespace SupplyChain.App.Utils.Validations
             bool isTimeoutAction = actionDescriptor?.ActionName == "TimeOut" && actionDescriptor?.ControllerName == "Auth";
             bool isLoginAction = actionDescriptor?.ActionName == "Login" && actionDescriptor?.ControllerName == "Auth";
             bool isLogoutAction = actionDescriptor?.ActionName == "Logout" && actionDescriptor?.ControllerName == "Auth";
-            bool isSessionNull = context.Session.GetString("userObj") == null;
+            bool isSessionNotNull = _userSessionService.IsUserLoggedInAsync().Result;
 
-            if (isTimeoutAction && isSessionNull)
+            if (isTimeoutAction && !isSessionNotNull)
             {
                 var urlHelper = _urlHelperFactory.GetUrlHelper(filterContext);
                 filterContext.Result = new RedirectResult(urlHelper.Action("Logout", "Auth"));
             }
-            else if (!isLoginAction && !isTimeoutAction && !isLogoutAction && isSessionNull)
+            else if (!isLoginAction && !isTimeoutAction && !isLogoutAction && !isSessionNotNull)
             {
                 // CurrentUser.Logout();
 

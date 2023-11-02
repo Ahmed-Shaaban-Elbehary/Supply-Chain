@@ -1,4 +1,7 @@
 ﻿@using SupplyChain.Services;
+@using SupplyChain.Services.Contracts;
+@inject IUserSessionService iUserSession
+
 @{
     ViewData["Title"] = "Setup";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -12,7 +15,7 @@
     </style>
 }
 <div class="row">
-    @if (await CurrentUser.HasPermissionAsync("HasAccessToCategory"))
+    @if (await iUserSession.HasPermissionAsync("HasAccessToCategory"))
     {
         <div class="col-md-3">
             <a asp-action="Category" class="btn btn-outline-success btn-lg setup-btn">
@@ -21,7 +24,7 @@
             </a>
         </div>
     }
-    @if (await CurrentUser.HasPermissionAsync("HasAccessToManufacturer"))
+    @if (await iUserSession.HasPermissionAsync("HasAccessToManufacturer"))
     {
         <div class="col-md-3">
             <a asp-action="Manufacturer" class="btn btn-outline-success btn-lg setup-btn">
@@ -30,7 +33,7 @@
             </a>
         </div>
     }
-    @if (await CurrentUser.HasPermissionAsync("HasAccessToUser"))
+    @if (await iUserSession.HasPermissionAsync("HasAccessToUser"))
     {
         <div class="col-md-3">
             <a asp-action="Users" class="btn btn-outline-success btn-lg setup-btn">
@@ -39,7 +42,7 @@
             </a>
         </div>
     }
-    @if (await CurrentUser.HasPermissionAsync("HasAccessToProduct"))
+    @if (await iUserSession.HasPermissionAsync("HasAccessToProduct"))
     {
         <div class="col-md-3">
             <a asp-controller="Product" asp-action="Add" class="btn btn-outline-success btn-lg setup-btn">

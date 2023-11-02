@@ -1,4 +1,7 @@
 ﻿@using SupplyChain.Services;
+@using SupplyChain.Services.Contracts;
+@inject IUserSessionService iUserSession
+
 @model SupplyChain.App.ViewModels.EventViewModel
 
 <form asp-action="AddEditEvent" onsubmit="events.add_event(event)">
@@ -51,7 +54,7 @@
             </div>
         </div>
     </div>
-    @if (Model.IsInEditMode && await CurrentUser.HasPermissionAsync("HasPermissionToPublishEvent"))
+    @if (Model.IsInEditMode && await iUserSession.HasPermissionAsync("HasPermissionToPublishEvent"))
     {
         <div class="row">
             <div class="col-md-6">
