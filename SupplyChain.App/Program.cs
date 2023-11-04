@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Routing;
 using SupplyChain.App.Notification;
 using SupplyChain.App.Profiles;
@@ -67,6 +68,14 @@ builder.Services.AddSignalR(options =>
     options.EnableDetailedErrors = true; // Enable detailed error messages for debugging
     // Other SignalR options
 });
+
+// Configure SecurityStampValidatorOptions to disable security stamp validation,
+// allowing multiple concurrent sessions for the same user.
+builder.Services.Configure<SecurityStampValidatorOptions>(options =>
+{
+    options.ValidationInterval = TimeSpan.Zero; // Disable security stamp validation
+});
+
 string connString = builder.Configuration.GetConnectionString("DefaultConnection");
 #endregion
 
@@ -90,11 +99,13 @@ app.UseAuthentication();
 
 app.MapHub<NotificationHub>("/notificationHub");
 
+
 //app.UseAuthenticationMiddleware();
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Auth}/{action=Login}/{id?}"
     );
+
 
 app.Run();

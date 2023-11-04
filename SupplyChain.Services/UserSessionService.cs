@@ -9,8 +9,7 @@ namespace SupplyChain.Services
     public class UserSessionService : IUserSessionService
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private const string UserSessionKey = "CurrentUser";
-        
+        private string UserSessionKey { get; set; } = string.Empty;
         private List<string> userPermissions = new List<string>();
         private List<string> userRoles = new List<string>();
 
@@ -34,7 +33,7 @@ namespace SupplyChain.Services
         public async Task<bool> IsUserLoggedInAsync()
         {
             byte[] userData;
-            return await Task.FromResult(_httpContextAccessor.HttpContext.Session.TryGetValue(UserSessionKey, out userData));
+            return await Task.FromResult(_httpContextAccessor.HttpContext.Session.TryGetValue(this.UserSessionKey, out userData));
         }
 
         public async Task SetUserAsync(User user)
@@ -47,7 +46,8 @@ namespace SupplyChain.Services
                 IsSupplier = user.IsSupplier
             };
             var userJson = JsonConvert.SerializeObject(_user);
-            _httpContextAccessor.HttpContext.Session.Set(UserSessionKey, Encoding.UTF8.GetBytes(userJson));
+            this.UserSessionKey = $"UserData_{user.Id}";
+            _httpContextAccessor.HttpContext.Session.Set(this.UserSessionKey, Encoding.UTF8.GetBytes(userJson));
             this.CurrentUser = _user;
             await Task.CompletedTask;
         }
