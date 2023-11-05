@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Routing;
 using SupplyChain.App.Notification;
@@ -46,6 +47,7 @@ builder.Services.AddScoped<IEventService, EventService>();
 builder.Services.AddScoped<IEventStatusService, EventStatusService>();
 builder.Services.AddScoped<IProductEventService, ProductEventService>();
 builder.Services.AddScoped<IProductQuantityRequestService, ProductQuantityRequestService>();
+
 builder.Services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
 builder.Services.AddSingleton<IUserSessionService, UserSessionService>();
 
@@ -76,7 +78,6 @@ builder.Services.Configure<SecurityStampValidatorOptions>(options =>
     options.ValidationInterval = TimeSpan.Zero; // Disable security stamp validation
 });
 
-string connString = builder.Configuration.GetConnectionString("DefaultConnection");
 #endregion
 
 var app = builder.Build();

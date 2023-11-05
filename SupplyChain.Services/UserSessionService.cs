@@ -9,16 +9,38 @@ namespace SupplyChain.Services
     public class UserSessionService : IUserSessionService
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private string UserSessionKey { get; set; } = string.Empty;
+
         private List<string> userPermissions = new List<string>();
         private List<string> userRoles = new List<string>();
+
+        // Private field to store the user ID
+        private int _userId = -1;
 
         public UserSessionService(IHttpContextAccessor httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public UserSession CurrentUser { get; set; } = new UserSession();
+        public UserSession CurrentUser
+        {
+            get
+            {
+                byte[] userData;
+                if (_httpContextAccessor.HttpContext.Session.TryGetValue(UserSessionKey, out userData))
+                {
+                    return Deserialize<UserSession>(userData);
+                }
+                return new UserSession();
+            }
+            set
+            {
+                var userJson = Serialize(value);
+                _userId = value.UserId;
+                _httpContextAccessor.HttpContext.Session.Set(UserSessionKey, userJson);
+            }
+        }
+
+        private string UserSessionKey => $"UserData_{_userId}";
 
         public async Task<bool> HasPermissionAsync(string permissionName)
         {
@@ -30,10 +52,17 @@ namespace SupplyChain.Services
             return await Task.FromResult(this.userRoles.Contains(roleName));
         }
 
-        public async Task<bool> IsUserLoggedInAsync()
+        public async Task<bool> IsUserLoggedInAsync(int currentUserId)
         {
             byte[] userData;
-            return await Task.FromResult(_httpContextAccessor.HttpContext.Session.TryGetValue(this.UserSessionKey, out userData));
+            UserSession userSession;
+            bool isLoggedIn = false;
+            if (_httpContextAccessor.HttpContext.Session.TryGetValue(UserSessionKey, out userData))
+            {
+                userSession = Deserialize<UserSession>(userData);
+                isLoggedIn = userSession.UserId == currentUserId;
+            }
+            return isLoggedIn;
         }
 
         public async Task SetUserAsync(User user)
@@ -45,16 +74,15 @@ namespace SupplyChain.Services
                 Email = user.Email,
                 IsSupplier = user.IsSupplier
             };
-            var userJson = JsonConvert.SerializeObject(_user);
-            this.UserSessionKey = $"UserData_{user.Id}";
-            _httpContextAccessor.HttpContext.Session.Set(this.UserSessionKey, Encoding.UTF8.GetBytes(userJson));
+            this._userId = user.Id;
             this.CurrentUser = _user;
             await Task.CompletedTask;
         }
 
         public async Task ClearUserSessionAsync()
         {
-            _httpContextAccessor.HttpContext.Session.Remove("CurrentUser");
+            _httpContextAccessor.HttpContext.Session.Remove(UserSessionKey);
+            this.CurrentUser = new UserSession(); // Clear the current user
             await Task.CompletedTask;
         }
 
@@ -70,6 +98,20 @@ namespace SupplyChain.Services
             await Task.CompletedTask;
         }
 
+        // Helper methods for serializing and deserializing data
+        private byte[] Serialize<T>(T obj)
+        {
+            var json = JsonConvert.SerializeObject(obj);
+            return Encoding.UTF8.GetBytes(json);
+        }
+
+        private T Deserialize<T>(byte[] data)
+        {
+            var json = Encoding.UTF8.GetString(data);
+#pragma warning disable CS8603 // Possible null reference return.
+            return JsonConvert.DeserializeObject<T>(json);
+#pragma warning restore CS8603 // Possible null reference return.
+        }
     }
 
     public record UserSession

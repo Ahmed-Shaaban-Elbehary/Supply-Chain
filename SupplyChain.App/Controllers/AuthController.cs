@@ -92,8 +92,9 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpGet]
-        public IActionResult TimeOut()
+        public async Task<IActionResult> TimeOut()
         {
+            await _userSessionService.ClearUserSessionAsync();
             return View();
         }
 

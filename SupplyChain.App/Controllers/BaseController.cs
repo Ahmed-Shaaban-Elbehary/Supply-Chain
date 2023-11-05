@@ -7,8 +7,6 @@ using SupplyChain.Services.Contracts;
 
 namespace SupplyChain.App.Controllers
 {
-    [ServiceFilter(typeof(NoCacheAttribute))]
-    [ServiceFilter(typeof(SessionExpireAttribute))]
     public class BaseController : Controller
     {
         private readonly IUserSessionService _userSessionService;
