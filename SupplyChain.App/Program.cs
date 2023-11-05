@@ -1,10 +1,11 @@
-using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.DependencyInjection;
-using SupplyChain.App.App_Class;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Routing;
 using SupplyChain.App.Notification;
 using SupplyChain.App.Profiles;
 using SupplyChain.App.Utils;
 using SupplyChain.App.Utils.Contracts;
+using SupplyChain.App.Utils.Validations;
 using SupplyChain.Infrastructure;
 using SupplyChain.Services;
 using SupplyChain.Services.Contracts;
@@ -21,7 +22,7 @@ double sessionTimeout = builder.Configuration.GetValue<double>("SessionTimeOut")
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(sessionTimeout);
+    options.IdleTimeout = TimeSpan.FromMinutes(sessionTimeout); // Adjust as needed
 });
 
 //Infrastructure Services
@@ -45,13 +46,38 @@ builder.Services.AddScoped<IRolePermissionService, RolePermissionService>();
 builder.Services.AddScoped<IEventService, EventService>();
 builder.Services.AddScoped<IEventStatusService, EventStatusService>();
 builder.Services.AddScoped<IProductEventService, ProductEventService>();
+builder.Services.AddScoped<IProductQuantityRequestService, ProductQuantityRequestService>();
+
+builder.Services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
+builder.Services.AddSingleton<IUserSessionService, UserSessionService>();
+
+builder.Services.AddHttpContextAccessor();
+
+#endregion
+
+#region Attributes
+builder.Services.AddScoped<SessionExpireAttribute>();
+builder.Services.AddScoped<NoCacheAttribute>();
+builder.Services.AddScoped<FutureDateAttribute>();
+builder.Services.AddScoped<CustomPhoneAttribute>();
 #endregion
 
 #region Utils
 builder.Services.AddScoped<IUploadFile, UploadFile>();
 builder.Services.AddScoped<ILookUp, Lookups>();
-builder.Services.AddSignalR();
-string connString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddSignalR(options =>
+{
+    options.EnableDetailedErrors = true; // Enable detailed error messages for debugging
+    // Other SignalR options
+});
+
+// Configure SecurityStampValidatorOptions to disable security stamp validation,
+// allowing multiple concurrent sessions for the same user.
+builder.Services.Configure<SecurityStampValidatorOptions>(options =>
+{
+    options.ValidationInterval = TimeSpan.Zero; // Disable security stamp validation
+});
+
 #endregion
 
 var app = builder.Build();
@@ -72,13 +98,15 @@ app.UseAuthorization();
 
 app.UseAuthentication();
 
-//app.UseAuthenticationMiddleware();
-
 app.MapHub<NotificationHub>("/notificationHub");
+
+
+//app.UseAuthenticationMiddleware();
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Auth}/{action=Login}/{id?}"
     );
+
 
 app.Run();

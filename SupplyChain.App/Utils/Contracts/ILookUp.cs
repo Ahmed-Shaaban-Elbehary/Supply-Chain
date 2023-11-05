@@ -5,17 +5,17 @@ namespace SupplyChain.App.Utils.Contracts
 {
     public interface ILookUp
     {
-        List<Country> Countries { get; }
+        List<SelectItems> Countries { get; }
 
-        List<Unit> Units { get; }
+        List<SelectItems> Units { get; }
 
         List<ManufacturerViewModel> Manufacturers { get; }
 
         List<ProductCategoryViewModel> Categories { get; }
 
-        List<Country> GetCountries();
+        List<SelectItems> GetCountries();
 
-        List<Unit> GetUnits();
+        List<SelectItems> GetUnits();
 
         Task<IEnumerable<ManufacturerViewModel>> GetManufacturers();
 

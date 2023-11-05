@@ -37,8 +37,10 @@ namespace SupplyChain.Services
         {
             var productCategory = await _unitOfWork.ProductCategoryRepository.GetByIdAsync(product.CategoryId);
             var manufacturer = await _unitOfWork.ManufacturerRepository.GetByIdAsync(product.ManufacturerId);
+            var supplyer = await _unitOfWork.UserRepository.GetByIdAsync(product.SupplierId);
             product.Category = productCategory;
             product.Manufacturer = manufacturer;
+            product.Supplier = supplyer;
             await _unitOfWork.ProductRepository.AddAsync(product);
             await _unitOfWork.CommitAsync();
             await _unitOfWork.CommitTransaction();

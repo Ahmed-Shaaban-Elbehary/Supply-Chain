@@ -1,90 +1,90 @@
 [
   {
     "Name": "Piece",
-    "Code": 1001
+    "Code": "1001"
   },
   {
     "Name": "Kilogram",
-    "Code": 1002
+    "Code": "1002"
   },
   {
     "Name": "Gram",
-    "Code": 1003
+    "Code": "1003"
   },
   {
     "Name": "Milligram",
-    "Code": 1004
+    "Code": "1004"
   },
   {
     "Name": "Pound",
-    "Code": 1005
+    "Code": "1005"
   },
   {
     "Name": "Ounce",
-    "Code": 1006
+    "Code": "1006"
   },
   {
     "Name": "Ton",
-    "Code": 1007
+    "Code": "1007"
   },
   {
     "Name": "Liter",
-    "Code": 1008
+    "Code": "1008"
   },
   {
     "Name": "Milliliter",
-    "Code": 1009
+    "Code": "1009"
   },
   {
     "Name": "Gallon",
-    "Code": 2010
+    "Code": "2010"
   },
   {
     "Name": "FluCode Ounce",
-    "Code": 2011
+    "Code": "2011"
   },
   {
     "Name": "Meter",
-    "Code": 2012
+    "Code": "2012"
   },
   {
     "Name": "Centimeter",
-    "Code": 2013
+    "Code": "2013"
   },
   {
     "Name": "Millimeter",
-    "Code": 2014
+    "Code": "2014"
   },
   {
     "Name": "Inch",
-    "Code": 2015
+    "Code": "2015"
   },
   {
     "Name": "Foot",
-    "Code": 2016
+    "Code": "2016"
   },
   {
     "Name": "Meter",
-    "Code": 2012
+    "Code": "2012"
   },
   {
     "Name": "Yard",
-    "Code": 2017
+    "Code": "2017"
   },
   {
     "Name": "Mile",
-    "Code": 2018
+    "Code": "2018"
   },
   {
     "Name": "Square Meter",
-    "Code": 2019
+    "Code": "2019"
   },
   {
     "Name": "Square Foot",
-    "Code": 3020
+    "Code": "3020"
   },
   {
     "Name": "Square Inch",
-    "Code": 3021
+    "Code": "3021"
   }
 ]

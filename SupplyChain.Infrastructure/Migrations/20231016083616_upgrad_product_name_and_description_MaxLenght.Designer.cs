@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SupplyChain.Infrastructure;
 
@@ -11,9 +12,11 @@ using SupplyChain.Infrastructure;
 namespace SupplyChain.Infrastructure.Migrations
 {
     [DbContext(typeof(SupplyChainDbContext))]
-    partial class SupplyChainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231016083616_upgrad_product_name_and_description_MaxLenght")]
+    partial class upgrad_product_name_and_description_MaxLenght
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -283,7 +286,7 @@ namespace SupplyChain.Infrastructure.Migrations
                     b.Property<decimal>("Quantity")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("SupplierId")
+                    b.Property<int>("SupplyId")
                         .HasColumnType("int");
 
                     b.Property<int>("UnitCode")
@@ -295,7 +298,7 @@ namespace SupplyChain.Infrastructure.Migrations
 
                     b.HasIndex("ManufacturerId");
 
-                    b.HasIndex("SupplierId");
+                    b.HasIndex("SupplyId");
 
                     b.ToTable("Products");
                 });
@@ -625,7 +628,7 @@ namespace SupplyChain.Infrastructure.Migrations
 
                     b.HasOne("SupplyChain.Core.Models.User", "Supplier")
                         .WithMany("Products")
-                        .HasForeignKey("SupplierId")
+                        .HasForeignKey("SupplyId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 

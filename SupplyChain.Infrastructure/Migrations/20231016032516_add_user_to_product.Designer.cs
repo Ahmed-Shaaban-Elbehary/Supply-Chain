@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SupplyChain.Infrastructure;
 
@@ -11,9 +12,11 @@ using SupplyChain.Infrastructure;
 namespace SupplyChain.Infrastructure.Migrations
 {
     [DbContext(typeof(SupplyChainDbContext))]
-    partial class SupplyChainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231016032516_add_user_to_product")]
+    partial class add_user_to_product
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -257,8 +260,8 @@ namespace SupplyChain.Infrastructure.Migrations
                         .HasDefaultValue(false);
 
                     b.Property<string>("Description")
-                        .HasMaxLength(1500)
-                        .HasColumnType("nvarchar(1500)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<DateTime>("ExpirationDate")
                         .HasColumnType("datetime2");
@@ -271,8 +274,8 @@ namespace SupplyChain.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
@@ -283,7 +286,7 @@ namespace SupplyChain.Infrastructure.Migrations
                     b.Property<decimal>("Quantity")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("SupplierId")
+                    b.Property<int>("SupplyId")
                         .HasColumnType("int");
 
                     b.Property<int>("UnitCode")
@@ -295,7 +298,7 @@ namespace SupplyChain.Infrastructure.Migrations
 
                     b.HasIndex("ManufacturerId");
 
-                    b.HasIndex("SupplierId");
+                    b.HasIndex("SupplyId");
 
                     b.ToTable("Products");
                 });
@@ -625,7 +628,7 @@ namespace SupplyChain.Infrastructure.Migrations
 
                     b.HasOne("SupplyChain.Core.Models.User", "Supplier")
                         .WithMany("Products")
-                        .HasForeignKey("SupplierId")
+                        .HasForeignKey("SupplyId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 

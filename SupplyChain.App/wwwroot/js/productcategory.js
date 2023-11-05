@@ -8,7 +8,7 @@
 
     const AddProductCategory = (event) => {
         event.preventDefault();
-        const hideloader = app.showloader('category-card');
+        //const hideloader = app.showloader('category-card');
         // Get the form element and create FormData object
         var formElement = event.target.closest('form');
         var formData = new FormData(formElement);
@@ -18,17 +18,17 @@
                 app.showhideModal('general-partial-modal');
                 app.refreshElement('category-card-body', 'Setup', 'GetCategoriesCardData')
                 app.SuccessAlertMessage(response.message);
-                hideloader();
+                //hideloader();
             })
             .catch((xhr, status, error) => {
                 if (error != undefined) {
                     app.FailAlertMessage(error.responseJSON.message);
                     app.reEnterFormData(formElement, formData);
-                    hideloader();
+                    //hideloader();
                 } else {
                     console.error(xhr)
                     app.FailAlertMessage("Oops, Error Occurred, Please Try Again!", xhr);
-                    hideloader();
+                    //hideloader();
                 }
             })
 

@@ -1,0 +1,38 @@
+﻿@using SupplyChain.App.ViewModels;
+@model ProductQuantityRequestViewModel
+
+<form asp-action="CreateProductQuantityRequest" onsubmit="products.create_product_quantity_request(event)">
+    <input type="hidden" asp-for="Id">
+    <input type="hidden" asp-for="ProductViewModel.Id">
+    <input type="hidden" asp-for="ProductViewModel.ProductName">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="alert alert-danger text-center p-1 d-none">
+        <small id="error-message-content"></small>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <!-- Make this column full width -->
+            <div class="form-group">
+                <label asp-for="QuantityToAdd">Additional Quantity</label>
+                <input asp-for="QuantityToAdd" class="form-control" required>
+                <span asp-validation-for="QuantityToAdd" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-12">
+            <!-- Make this column full width -->
+            <div class="form-group">
+                <label asp-for="Reason">Reason</label>
+                <textarea asp-for="Reason" class="form-control" required></textarea>
+                <span asp-validation-for="Reason" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-12">
+            <!-- Make this column full width -->
+            <div class="form-group">
+                <input type="submit" value="Send" name="Submit" class="btn btn-outline-primary btn-block" />
+            </div>
+        </div>
+    </div>
+</form>
+
+

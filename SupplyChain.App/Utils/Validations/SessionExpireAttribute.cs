@@ -1,7 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
-using SupplyChain.Services;
-
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Mvc.ViewEngines;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using SupplyChain.Services.Contracts;
 namespace SupplyChain.App.Utils.Validations
 {
     /// <summary>
@@ -11,6 +15,20 @@ namespace SupplyChain.App.Utils.Validations
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
     public class SessionExpireAttribute : ActionFilterAttribute
     {
+
+        private readonly IUrlHelperFactory _urlHelperFactory;
+        private readonly IServiceProvider _serviceProvider;
+        private readonly IUserSessionService _userSessionService;
+
+        public SessionExpireAttribute(IUrlHelperFactory urlHelperFactory,
+            IServiceProvider serviceProvider,
+            IUserSessionService userSessionService)
+        {
+            _urlHelperFactory = urlHelperFactory;
+            _serviceProvider = serviceProvider;
+            _userSessionService = userSessionService;
+        }
+
         /// <summary>
         /// check session object is null or not, then redirect to TimeOut, also clear static user data.
         /// </summary>
@@ -18,14 +36,68 @@ namespace SupplyChain.App.Utils.Validations
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             HttpContext context = filterContext.HttpContext;
-            // check  sessions here
-            if (context.Session.GetString("userObj") == null)
+
+            bool isAjaxRequest = filterContext.HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
+            var actionDescriptor = filterContext.ActionDescriptor as ControllerActionDescriptor;
+
+            bool isTimeoutAction = actionDescriptor?.ActionName == "TimeOut" && actionDescriptor?.ControllerName == "Auth";
+            bool isLoginAction = actionDescriptor?.ActionName == "Login" && actionDescriptor?.ControllerName == "Auth";
+            bool isLogoutAction = actionDescriptor?.ActionName == "Logout" && actionDescriptor?.ControllerName == "Auth";
+            bool isSessionNotNull = _userSessionService.IsUserLoggedInAsync().Result;
+
+            if (isTimeoutAction && !isSessionNotNull)
             {
-                CurrentUser.Logout();
-                filterContext.Result = new RedirectResult("~/Auth/TimeOut");
+                var urlHelper = _urlHelperFactory.GetUrlHelper(filterContext);
+                filterContext.Result = new RedirectResult(urlHelper.Action("Logout", "Auth"));
+            }
+            else if (!isLoginAction && !isTimeoutAction && !isLogoutAction && !isSessionNotNull)
+            {
+                // CurrentUser.Logout();
+
+                if (isAjaxRequest)
+                {
+                    // For AJAX requests, render a partial view and return its HTML content.
+                    var result = RenderPartialViewToString("_TimeOutPartialView", filterContext);
+                    filterContext.Result = new ContentResult
+                    {
+                        Content = result,
+                        ContentType = "text/html",
+                    };
+                }
+                else
+                {
+                    var urlHelper = _urlHelperFactory.GetUrlHelper(filterContext);
+                    filterContext.Result = new RedirectResult(urlHelper.Action("TimeOut", "Auth"));
+                }
+
                 return;
             }
+
             base.OnActionExecuting(filterContext);
+        }
+
+        private string RenderPartialViewToString(string viewName, ActionExecutingContext filterContext)
+        {
+            var controller = (Controller)filterContext.Controller;
+
+            var viewEngine = _serviceProvider.GetRequiredService<ICompositeViewEngine>();
+            var viewResult = viewEngine.FindView(controller.ControllerContext, viewName, false);
+
+            if (viewResult.Success)
+            {
+                using (var sw = new StringWriter())
+                {
+                    var viewContext = new ViewContext(controller.ControllerContext, viewResult.View, controller.ViewData, controller.TempData, sw, new HtmlHelperOptions());
+
+                    viewResult.View.RenderAsync(viewContext).GetAwaiter().GetResult();
+                    return sw.GetStringBuilder().ToString();
+                }
+            }
+            else
+            {
+                // Handle the case where the view cannot be found.
+                return "View not found: " + viewName;
+            }
         }
     }
 }

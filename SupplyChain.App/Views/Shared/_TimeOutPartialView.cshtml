@@ -1,0 +1,28 @@
+﻿@inject IConfiguration Configuration
+
+<div class="container">
+    <div class="row justify-content-center">
+        <!-- Center align the row -->
+        <div class="col text-center">
+            <!-- Center align the content within the column -->
+            <h1>Session Timeout</h1>
+            <div class="row justify-content-center mt-5">
+                <p class="lead text-center">
+                    <!-- Center align the text within the paragraph -->
+                    Due to browser inactivity for the past @Configuration["SessionTimeOut"].ToString() minutes your session has timed out and you must login again to access your data. <br />
+                    We apologize for the inconvenience, but session timeouts were added for security reasons to ensure that your data is protected.
+                </p>
+            </div>
+            <div class="row mt-5 justify-content-center">
+                <div class="col-12 text-center">
+                    <small>
+                        please click login button to return to the login page
+                    </small>
+                </div>
+                <div class="col-12 mt-3 text-center">
+                    <a asp-action="Logout" asp-controller="Auth" class="btn btn-primary">Login Page</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

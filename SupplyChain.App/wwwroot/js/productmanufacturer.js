@@ -9,7 +9,7 @@ var prmanufacturer = (() => {
 
     const AddProductManufacturer = (event) => {
         event.preventDefault();
-        const hideloader = app.showloader('manufacturer-card');
+        //const hideloader = app.showloader('manufacturer-card');
         // Get the form element and create FormData object
         var formElement = event.target.closest('form');
         var formData = new FormData(formElement);
@@ -19,17 +19,17 @@ var prmanufacturer = (() => {
                 app.showhideModal('general-partial-modal');
                 app.SuccessAlertMessage(response.message);
                 app.refreshElement('manufacturer-card-body', 'Setup', 'GetManufacturerCardData')
-                hideloader();
+                //hideloader();
             })
             .catch((xhr, status, error) => {
                 if (error != undefined) {
                     app.FailAlertMessage(error.responseJSON.message);
                     app.reEnterFormData(formElement, formData);
-                    hideloader();
+                    //hideloader();
                 } else {
                     console.error(xhr)
                     app.FailAlertMessage("Oops, Error Occurred, Please Try Again!", xhr);
-                    hideloader();
+                    //hideloader();
                 }
             })
 
@@ -45,26 +45,26 @@ var prmanufacturer = (() => {
                         if (response.success == true) {
                             app.SuccessAlertMessage(`${response.message}`);
                             app.refreshElement('manufacturer-card-body', 'Setup', 'GetManufacturerCardData')
-                            hideloader();
+                            //hideloader();
                         } else {
                             app.FailAlertMessage(`${response.message}`);
-                            hideloader();
+                            //hideloader();
                         }
                     })
                     .catch((xhr, status, error) => {
                         if (error != undefined) {
                             app.FailAlertMessage(error.responseJSON.message);
                             app.reEnterFormData(formElement, formData);
-                            hideloader();
+                            //hideloader();
                         } else {
                             console.error(xhr)
                             app.FailAlertMessage("Oops, Error Occurred, Please Try Again!", xhr);
-                            hideloader();
+                            //hideloader();
                         }
                     });
-                hideloader();
+                //hideloader();
             } else {
-                hideloader();
+                //hideloader();
             }
         })
     }

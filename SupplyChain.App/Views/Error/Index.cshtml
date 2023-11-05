@@ -3,9 +3,42 @@
 @{
     Layout = null;
 }
-<div class="d-flex justify-content-center align-items-center h-100">
-    <h1 class="mr-3 pr-3 align-top border-right inline-block align-content-center text-danger">Oops!</h1>
-    <div class="inline-block align-middle">
-        <h3 class="font-weight-normal lead">@Model.Message</h3> 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Something Wrong Happened!</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Font Awesome -->
+    <link href="~/adminlte/plugins/fontawesome-free/css/all.min.css" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300;400;700&display=swap" rel="stylesheet">
+    <!-- Theme style -->
+    <link href="~/adminlte/dist/css/adminlte.min.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container">
+        <div class="d-flex justify-content-center align-items-center h-100 mt-5 mb-5">
+            <h1 class="mr-3 pr-3 align-top border-right inline-block align-content-center text-danger">Oops!</h1>
+            <div class="inline-block align-middle">
+                <h3 class="font-weight-normal lead">@Model.Message</h3>
+                <hr />
+                <p class="lead">
+                    @Model.InnerMessage
+                </p>
+                <p class="lead">
+                    @Model.Stack
+                </p>
+            </div>
+        </div>
     </div>
-</div>
+    <!-- jQuery -->
+    <script src="~/adminlte/plugins/jquery/jquery.min.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="~/adminlte/plugins/bootstrap/js/bootstrap.min.js"></script>
+</body>
+</html>

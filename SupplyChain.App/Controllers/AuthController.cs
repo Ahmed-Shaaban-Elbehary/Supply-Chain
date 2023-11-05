@@ -1,5 +1,10 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using Newtonsoft.Json;
+using SupplyChain.App.Notification;
+using SupplyChain.App.Utils.Validations;
 using SupplyChain.App.ViewModels;
 using SupplyChain.Core.Models;
 using SupplyChain.Services;
@@ -12,70 +17,91 @@ namespace SupplyChain.App.Controllers
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
-
+        private readonly IHubContext<NotificationHub> _notificationHubContext;
+        private readonly IUserSessionService _userSessionService;
         public AuthController(
             IUserService userService,
             IConfiguration configuration,
-            IMapper mapper)
+            IHubContext<NotificationHub> notificationHubContext,
+            IUserSessionService userSessionService,
+            IMapper mapper) : base(userSessionService)
         {
             _userService = userService;
             _mapper = mapper;
             _configuration = configuration;
+            _notificationHubContext = notificationHubContext;
+            _userSessionService = userSessionService;
         }
 
         [HttpGet]
         public IActionResult Login()
         {
-            var userIsLoggedIn = CurrentUser.GetUserName();
-            if (!string.IsNullOrEmpty(userIsLoggedIn))
-            {
-                return RedirectToAction("Index", "Product");
-            }
             return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel user)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                ViewBag.ErrorMessage = "Invalid Username Or Password!";
-                return View();
-            }
-            bool isValid = await _userService.ValidateUserCredentialsAsync(user.Email, user.Password);
-            if (!isValid)
-            {
-                ViewBag.ErrorMessage = "Invalid User, Try again with different Credential";
-                return View();
-            }
-            else
-            {
-                bool ImSupplier = user.IsSupplier; //I supplier checked.
-                var loggedInUser = await _userService.GetUserByEmailAsync(user.Email);
-
-                if (loggedInUser.IsSupplier == true && ImSupplier != true)
+                if (!ModelState.IsValid)
                 {
-                    ViewBag.ErrorMessage = "You are supplier, please login as a supplier!";
+                    ViewBag.ErrorMessage = "Invalid Username Or Password!";
                     return View();
                 }
-                var _user = _mapper.Map<User>(loggedInUser);
-                await CurrentUser.StartSession(_user, _userService);
-                HttpContext.Session.SetString("userObj", $"{_user}");
+                bool isValid = await _userService.ValidateUserCredentialsAsync(user.Email, user.Password);
+                if (!isValid)
+                {
+                    ViewBag.ErrorMessage = "Invalid User, Try again with different Credential";
+                    return View();
+                }
+                else
+                {
+                    bool ImSupplier = user.IsSupplier; //I supplier checked.
+                    var loggedInUser = await _userService.GetUserByEmailAsync(user.Email);
 
-                return RedirectToAction("Index", "Product");
+                    if (loggedInUser.IsSupplier == true && ImSupplier != true)
+                    {
+                        ViewBag.ErrorMessage = "You are supplier, please login as a supplier!";
+                        return View();
+                    }
+                    var _user = _mapper.Map<User>(loggedInUser);
+                    var roles = await _userService.GetUserRolesAsync(_user.Id);
+                    if (roles.Any())
+                    {
+                        await _userSessionService.SetLoggedInUserRoles(roles.ToList());
+                    }
+                    var permissions = await _userService.GetUserPermissionsAsync(_user.Id);
+                    if (permissions.Any())
+                    {
+                        await _userSessionService.SetLoggedInUserPermissions(permissions.ToList());
+                    }
+                    //set user 
+                    await _userSessionService.SetUserAsync(_user);
+                    return RedirectToAction("Index", "Product");
+                }
+            }
+            catch (Exception ex)
+            {
+                var errorResponse = ErrorResponse.PreException(ex);
+                var errorResponseJson = JsonConvert.SerializeObject(errorResponse);
+                TempData["ErrorResponse"] = errorResponseJson;
+                await _userService.RollbackTransaction();
+                return RedirectToAction("Index", "Error");
             }
         }
 
-        public IActionResult TimeOut()
+        [HttpGet]
+        public async Task<IActionResult> TimeOut()
         {
-            double sessionTimeout = double.Parse(_configuration["SessionTimeOut"] ?? "20");
-            ViewBag.SessionTimeout = sessionTimeout;
+            await _userSessionService.ClearUserSessionAsync();
             return View();
         }
 
-        public IActionResult Logout()
+        [HttpGet]
+        public async Task<IActionResult> Logout()
         {
-            CurrentUser.Logout();
+            await _userSessionService.ClearUserSessionAsync();
             return RedirectToAction("Login");
         }
 

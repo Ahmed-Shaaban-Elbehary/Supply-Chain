@@ -1,0 +1,28 @@
+﻿@using SupplyChain.App.ViewModels;
+@model ICollection<EventViewModel>
+
+<hr />
+
+<h3 class="mb-5">Current Active Event(s)</h3>
+
+<p class="font-weight-bold">
+    Considering the event(s), it is a great opportunity for you to place a request for an additional quantity of the product. Don't miss out on this chance to stock up on your favorite product.
+    <button onclick="products.request_additional_product_quantities()" aria-label="Here"
+    class="btn btn-link" style="padding:0px;">here</button>.
+</p>
+
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5>@item.Title</h5>
+                    <h6 class="mb-2 text-muted d-block">end | @item.EndIn.ToShortDateString()</h6>
+                    <p class="card-text">@item.Description</p>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+

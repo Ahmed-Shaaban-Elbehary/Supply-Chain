@@ -13,6 +13,8 @@ using SupplyChain.Services.Contracts;
 
 namespace SupplyChain.App.Controllers
 {
+    [ServiceFilter(typeof(NoCacheAttribute))]
+    [ServiceFilter(typeof(SessionExpireAttribute))]
     public class EventController : BaseController
     {
         private readonly IMapper _mapper;
@@ -20,35 +22,29 @@ namespace SupplyChain.App.Controllers
         private readonly IEventService _eventService;
         private readonly IProductEventService _productEventService;
         private readonly IEventStatusService _eventStatusService;
-        private readonly IHubContext<NotificationHub> _notificationHubContext;
         private readonly ILookUp _lookup;
         public EventController(IMapper mapper,
             IProductService productService,
             IEventService eventService,
             IProductEventService productEventService,
             IEventStatusService eventStatusService,
-            IHubContext<NotificationHub> notificationHubContext,
-            ILookUp lookup)
-        {
+            ILookUp lookup,
+            IUserSessionService userSessionService) : base(userSessionService)
+    {
             _mapper = mapper;
             _productService = productService;
             _eventService = eventService;
             _productEventService = productEventService;
             _eventStatusService = eventStatusService;
-            _notificationHubContext = notificationHubContext;
             _lookup = lookup;
         }
 
-        [NoCache]
-        [SessionExpire]
         public IActionResult Index()
         {
             return View();
         }
 
         [HttpGet]
-        [NoCache]
-        [SessionExpire]
         public async Task<IActionResult> AddEditEvent(int id)
         {
             try
@@ -78,13 +74,13 @@ namespace SupplyChain.App.Controllers
             }
             catch (Exception ex)
             {
-                return RedirectToAction("Index", "Error", ErrorResponse.PreException(ex));
+                await _productService.RollbackTransaction();
+                CustomException(ex);
+                return RedirectToAction("Index", "Error");
             }
         }
 
         [HttpPost]
-        [NoCache]
-        [SessionExpire]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddEditEvent(EventViewModel vm)
         {
@@ -95,7 +91,7 @@ namespace SupplyChain.App.Controllers
                 {
                     try
                     {
-                        ev.CreatedBy = CurrentUser.GetUserId();
+                        ev.CreatedBy = GetLoggedInUserId();
                         var newId = await _eventService.CreateEventAsync(ev);
                         var newProductEvent = await _productEventService.AddProductEventAsync(ev, vm.ProductIds);
                         return Json(new ApiResponse<bool>(true, true, "An event was successfully created!"));
@@ -118,12 +114,10 @@ namespace SupplyChain.App.Controllers
                         if (vm.Active)
                         {
                             vm.PublishedIn = DateTime.Now;
-                            await _notificationHubContext.Clients.All
-                                .SendAsync("sendToUser", vm);
                         }
                         else
                         {
-                            int userId = CurrentUser.GetUserId();
+                            int userId = GetLoggedInUserId();
                             var itemStatus = await _eventStatusService.GetEventStatusByEventIdAndUserIdAsync(vm.Id, userId);
                             if (itemStatus != null)
                             {
@@ -131,7 +125,14 @@ namespace SupplyChain.App.Controllers
                             }
                         }
 
-                        return Json(new ApiResponse<bool>(true, true, "An event was successfully updated!"));
+                        var mvm = new MessageViewModel()
+                        {
+                            Sender = GetLoggedInUserId(),
+                            Receiver = 0,
+                            MessageTitle = vm.Title,
+                            MessageBody = vm.Description,
+                        };
+                        return Json(new ApiResponse<MessageViewModel>(true, mvm, "An event was successfully updated!"));
                     }
                     catch (Exception ex)
                     {
@@ -148,15 +149,13 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpGet]
-        [NoCache]
-        [SessionExpire]
         public async Task<IActionResult> GetEventsList()
         {
             try
             {
                 var _events = await _eventService.GetAllPagedEventsAsync();
                 var vm = _mapper.Map<List<EventViewModel>>(_events);
-                var currentUserId = CurrentUser.GetUserId();
+                var currentUserId = GetLoggedInUserId();
                 int esCounter = 0;
                 foreach (var item in vm)
                 {
@@ -185,13 +184,13 @@ namespace SupplyChain.App.Controllers
             }
             catch (Exception ex)
             {
-                return RedirectToAction("Index", "Error", ErrorResponse.PreException(ex));
+                await _eventService.RollbackTransaction();
+                CustomException(ex);
+                return RedirectToAction("Index", "Error");
             }
         }
 
         [HttpGet]
-        [NoCache]
-        [SessionExpire]
         public async Task<string> GetEvents(string start, string end)
         {
             DateTime _s = DateTime.Parse(start);
@@ -226,14 +225,12 @@ namespace SupplyChain.App.Controllers
         }
 
         [HttpGet]
-        [NoCache]
-        [SessionExpire]
         public async Task<IActionResult> UpdateEventAsRead(int id)
         {
             try
             {
                 int eventId = id;
-                int currentUserId = CurrentUser.GetUserId();
+                int currentUserId = GetLoggedInUserId();
 
                 EventStatusViewModel ESvm = new EventStatusViewModel()
                 {
@@ -270,7 +267,8 @@ namespace SupplyChain.App.Controllers
             catch (Exception ex)
             {
                 await _eventStatusService.RollbackTransaction();
-                return RedirectToAction("Index", "Error", ErrorResponse.PreException(ex));
+                CustomException(ex);
+                return RedirectToAction("Index", "Error");
             }
         }
     }

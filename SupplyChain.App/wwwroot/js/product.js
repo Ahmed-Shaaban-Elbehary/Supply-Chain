@@ -1,29 +1,71 @@
-﻿var base_url = "/Product";
-
+﻿
 const products = (() => {
 
     const RequestAdditionProductQuantities = () => {
-        let productId = $("#productId").find().val();
-        let url = base_url + "/RequestAdditionProductQuantities";
+        let productId = $("#ProductId").val();
+        let url = "/Product/RequestAdditionProductQuantities";
         let data = { id: productId };
         app.ajax_request(url, 'GET', 'html', data)
             .then((resonse) => {
+                $('#general-partial-modal').find('.modal-title').text('Request Additional Quantity');
                 $('#general-partial-modal').find('#general-modal-content').html(resonse);
                 app.showhideModal('general-partial-modal');
-                //$('#general-partial-modal').modal('show');
             })
             .catch((xhr, status, error) => {
-                console.error(error);
+                if (error != undefined) {
+                    app.FailAlertMessage(error.responseJSON.message);
+                    //hideloader();
+                } else {
+                    console.error(xhr)
+                    app.FailAlertMessage("Oops, Error Occurred, Please Try Again!", xhr);
+                    //hideloader();
+                }
+            })
+    }
+
+    const CreateRequest = (e) => {
+        e.preventDefault();
+        //const hideloader = app.showloader('user-card');
+        var formElement = e.target.closest('form');
+        var formData = new FormData(formElement);
+        let url = $(formElement).attr('action');
+        app.SubmitForm(url, formData)
+            .then((response) => {
+                let message = `You have a new request for a ${response.data.messageTitle}, from ${response.data.sender}, 
+                               which he wants an additional quantity ${response.data.messageBody}`;
+                SignalRModule.send_message(response.data.receiver.toString(), message);
+
+                if (!response.success) {
+                    app.fillErrorMessageContainer(response.message);
+                    app.reEnterFormData(formElement, formData);
+                } else {
+                    app.showhideModal('general-partial-modal');
+                    //hideloader();
+                }
+
+            })
+            .catch((xhr, status, error) => {
+                if (error != undefined) {
+                    app.FailAlertMessage(error.responseJSON.message);
+                    app.reEnterFormData(formElement, formData);
+                    //hideloader();
+                } else {
+                    console.error(xhr)
+                    app.FailAlertMessage("Oops, Error Occurred, Please Try Again!", xhr);
+                    //hideloader();
+                }
             })
     }
 
     return {
         request_additional_product_quantities: () => {
             RequestAdditionProductQuantities();
+        },
+        create_product_quantity_request: (e) => {
+            CreateRequest(e);
         }
     }
-});
-
+})();
 
 
 //self-invoking
@@ -50,6 +92,10 @@ const products = (() => {
     };
 
 })();
+
+
+
+
 
 
 

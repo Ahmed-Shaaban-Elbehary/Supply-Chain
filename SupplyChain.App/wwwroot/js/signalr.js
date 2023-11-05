@@ -1,13 +1,29 @@
-﻿"use strict";
-var connection = new signalR.HubConnectionBuilder().withUrl("/NotificationHub").build();
+﻿const connection = new signalR.HubConnectionBuilder()
+    .withUrl("/notificationHub") // The URL should match your hub's URL
+    .build();
 
-connection.on("sendToUser", (EventObject) => {
-    notification.get();
-    notification.add_dot();
-    app.toaster(EventObject.title, EventObject.description, EventObject.publishedIn);
+connection.on("ReceiveNotification", (message) => {
+    // Handle the received notification here
+    app.toaster(null, message);
+    console.log("Received notification: " + message);
 });
 
-connection.start().catch(function (err) {
-    return console.error(err.toString());
-});
+connection.start().catch((err) => console.error(err));
 
+
+/*------------------------
+ ---- SIGNAL R MODULE ----
+ -------------------------*/
+
+var SignalRModule = (() => {
+
+    const sendNotification = (userId, message) => {
+        connection.invoke("SendNotification", userId, message)
+            .catch((err) => console.error(err));
+    }
+    return {
+        send_message: (userId, message) => {
+            sendNotification(userId, message);
+        }
+    }
+})();

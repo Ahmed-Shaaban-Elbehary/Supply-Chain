@@ -30,30 +30,30 @@ namespace SupplyChain.App.Utils
             Units = GetUnits();
         }
 
-        public List<Country> Countries { get; private set; }
-        public List<Unit> Units { get; private set; }
+        public List<SelectItems> Countries { get; private set; }
+        public List<SelectItems> Units { get; private set; }
 
         public List<ManufacturerViewModel> Manufacturers { get; private set; }
 
         public List<ProductCategoryViewModel> Categories { get; private set; }
 
-        public List<Country> GetCountries()
+        public List<SelectItems> GetCountries()
         {
             string jsonString = File.ReadAllText(Path.Combine(_webHostEnvironment.WebRootPath, "Countries.json"));
-            List<Country> countries = JsonConvert.DeserializeObject<List<Country>>(jsonString);
+            List<SelectItems> countries = JsonConvert.DeserializeObject<List<SelectItems>>(jsonString);
             if (countries == null)
             {
-                return new List<Country>();
+                return new List<SelectItems>();
             }
             return countries;
         }
-        public List<Unit> GetUnits()
+        public List<SelectItems> GetUnits()
         {
             string jsonString = File.ReadAllText(Path.Combine(_webHostEnvironment.WebRootPath, "Units.json"));
-            List<Unit> units = JsonConvert.DeserializeObject<List<Unit>>(jsonString);
+            List<SelectItems> units = JsonConvert.DeserializeObject<List<SelectItems>>(jsonString);
             if (units == null)
             {
-                return new List<Unit>();
+                return new List<SelectItems>();
             }
             return units;
         }
@@ -70,14 +70,9 @@ namespace SupplyChain.App.Utils
             return _mapper.Map<IEnumerable<ProductCategoryViewModel>>(result);
         }
     }
-    public class Country
+    public class SelectItems
     {
         public string Code { get; set; }
-        public string Name { get; set; }
-    }
-    public class Unit
-    {
-        public int Code { get; set; }
         public string Name { get; set; }
     }
 }

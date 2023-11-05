@@ -10,7 +10,7 @@ const events = (() => {
 
     const AddEvent = (event) => {
         event.preventDefault();
-        const hideloader = app.showloader('calendar');
+        /*const hideloader = app.showloader('calendar');*/
         var formElement = event.target.closest('form');
         var formData = new FormData(formElement);
         let url = $(formElement).attr('action');
@@ -19,12 +19,19 @@ const events = (() => {
                 if (!response.success) {
                     app.fillErrorMessageContainer(response.message);
                     app.reEnterFormData(formElement, formData);
+                    //push notification.
+                    let message = `You have a new event for a ${response.data.messageTitle}, from ${response.data.sender}, 
+                                  ${response.data.messageBody}`;
+                    SignalRModule.send_message(response.data.receiver.toString(), message);
+                    //edit notification menu.
+                    const publishedIn = app.getDateTimeFormat(date);
+
                 } else {
                     app.showhideModal('general-partial-modal');
                     app.SuccessAlertMessage(response.message);
                     if (calendar) {
                         calendar.refetchEvents();
-                        setTimeout(() => { hideloader() }, 1000)
+                        /*setTimeout(() => { hideloader() }, 1000)*/
                     }
                 }
             })
@@ -32,17 +39,17 @@ const events = (() => {
                 if (error != undefined) {
                     app.FailAlertMessage(error.responseJSON.message);
                     app.reEnterFormData(formElement, formData);
-                    hideloader();
+                    //hideloader();
                 } else {
                     console.error(xhr);
                     app.FailAlertMessage("Oops, Error Occurred, Please Try Again!");
-                    hideloader();
+                    //hideloader();
                 }
             })
     }
 
     const DeleteSelectedItem = (eventId) => {
-        const hideloader = app.showloader('page-content');
+        //const hideloader = app.showloader('page-content');
         app.DeleteConfirmMessage().then((result) => {
             if (result.isConfirmed) {
                 let url = base_url + "/DeleteEvent/" + eventId;
@@ -57,17 +64,17 @@ const events = (() => {
                                     }
                                 });
                         } else {
-                            hideloader();
+                            //hideloader();
                             app.FailAlertMessage('Fail To Delete Item, Please Try Again!');
                         }
                     })
                     .catch((xhr, status, error) => {
-                        hideloader();
+                        //hideloader();
                         app.FailAlertMessage(error);
                     });
-                hideloader();
+                //hideloader();
             } else {
-                hideloader();
+                //hideloader();
             }
 
         })
@@ -78,9 +85,15 @@ const events = (() => {
         let data = { id: eventId };
         app.ajax_request(url, 'GET', 'html', data)
             .then((resonse) => {
-                $('#general-partial-modal').find('.modal-title').text('Edit Event');
-                $('#general-partial-modal').find('#general-modal-content').html(resonse);
-                app.showhideModal('general-partial-modal');
+                // Check if the JSON response contains a redirect URL
+                if (resonse.redirectUrl && resonse.redirectUrl.length > 0) {
+                    // Redirect to the new location
+                    window.location.href = data.redirectUrl;
+                } else {
+                    $('#general-partial-modal').find('.modal-title').text('Edit Event');
+                    $('#general-partial-modal').find('#general-modal-content').html(resonse);
+                    app.showhideModal('general-partial-modal');
+                }
             })
             .catch((xhr, status, error) => {
                 console.error(error);

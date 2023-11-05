@@ -2,6 +2,39 @@
  ***** GENERAL JAVASCRIPT ******
  *******************************/
 
+// Attach an event handler to the entire document to listen for the start of AJAX requests.
+$(document).ajaxStart(() => {
+    // This function is executed when an AJAX request starts.
+    $(document).ajaxSend(function (event, jqXHR, settings) {
+        // Access the URL of the AJAX request
+        const url = settings.url;
+        // Use lastIndexOf to find the last '/'
+        const lastSlashIndex = url.lastIndexOf('/');
+        // Use substring to get the part of the URL after the last '/'
+        const actionName = url.substring(lastSlashIndex + 1);
+
+        if (actionName !== 'GetEventsList') {
+            // You can place code here to show your loader or perform other setup tasks.
+            // In this case, it shows the loader element with $('#loader').show().
+            $('#loader').show();
+        }
+    });
+});
+
+// Attach an event handler to the entire document to listen for the end of AJAX requests.
+$(document).ajaxStop(() => {
+    // This function is executed when an AJAX request stops (completes).
+
+    // Use setTimeout to add a brief delay (0.5 seconds) before hiding the loader.
+    setTimeout(() => {
+        // Inside this setTimeout function, you can add code to hide the loader.
+        // In this case, it hides the loader element with $('#loader').hide().
+        $('#loader').hide();
+    }, 0); // The delay is in milliseconds, so 0.5000 seconds is equivalent to 500 milliseconds.
+
+    // You can add additional actions or logic here as needed.
+});
+
 $(() => {
     // Write your JavaScript code.
     var inputs = document.querySelectorAll("input[type='number']");
@@ -27,6 +60,7 @@ $(() => {
     ////setInterval(() => {
     ////    app.checkCookieIfExist()
     ////}, 60000); //check cookie each 1 min.
+    
 });
 
 /*******************************
@@ -265,11 +299,10 @@ app.FailAlertMessage = (message) => {
  * @param {date} date
  * @returns toast
  */
-app.toaster = (title, content, date) => {
-    const publishedIn = app.getDateTimeFormat(date);
+app.toaster = (title, content) => {
     $.toast({
         heading: title,
-        text: content + publishedIn,
+        text: content,
         position: 'bottom-right',
         showHideTransition: 'slide',
         icon: 'info',
@@ -300,7 +333,6 @@ app.refreshElement = (targetElement, controller, action) => {
     let url = `/${controller}/${action}`;
     app.ajax_request(url, 'GET', 'html', null)
         .then((resonse) => {
-            debugger;
             $(`#${targetElement}`).empty();
             $(`#${targetElement}`).html(resonse);
         })

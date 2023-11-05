@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-16" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] | Supply Chain</title>
+    <title>Logout | Supply Chain</title>
     <link rel="shortcut icon" href="~/favicon.ico" type="image/x-icon">
     <link rel="icon" href="~/favicon.ico" type="image/x-icon">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,6 +15,10 @@
     <!-- Select2 -->
     <link href="~/lib/chosen/component-chosen.min.css" rel="stylesheet" />
     <link href="~/css/site.css" rel="stylesheet" />
+    <style>
+        
+
+    </style>
     @await RenderSectionAsync("Styles", required: false)
 </head>
 <body class="hold-transition sidebar-mini">
@@ -24,6 +28,7 @@
         <!-- Spinner -->
         <div id="spinner" class="spinner d-none"></div>
         <!-- Preloader -->
+        
         @await Html.PartialAsync("_Preloader")
         <!-- Navbar -->
         @await Html.PartialAsync("_Navbar")
