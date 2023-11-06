@@ -5,10 +5,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using SupplyChain.Core.Models;
-using SupplyChain.Services;
 using SupplyChain.Services.Contracts;
-using System.Security.Policy;
 namespace SupplyChain.App.Utils.Validations
 {
     /// <summary>
@@ -23,7 +20,7 @@ namespace SupplyChain.App.Utils.Validations
         private readonly IServiceProvider _serviceProvider;
         private readonly IUserSessionService _userSessionService;
 
-        public SessionExpireAttribute(IUrlHelperFactory urlHelperFactory, 
+        public SessionExpireAttribute(IUrlHelperFactory urlHelperFactory,
             IServiceProvider serviceProvider,
             IUserSessionService userSessionService)
         {
