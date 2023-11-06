@@ -12,24 +12,24 @@ namespace SupplyChain.App.Utils.Validations
     public class InRoleAttribute : Attribute, IAsyncActionFilter
     {
         private readonly string _roleName;
-        private readonly IUserSessionService _userSessionService;
+
         public InRoleAttribute(string roleName)
         {
             _roleName = roleName;
         }
-        public InRoleAttribute(IUserSessionService userSessionService)
-        {
-            _userSessionService = userSessionService;
-        }
-        /// <summary>
-        /// Redirect to Un-authorization page, in case the user not authorized.
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="next"></param>
-        /// <returns>Page</returns>
+
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            bool isAuthorized = await _userSessionService.IsInRoleAsync(_roleName);
+            // Retrieve the IUserSessionService from HttpContext
+            var userSessionService = context.HttpContext.Items["UserSessionService"] as IUserSessionService;
+
+            if (userSessionService == null)
+            {
+                context.Result = new HtmlActionResult("Unauthorized");
+                return;
+            }
+
+            bool isAuthorized = await userSessionService.IsInRoleAsync(_roleName);
 
             if (!isAuthorized)
             {

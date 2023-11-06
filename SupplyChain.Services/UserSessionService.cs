@@ -65,6 +65,12 @@ namespace SupplyChain.Services
             return isLoggedIn;
         }
 
+        public async Task<bool> IsUserLoggedInAsync()
+        {
+            byte[] userData;
+            return await Task.FromResult(_httpContextAccessor.HttpContext.Session.TryGetValue(UserSessionKey, out userData));
+        }
+
         public async Task SetUserAsync(User user)
         {
             var _user = new UserSession
@@ -112,13 +118,7 @@ namespace SupplyChain.Services
             return JsonConvert.DeserializeObject<T>(json);
 #pragma warning restore CS8603 // Possible null reference return.
         }
-
-        public async Task<bool> IsUserLoggedInAsync()
-        {
-            byte[] userData;
-            bool HasValue = await Task.FromResult(_httpContextAccessor.HttpContext.Session.TryGetValue(this.UserSessionKey, out userData));
-            return HasValue;
-        }
+        
     }
 
     public record UserSession
