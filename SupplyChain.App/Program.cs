@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Routing;
+using SupplyChain.App.App_Class;
 using SupplyChain.App.Notification;
 using SupplyChain.App.Profiles;
 using SupplyChain.App.Utils;
@@ -100,6 +101,7 @@ app.UseAuthentication();
 
 app.MapHub<NotificationHub>("/notificationHub");
 
+app.UseMiddleware<UserSessionMiddleware>();
 
 //app.UseAuthenticationMiddleware();
 
