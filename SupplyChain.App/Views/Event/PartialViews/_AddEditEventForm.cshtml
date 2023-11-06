@@ -83,14 +83,14 @@
         });
     }
     function SetSelectedValue() {
-    @{
-        if (Model.ProductIds is not null)
-        {
-            <text>
-                                                                            var myArray = [@Html.Raw(string.Join(",", Model.ProductIds))];
-                $("#ProductIds").val(myArray).trigger("chosen:updated");
-            </text>
+        @{
+            if (Model.ProductIds is not null)
+            {
+                <text>
+                    var myArray = [@Html.Raw(string.Join(",", Model.ProductIds))];
+                    $("#ProductIds").val(myArray).trigger("chosen:updated");
+                </text>
+            }
         }
     }
-                            }
 </script>
