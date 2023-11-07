@@ -47,7 +47,7 @@ namespace SupplyChain.Infrastructure.Repositories
         {
             await _context.Database.ExecuteSqlRawAsync(sql, parameters);
         }
-        
+
         public async Task<IEnumerable<T>> GetAllAsync()
         {
             return await _set.ToListAsync();
@@ -103,13 +103,19 @@ namespace SupplyChain.Infrastructure.Repositories
         }
 
         public async Task<IEnumerable<T>?> GetPagedAsync(int page, int pageSize, Expression<Func<T, bool>>? predicate = null,
-            Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null, bool ascendingOrder = true)
+            Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null, bool ascendingOrder = true, string? includeProperties = null)
         {
             var query = _set.AsQueryable();
 
             if (predicate != null)
             {
                 query = query.Where(predicate);
+            }
+
+            if (includeProperties != null)
+            {
+                query = includeProperties.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                    .Aggregate(query, (current, includeProperty) => current.Include(includeProperty));
             }
 
             if (orderBy != null)

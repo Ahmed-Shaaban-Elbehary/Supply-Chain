@@ -35,8 +35,8 @@ namespace SupplyChain.App.Profiles
 
             CreateMap<ProductQuantityRequest, ProductQuantityRequestViewModel>()
             .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()))
-            .ForMember(dest => dest.EventId, opt => opt.MapFrom(src => src.AssociatedEvent.Id))
-            .ForMember(dest => dest.EventName, opt => opt.MapFrom(src => src.AssociatedEvent.Title))
+            //.ForMember(dest => dest.EventId, opt => opt.MapFrom(src => src.AssociatedEvent.Id))
+            //.ForMember(dest => dest.EventName, opt => opt.MapFrom(src => src.AssociatedEvent.Title))
             .ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => src.Product.Id))
             .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.Name));
 

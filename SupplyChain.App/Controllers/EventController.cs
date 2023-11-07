@@ -127,7 +127,7 @@ namespace SupplyChain.App.Controllers
 
                         var mvm = new MessageViewModel()
                         {
-                            Sender = GetLoggedInUserId(),
+                            Sender = GetLoggedInUserName(),
                             Receiver = 0,
                             MessageTitle = vm.Title,
                             MessageBody = vm.Description,

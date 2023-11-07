@@ -2,7 +2,7 @@
 {
     public class MessageViewModel
     {
-        public int Sender { get; set; }
+        public string Sender { get; set; }
         public int Receiver { get; set; }
         public string MessageTitle { get; set; }
         public string MessageBody { get; set; }

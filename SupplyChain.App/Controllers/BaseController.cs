@@ -28,5 +28,10 @@ namespace SupplyChain.App.Controllers
         {
             return _userSessionService.CurrentUser.UserId;
         }
+
+        public string GetLoggedInUserName()
+        {
+            return _userSessionService.CurrentUser.UserName;
+        }
     }
 }

@@ -24,11 +24,11 @@ namespace SupplyChain.Infrastructure.Configurations
             builder.Property(pqr => pqr.Reason).IsRequired();
             builder.Property(pqr => pqr.Status).IsRequired();
 
-            // Configure the relationship with Event
-            builder.HasOne(pqr => pqr.AssociatedEvent)
-                .WithMany()
-                .HasForeignKey(pqr => pqr.EventId)
-                .OnDelete(DeleteBehavior.Cascade);
+            //// Configure the relationship with Event
+            //builder.HasOne(pqr => pqr.AssociatedEvent)
+            //    .WithMany()
+            //    .HasForeignKey(pqr => pqr.EventId)
+            //    .OnDelete(DeleteBehavior.Cascade);
 
             // Configure the relationship with Product
             builder.HasOne(pqr => pqr.Product)

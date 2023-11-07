@@ -19,7 +19,7 @@ namespace SupplyChain.App.ViewModels
             get { return _stack; }
             private set { _stack = value; }
         }
-        
+
         public string InnerMessage
         {
             get { return _innerMessage; }
@@ -30,7 +30,8 @@ namespace SupplyChain.App.ViewModels
         {
             _message = exception.Message;
             _stack = exception.StackTrace;
-            _innerMessage = exception.InnerException.Message ?? "";
+            if (exception.Message is null) _innerMessage = exception.InnerException.Message ?? "";
+            else _innerMessage = exception.Message;
             var model = new ErrorResponse
             {
                 Message = _message,

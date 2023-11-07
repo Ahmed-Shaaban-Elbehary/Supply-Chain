@@ -27,6 +27,7 @@ namespace SupplyChain.Services
         {
             try
             {
+                productQuantityRequest.Product = await _unitOfWork.ProductRepository.GetByIdAsync(productQuantityRequest.ProductId);
                 await _unitOfWork.ProductQuantityRequestRepository.AddProductQuantityRequestAsync(productQuantityRequest);
                 var result = await _unitOfWork.CommitAsync();
                 await _unitOfWork.CommitTransaction();
@@ -58,7 +59,7 @@ namespace SupplyChain.Services
         public async Task<IEnumerable<ProductQuantityRequest>> GetAllPagedProductQuantityRequestsAsync(int page, int pageSize)
         {
             var result = await _unitOfWork.ProductQuantityRequestRepository
-               .GetPagedAsync(page, pageSize, null, orderBy: q => q.OrderBy(p => p.Id), true);
+               .GetPagedAsync(page, pageSize, null, orderBy: q => q.OrderBy(p => p.Id), true, includeProperties: "Product");
             return result;
         }
 

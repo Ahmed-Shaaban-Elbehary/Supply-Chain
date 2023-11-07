@@ -31,15 +31,14 @@ const products = (() => {
         let url = $(formElement).attr('action');
         app.SubmitForm(url, formData)
             .then((response) => {
-                let message = `You have a new request for a ${response.data.messageTitle}, from ${response.data.sender}, 
-                               which he wants an additional quantity ${response.data.messageBody}`;
-                SignalRModule.send_message(response.data.receiver.toString(), message);
-
                 if (!response.success) {
                     app.fillErrorMessageContainer(response.message);
                     app.reEnterFormData(formElement, formData);
                 } else {
                     app.showhideModal('general-partial-modal');
+                    let message = `You have a new request for a ${response.data.messageTitle}, from ${response.data.sender}, 
+                               which he wants an additional quantity ${response.data.messageBody}`;
+                    SignalRModule.send_message(response.data.receiver.toString(), message);
                     //hideloader();
                 }
 
@@ -92,10 +91,3 @@ const products = (() => {
     };
 
 })();
-
-
-
-
-
-
-

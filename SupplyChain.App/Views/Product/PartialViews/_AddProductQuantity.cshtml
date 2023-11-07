@@ -2,7 +2,6 @@
 @model ProductQuantityRequestViewModel
 
 <form asp-action="CreateProductQuantityRequest" onsubmit="products.create_product_quantity_request(event)">
-    <input type="hidden" asp-for="Id">
     <input type="hidden" asp-for="ProductId">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="alert alert-danger text-center p-1 d-none">

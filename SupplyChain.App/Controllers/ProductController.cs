@@ -21,6 +21,7 @@ namespace SupplyChain.App.Controllers
         private readonly IProductService _productService;
         private readonly IEventService _eventService;
         private readonly IProductQuantityRequestService _productQuantityRequestService;
+        private readonly IUserService _userService;
         private readonly IMapper _mapper;
         private readonly ILookUp _lookup;
         private readonly IUploadFile _uploadFile;
@@ -28,6 +29,7 @@ namespace SupplyChain.App.Controllers
             IProductService productService,
             IEventService eventService,
             IProductQuantityRequestService productQuantityRequestService,
+            IUserService userService,
             IMapper mapper,
             ILookUp lookUp,
             IUploadFile uploadFile,
@@ -36,6 +38,7 @@ namespace SupplyChain.App.Controllers
             _productService = productService;
             _eventService = eventService;
             _productQuantityRequestService = productQuantityRequestService;
+            _userService = userService;
             _mapper = mapper;
             _lookup = lookUp;
             _uploadFile = uploadFile;
@@ -119,12 +122,10 @@ namespace SupplyChain.App.Controllers
             {
                 var productQuantityRequests = await _productQuantityRequestService.GetAllPagedProductQuantityRequestsAsync(page, pageSize);
                 var vm = _mapper.Map<List<ProductQuantityRequestViewModel>>(productQuantityRequests);
-                if (vm.Count > 0)
+                foreach (var item in vm)
                 {
-                    foreach (var item in vm)
-                    {
-                        item.ProductName = _productService.GetProductByIdAsync(item.ProductId).Result.Name;
-                    }
+                    var user = await _userService.GetUserByIdAsync(item.RequestedBy);
+                    item.RequestedByName = user != null ? user.Name : "";
                 }
                 var pagedModel = new PagedViewModel<ProductQuantityRequestViewModel>
                 {
@@ -150,6 +151,7 @@ namespace SupplyChain.App.Controllers
             try
             {
                 var vm = new ProductQuantityRequestViewModel();
+                vm.ProductId = id;
                 return PartialView("~/Views/Product/PartialViews/_AddProductQuantity.cshtml", vm);
             }
             catch (Exception ex)
@@ -169,22 +171,24 @@ namespace SupplyChain.App.Controllers
                 try
                 {
                     vm.Status = RequestStatus.Pending.ToString();
+                    vm.RequestedBy = GetLoggedInUserId();
+                    vm.RequestIn = DateTime.Now;
+
                     //Add New Request.
                     var productQuantityRequest = _mapper.Map<ProductQuantityRequest>(vm);
-
                     await _productQuantityRequestService.CreateProductQuantityRequestAsync(productQuantityRequest);
 
                     //Return Notification View Model.
                     var product = await _productService.GetProductByIdAsync(vm.ProductId);
                     var mvm = new MessageViewModel()
                     {
-                        Sender = GetLoggedInUserId(),
+                        Sender = GetLoggedInUserName(),
                         Receiver = product.SupplierId,
                         MessageTitle = product.Name,
                         MessageBody = vm.QuantityToAdd.ToString()
                     };
 
-                    return Json(new ApiResponse<MessageViewModel>(true, mvm, "request send success"));
+                    return Json(new ApiResponse<MessageViewModel>(true, mvm, "Request Sent Success"));
                 }
                 catch (Exception ex)
                 {

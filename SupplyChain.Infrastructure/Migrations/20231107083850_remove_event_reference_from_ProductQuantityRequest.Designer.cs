@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SupplyChain.Infrastructure;
 
@@ -11,9 +12,11 @@ using SupplyChain.Infrastructure;
 namespace SupplyChain.Infrastructure.Migrations
 {
     [DbContext(typeof(SupplyChainDbContext))]
-    partial class SupplyChainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231107083850_remove_event_reference_from_ProductQuantityRequest")]
+    partial class remove_event_reference_from_ProductQuantityRequest
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -383,8 +386,9 @@ namespace SupplyChain.Infrastructure.Migrations
                     b.Property<DateTime>("RequestIn")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("RequestedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("RequestedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");

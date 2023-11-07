@@ -17,15 +17,17 @@ namespace SupplyChain.App.ViewModels
         [DataType(DataType.Date)]
         [FutureDate]
         public DateTime RequestIn { get; set; }
-        public string RequestedBy { get; set; }
+
+        public int RequestedBy { get; set; }
+        public string RequestedByName { get; set; }
 
         [Required(ErrorMessage = "Reason is required")]
         public string Reason { get; set; }
         public string Status { get; set; } // Represent RequestStatus as a string
 
         // You can include additional properties from AssociatedEvent and Product if needed
-        public int EventId { get; set; }
-        public string EventName { get; set; } // Assuming you want to display the event name
+        //public int EventId { get; set; }
+        //public string EventName { get; set; } // Assuming you want to display the event name
 
         [Required(ErrorMessage = "Product ID is required")]
         public int ProductId { get; set; }
