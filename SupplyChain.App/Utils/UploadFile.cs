@@ -1,4 +1,4 @@
-﻿using SixLabors.ImageSharp.Formats.Png;
+﻿using SkiaSharp;
 using SupplyChain.App.Utils.Contracts;
 
 namespace SupplyChain.App.Utils
@@ -33,15 +33,16 @@ namespace SupplyChain.App.Utils
 
             int targetWidth = _configuration.GetValue<int>("ImageDimensions:targetWidth", 150);
             int targetHeight = _configuration.GetValue<int>("ImageDimensions:targetHeight", 150);
-            int cropWidth = _configuration.GetValue<int>("ImageDimensions:cropWidth", 150);
-            int cropHeight = _configuration.GetValue<int>("ImageDimensions:cropHeight", 150);
 
+            // Create an SKPath to define the custom cropping shape (e.g., a square)
+            SKPath cropShape = new SKPath();
+            cropShape.AddRect(SKRect.Create(targetWidth, targetHeight));
 
             using (var memoryStream = new MemoryStream())
             {
                 await file.CopyToAsync(memoryStream);
                 byte[] imageData = memoryStream.ToArray();
-                byte[] croppedImageData = await CropAndResizeImageAsync(imageData, targetWidth, targetHeight, cropWidth, cropHeight);
+                byte[] croppedImageData = await CropAndResizeImageAsync(imageData, targetWidth, targetHeight, cropShape);
 
                 string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "/images", "products");
                 Directory.CreateDirectory(uploadsFolder);
@@ -55,7 +56,7 @@ namespace SupplyChain.App.Utils
                 return Path.Combine("images", "products", fileName).Replace("\\", "/");
             }
         }
-        private async Task<byte[]> CropAndResizeImageAsync(byte[] imageData, int targetWidth, int targetHeight, int cropWidth, int cropHeight)
+        private async Task<byte[]> CropAndResizeImageAsync(byte[] imageData, int targetWidth, int targetHeight, SKPath cropShape)
         {
             try
             {
@@ -64,33 +65,42 @@ namespace SupplyChain.App.Utils
                     throw new ArgumentException("Image data is empty or null.");
                 }
 
-                if (targetWidth <= 0 || targetHeight <= 0 || cropWidth <= 0 || cropHeight <= 0)
+                if (targetWidth <= 0 || targetHeight <= 0)
                 {
-                    throw new ArgumentException("Invalid target or crop dimensions.");
+                    throw new ArgumentException("Invalid target dimensions.");
                 }
 
-                using (var image = SixLabors.ImageSharp.Image.Load<Rgba32>(imageData))
+                using (SKBitmap inputBitmap = SKBitmap.Decode(imageData))
                 {
-                    int cropX = (image.Width - cropWidth) / 2;
-                    int cropY = (image.Height - cropHeight) / 2;
-                    // Ensure the specified crop dimensions are within the bounds of the source image.
-                    if (cropWidth > image.Width || cropHeight > image.Height)
+                    if (cropShape != null)
                     {
-                        throw new ArgumentException("Crop dimensions exceed source image size.");
-                    }
-
-                    image.Mutate(x => x
-                        .Resize(new ResizeOptions
+                        using (SKBitmap croppedBitmap = new SKBitmap(targetWidth, targetHeight))
                         {
-                            Size = new Size(targetWidth, targetHeight),
-                            Position = AnchorPositionMode.Center
-                        })
-                        .Crop(new Rectangle(cropX, cropY, cropWidth, cropHeight)));
+                            using (SKCanvas canvas = new SKCanvas(croppedBitmap))
+                            {
+                                // Set the clip path for non-rectangular cropping
+                                canvas.ClipPath(cropShape);
 
-                    using (var memoryStream = new MemoryStream())
+                                // Draw the input bitmap onto the canvas, applying the non-rectangular clip
+                                canvas.DrawBitmap(inputBitmap, SKRect.Create(targetWidth, targetHeight));
+                            }
+
+                            // Convert the cropped SKBitmap to a byte array
+                            using (SKImage image = SKImage.FromBitmap(croppedBitmap))
+                            using (SKData data = image.Encode())
+                            {
+                                return await Task.FromResult(data.ToArray());
+                            }
+                        }
+                    }
+                    else
                     {
-                        await image.SaveAsync(memoryStream, new PngEncoder());
-                        return memoryStream.ToArray();
+                        // If no crop shape is provided, perform a regular rectangular resize
+                        using (SKImage scaledImage = SKImage.FromBitmap(inputBitmap))
+                        using (SKData data = scaledImage.Encode())
+                        {
+                            return await Task.FromResult(data.ToArray());
+                        }
                     }
                 }
             }

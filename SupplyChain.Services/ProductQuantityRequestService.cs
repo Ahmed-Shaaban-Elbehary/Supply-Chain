@@ -55,12 +55,10 @@ namespace SupplyChain.Services
             }
         }
 
-        public async Task<IEnumerable<ProductQuantityRequest>> GetAllPagedProductQuantityRequestsAsync()
+        public async Task<IEnumerable<ProductQuantityRequest>> GetAllPagedProductQuantityRequestsAsync(int page, int pageSize)
         {
-            int page = 1;
-            int pageSize = 10;
-            Func<IQueryable<ProductQuantityRequest>, IOrderedQueryable<ProductQuantityRequest>> orderBy = q => q.OrderByDescending(e => e.Id);
-            var result = await _unitOfWork.ProductQuantityRequestRepository.GetPagedAsync(page, pageSize, null, orderBy, true);
+            var result = await _unitOfWork.ProductQuantityRequestRepository
+               .GetPagedAsync(page, pageSize, null, orderBy: q => q.OrderBy(p => p.Id), true);
             return result;
         }
 

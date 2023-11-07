@@ -10,7 +10,7 @@ namespace SupplyChain.Services.Contracts
     public interface IProductQuantityRequestService
     {
         Task<IEnumerable<ProductQuantityRequest>> GetAllProductQuantityRequestsAsync();
-        Task<IEnumerable<ProductQuantityRequest>> GetAllPagedProductQuantityRequestsAsync();
+        Task<IEnumerable<ProductQuantityRequest>> GetAllPagedProductQuantityRequestsAsync(int page, int pageSize);
         Task<ProductQuantityRequest> GetProductQuantityRequestByIdAsync(int id);
         Task<int> CreateProductQuantityRequestAsync(ProductQuantityRequest productQuantityRequest);
         Task<int> UpdateProductQuantityRequestAsync(ProductQuantityRequest productQuantityRequest);

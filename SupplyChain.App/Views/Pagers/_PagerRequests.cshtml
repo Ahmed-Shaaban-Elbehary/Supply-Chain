@@ -1,0 +1,19 @@
+﻿@using SupplyChain.App.ViewModels;
+@model PagedViewModel<ProductQuantityRequestViewModel>
+
+<div>
+    <ul class="pagination pagination-sm m-0 float-right">
+        @if (Model.CurrentPage > 1)
+        {
+            <li class="page-item"><a class="page-link" href="@Url.Action("Requests", new { page = 1 })">First</a></li>
+        }
+        @for (int i = Model.StartPage; i <= Model.EndPage; i++)
+        {
+            <li class="page-item @((i == Model.CurrentPage) ? "active" : "")"><a class="page-link" href="@Url.Action("Requests", new { page = i })">@i</a></li>
+        }
+        @if (Model.EndPage < Model.TotalPages)
+        {
+            <li class="page-item"><a class="page-link" href="@Url.Action("Requests", new { page = Model.TotalPages })">Last</a></li>
+        }
+    </ul>
+</div>

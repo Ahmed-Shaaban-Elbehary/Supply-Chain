@@ -25,6 +25,7 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration" Version="6.0.13" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.0-preview.5.21321.1" />
     <PackageReference Include="SixLabors.ImageSharp" Version="3.0.1" />
+    <PackageReference Include="SkiaSharp" Version="2.88.6" />
     <PackageReference Include="StackExchange.Redis" Version="2.6.122" />
     <PackageReference Include="toastr" Version="2.1.1" />
   </ItemGroup>

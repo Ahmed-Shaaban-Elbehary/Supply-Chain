@@ -44,8 +44,8 @@ namespace SupplyChain.App.Controllers
         [HttpGet]
         public async Task<ActionResult> Index(int page = 1, int pageSize = 10)
         {
-            var categories = await _productService.GetAllPagedProductsAsync(page, pageSize);
-            var vm = _mapper.Map<List<ProductViewModel>>(categories);
+            var products = await _productService.GetAllPagedProductsAsync(page, pageSize);
+            var vm = _mapper.Map<List<ProductViewModel>>(products);
             vm.ForEach(item =>
             {
                 item.UnitName = new SelectList(_lookup.Units, "Code", "Name", item.UnitCode).FirstOrDefault().Text;
@@ -117,14 +117,16 @@ namespace SupplyChain.App.Controllers
         {
             try
             {
-                var categories = await _productService.GetAllPagedProductsAsync(page, pageSize);
-                var vm = _mapper.Map<List<ProductViewModel>>(categories);
-                vm.ForEach(item =>
+                var productQuantityRequests = await _productQuantityRequestService.GetAllPagedProductQuantityRequestsAsync(page, pageSize);
+                var vm = _mapper.Map<List<ProductQuantityRequestViewModel>>(productQuantityRequests);
+                if (vm.Count > 0)
                 {
-                    item.UnitName = new SelectList(_lookup.Units, "Code", "Name", item.UnitCode).FirstOrDefault().Text;
-                });
-
-                var pagedModel = new PagedViewModel<ProductViewModel>
+                    foreach (var item in vm)
+                    {
+                        item.ProductName = _productService.GetProductByIdAsync(item.ProductId).Result.Name;
+                    }
+                }
+                var pagedModel = new PagedViewModel<ProductQuantityRequestViewModel>
                 {
                     Model = vm,
                     CurrentPage = page,
@@ -136,7 +138,7 @@ namespace SupplyChain.App.Controllers
             }
             catch (Exception ex)
             {
-                await _productService.RollbackTransaction();
+                await _productQuantityRequestService.RollbackTransaction();
                 CustomException(ex);
                 return RedirectToAction("Index", "Error");
             }
@@ -148,14 +150,6 @@ namespace SupplyChain.App.Controllers
             try
             {
                 var vm = new ProductQuantityRequestViewModel();
-                var product = await _productService.GetProductByIdAsync(id);
-                vm.ProductViewModel = new ProductViewModel();
-                vm.ProductViewModel.Id = product.Id;
-                vm.ProductViewModel.ProductName = product.Name;
-                vm.ProductViewModel.Quantity = product.Quantity;
-                vm.ProductViewModel.Price = product.Price;
-                vm.ProductViewModel.ImageUrl = product.ImageUrl;
-                vm.ProductViewModel.UnitName = _lookup.Units.FirstOrDefault(u => u.Code == product.UnitCode.ToString()).Name;
                 return PartialView("~/Views/Product/PartialViews/_AddProductQuantity.cshtml", vm);
             }
             catch (Exception ex)
@@ -165,6 +159,7 @@ namespace SupplyChain.App.Controllers
                 return RedirectToAction("Index", "Error");
             }
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> CreateProductQuantityRequest(ProductQuantityRequestViewModel vm)
@@ -173,12 +168,14 @@ namespace SupplyChain.App.Controllers
             {
                 try
                 {
+                    vm.Status = RequestStatus.Pending.ToString();
                     //Add New Request.
                     var productQuantityRequest = _mapper.Map<ProductQuantityRequest>(vm);
+
                     await _productQuantityRequestService.CreateProductQuantityRequestAsync(productQuantityRequest);
 
                     //Return Notification View Model.
-                    var product = await _productService.GetProductByIdAsync(vm.ProductViewModel.Id);
+                    var product = await _productService.GetProductByIdAsync(vm.ProductId);
                     var mvm = new MessageViewModel()
                     {
                         Sender = GetLoggedInUserId(),
