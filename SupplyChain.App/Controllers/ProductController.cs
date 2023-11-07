@@ -225,6 +225,54 @@ namespace SupplyChain.App.Controllers
             };
             return PartialView("~/Views/Product/PartialViews/_RequestsCardPatialView.cshtml", pagedModel);
         }
+
+        [HttpGet]
+        public async Task<JsonResult> AcceptRequest(int id)
+        {
+            if (id > 0)
+            {
+                try
+                {
+                    var request = await _productQuantityRequestService.GetProductQuantityRequestByIdAsync(id);
+                    request.Status = RequestStatus.Approved;
+                    await _productQuantityRequestService.UpdateProductQuantityRequestAsync(request);
+                    return Json(new ApiResponse<bool>(true, true, "A request was successfully approved"));
+                }
+                catch (Exception ex)
+                {
+                    return Json(new ApiResponse<bool>(false, false, $"Failed to accept the request \n {ex.InnerException.Message}"));
+                }
+
+            }
+            else
+            {
+                return Json(new { success = false });
+            }
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> IgnoreRequest(int id)
+        {
+            if (id > 0)
+            {
+                try
+                {
+                    var request = await _productQuantityRequestService.GetProductQuantityRequestByIdAsync(id);
+                    request.Status = RequestStatus.Denied;
+                    await _productQuantityRequestService.UpdateProductQuantityRequestAsync(request);
+                    return Json(new ApiResponse<bool>(true, true, "A request was successfully denied"));
+                }
+                catch (Exception ex)
+                {
+                    return Json(new ApiResponse<bool>(false, false, $"Failed to reject the request \n {ex.InnerException.Message}"));
+                }
+
+            }
+            else
+            {
+                return Json(new { success = false });
+            }
+        }
         #endregion Additional Quantity Requests
     }
 }

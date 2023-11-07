@@ -59,13 +59,13 @@ const products = (() => {
     const AcceptRequest = (requestId) => {
         let url = "/Product/AcceptRequest";
         let data = { id: requestId };
-        app.ajax_request(url, 'POST', 'json', data)
+        app.ajax_request(url, 'GET', 'json', data)
             .then((response) => {
                 if (response.success) {
                     app.refreshElement('request-card-body', 'Product', 'GetRequestProductCardData');
                     app.SuccessAlertMessage(response.message);
                 } else {
-                    app.SuccessAlertMessage(response.message);
+                    app.FailAlertMessage(response.message);
                 }
             })
             .catch((xhr, status, error) => {
@@ -80,6 +80,32 @@ const products = (() => {
                 }
             })
     }
+
+    const IgnoreRequest = (requestId) => {
+        let url = "/Product/IgnoreRequest";
+        let data = { id: requestId };
+        app.ajax_request(url, 'GET', 'json', data)
+            .then((response) => {
+                if (response.success) {
+                    app.refreshElement('request-card-body', 'Product', 'GetRequestProductCardData');
+                    app.SuccessAlertMessage(response.message);
+                } else {
+                    app.FailAlertMessage(response.message);
+                }
+            })
+            .catch((xhr, status, error) => {
+                if (error != undefined) {
+                    app.FailAlertMessage(error.responseJSON.message);
+                    app.reEnterFormData(formElement, formData);
+                    //hideloader();
+                } else {
+                    console.error(xhr)
+                    app.FailAlertMessage("Oops, Error Occurred, Please Try Again!", xhr);
+                    //hideloader();
+                }
+            })
+    }
+
     return {
         request_additional_product_quantities: () => {
             RequestAdditionProductQuantities();
@@ -89,6 +115,9 @@ const products = (() => {
         },
         accept_request: (requestId) => {
             AcceptRequest(requestId);
+        },
+        ignore_request: (requestId) => {
+            IgnoreRequest(requestId);
         }
     }
 })();

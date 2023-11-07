@@ -27,32 +27,26 @@
                 <td>@item.RequestedByName</td>
                 <td>@item.QuantityToAdd (@item.UnitName)</td>
                 <td>@item.RequestIn.ToShortDateString()</td>
-                @{
-                    int requestStatus = (int)(RequestStatus)Enum.Parse(typeof(RequestStatus), item.Status);
-                    switch (requestStatus)
-                    {
-                        case 0:
-                            <td>
-                                <span class="badge badge-pill badge-warning font-weight-normal badge-text-size">@item.Status</span>
-                            </td>
-                            break;
-                        case 1:
-                            <td>
-                                <span class="badge badge-pill badge-success badge-text-size">@item.Status</span>
-                            </td>
-                            break;
-                        case 2:
-                            <td>
-                                <span class="badge badge-pill badge-danger badge-text-size">@item.Status</span>
-                            </td>
-                            break;
-                        default:
-                            <td>---</td>
-                            break;
+                <td style="min-width:150px;">
+                    @{
+                        int requestStatus = (int)(RequestStatus)Enum.Parse(typeof(RequestStatus), item.Status);
+                        switch (requestStatus)
+                        {
+                            case 0:
+                                <span class="badge badge-pill badge-warning font-weight-normal badge-text-size px-3">@item.Status</span>
+                                break;
+                            case 1:
+                                <span class="badge badge-pill badge-success font-weight-normal badge-text-size px-3">@item.Status</span>
+                                break;
+                            case 2:
+                                <span class="badge badge-pill badge-danger font-weight-normal badge-text-size px-3">@item.Status</span>
+                                break;
+                            default:
+                                break;
+                        }
                     }
-                }
 
-                <td>
+                <td style="min-width:95px;">
                     <button id="edit-form-modal" type="button" class="btn btn-sm btn-warning text-white" data-id="@item.Id"
                             onclick="products.accept_request(this.getAttribute('data-id'))">
                         <i class="fas fa-check"></i>

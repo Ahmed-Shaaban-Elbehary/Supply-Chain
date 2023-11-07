@@ -89,7 +89,7 @@ namespace SupplyChain.Services
             string query = $@"SELECT E.* FROM Events as E
                               LEFT JOIN ProductEvent as PE ON PE.EventId = E.Id
                               LEFT JOIN Products as P ON PE.ProductId = P.Id
-                              WHERE P.Id = {productId} AND E.Active = 1 ";
+                              WHERE P.Id = {productId} AND E.Active = 1 AND EndIn > '{DateTime.Now.ToString()}'";
 
             var result = await _unitOfWork.EventRepository.ExecSqlQuery(query);
             return result;
