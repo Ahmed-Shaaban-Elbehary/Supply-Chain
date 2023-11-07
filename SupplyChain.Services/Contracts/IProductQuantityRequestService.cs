@@ -15,7 +15,7 @@ namespace SupplyChain.Services.Contracts
         Task<int> CreateProductQuantityRequestAsync(ProductQuantityRequest productQuantityRequest);
         Task<int> UpdateProductQuantityRequestAsync(ProductQuantityRequest productQuantityRequest);
         Task<int> DeleteProductQuantityRequestAsync(ProductQuantityRequest productQuantityRequest);
-        Task<int> CountEventAsync();
+        Task<int> CountProductQuantityAsync();
         Task RollbackTransaction();
     }
 }

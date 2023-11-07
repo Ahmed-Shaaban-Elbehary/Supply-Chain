@@ -1,0 +1,71 @@
+﻿@using SupplyChain.App.ViewModels;
+@using SupplyChain.Core.Models;
+@using SupplyChain.Services;
+@model PagedViewModel<ProductQuantityRequestViewModel>
+@{
+    int count = 1;
+}
+
+<table id="request-data-table" class="table table-bordered text-center">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Product Name</th>
+            <th>Requested By</th>
+            <th>Requested Quantity</th>
+            <th>Request Date</th>
+            <th>Request Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Model)
+        {
+            <tr>
+                <td>@count</td>
+                <td>@item.ProductName</td>
+                <td>@item.RequestedByName</td>
+                <td>@item.QuantityToAdd (@item.UnitName)</td>
+                <td>@item.RequestIn.ToShortDateString()</td>
+                @{
+                    int requestStatus = (int)(RequestStatus)Enum.Parse(typeof(RequestStatus), item.Status);
+                    switch (requestStatus)
+                    {
+                        case 0:
+                            <td>
+                                <span class="badge badge-pill badge-warning font-weight-normal badge-text-size">@item.Status</span>
+                            </td>
+                            break;
+                        case 1:
+                            <td>
+                                <span class="badge badge-pill badge-success badge-text-size">@item.Status</span>
+                            </td>
+                            break;
+                        case 2:
+                            <td>
+                                <span class="badge badge-pill badge-danger badge-text-size">@item.Status</span>
+                            </td>
+                            break;
+                        default:
+                            <td>---</td>
+                            break;
+                    }
+                }
+
+                <td>
+                    <button id="edit-form-modal" type="button" class="btn btn-sm btn-warning text-white" data-id="@item.Id"
+                            onclick="products.accept_request(this.getAttribute('data-id'))">
+                        <i class="fas fa-check"></i>
+                    </button>
+                    <button id="delete-item" type="button" class="btn btn-sm btn-danger text-light ml-1" data-id="@item.Id"
+                            onclick="products.ignore_request(this.getAttribute('data-id'))">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </td>
+            </tr>
+            { count++; }
+        }
+        </>
+    </tbody>
+</table>
+

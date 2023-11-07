@@ -32,5 +32,7 @@ namespace SupplyChain.App.ViewModels
         [Required(ErrorMessage = "Product ID is required")]
         public int ProductId { get; set; }
         public string ProductName { get; set; }
+        public int UnitCode { get; set; }
+        public string UnitName { get; set; }
     }
 }

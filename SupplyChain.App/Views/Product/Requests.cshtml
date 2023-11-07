@@ -1,25 +1,30 @@
 ﻿@using SupplyChain.App.ViewModels;
+@using SupplyChain.Core.Models;
 @model PagedViewModel<ProductQuantityRequestViewModel>
 @{
     ViewData["Title"] = "Additional Quantity Requests";
     Layout = "~/Views/Shared/_Layout.cshtml";
     int count = 1;
 }
-
-<div class="card" id="category-card">
+<style>
+    .badge-text-size {
+        font-size: 100% !important;
+    }
+</style>
+<div class="card" id="request-card">
     <div class="card-header">
         <h3 class="card-title">Quantity Requests</h3>
     </div>
-    <div id="category-card-body" class="card-body">
-        <table id="categories-data-table" class="table table-bordered">
+    <div id="request-card-body" class="card-body">
+        <table id="request-data-table" class="table table-bordered text-center">
             <thead>
                 <tr>
                     <th>ID</th>
                     <th>Product Name</th>
                     <th>Requested By</th>
                     <th>Requested Quantity</th>
-                    <th>Requeste Date</th>
-                    <th>Requeste Status</th>
+                    <th>Request Date</th>
+                    <th>Request Status</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -30,9 +35,33 @@
                         <td>@count</td>
                         <td>@item.ProductName</td>
                         <td>@item.RequestedByName</td>
-                        <td>@item.QuantityToAdd</td>
+                        <td>@item.QuantityToAdd (@item.UnitName)</td>
                         <td>@item.RequestIn.ToShortDateString()</td>
-                        <td>@item.Status</td>
+                        @{
+                            int requestStatus = (int)(RequestStatus)Enum.Parse(typeof(RequestStatus), item.Status);
+                            switch (requestStatus)
+                            {
+                                case 0:
+                                    <td>
+                                        <span class="badge badge-pill badge-warning font-weight-normal badge-text-size">@item.Status</span>
+                                    </td>
+                                    break;
+                                case 1:
+                                    <td>
+                                        <span class="badge badge-pill badge-success badge-text-size">@item.Status</span>
+                                    </td>
+                                    break;
+                                case 2:
+                                    <td>
+                                        <span class="badge badge-pill badge-danger badge-text-size">@item.Status</span>
+                                    </td>
+                                    break;
+                                default:
+                                    <td>---</td>
+                                    break;
+                            }
+                        }
+
                         <td>
                             <button id="edit-form-modal" type="button" class="btn btn-sm btn-warning text-white" data-id="@item.Id"
                                     onclick="products.accept_request(this.getAttribute('data-id'))">

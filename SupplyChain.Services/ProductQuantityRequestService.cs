@@ -18,7 +18,7 @@ namespace SupplyChain.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<int> CountEventAsync()
+        public async Task<int> CountProductQuantityAsync()
         {
             return await _unitOfWork.ProductQuantityRequestRepository.CountAsync();
         }

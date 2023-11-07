@@ -56,12 +56,39 @@ const products = (() => {
             })
     }
 
+    const AcceptRequest = (requestId) => {
+        let url = "/Product/AcceptRequest";
+        let data = { id: requestId };
+        app.ajax_request(url, 'POST', 'json', data)
+            .then((response) => {
+                if (response.success) {
+                    app.refreshElement('request-card-body', 'Product', 'GetRequestProductCardData');
+                    app.SuccessAlertMessage(response.message);
+                } else {
+                    app.SuccessAlertMessage(response.message);
+                }
+            })
+            .catch((xhr, status, error) => {
+                if (error != undefined) {
+                    app.FailAlertMessage(error.responseJSON.message);
+                    app.reEnterFormData(formElement, formData);
+                    //hideloader();
+                } else {
+                    console.error(xhr)
+                    app.FailAlertMessage("Oops, Error Occurred, Please Try Again!", xhr);
+                    //hideloader();
+                }
+            })
+    }
     return {
         request_additional_product_quantities: () => {
             RequestAdditionProductQuantities();
         },
         create_product_quantity_request: (e) => {
             CreateRequest(e);
+        },
+        accept_request: (requestId) => {
+            AcceptRequest(requestId);
         }
     }
 })();

@@ -126,13 +126,14 @@ namespace SupplyChain.App.Controllers
                 {
                     var user = await _userService.GetUserByIdAsync(item.RequestedBy);
                     item.RequestedByName = user != null ? user.Name : "";
+                    item.UnitName = new SelectList(_lookup.Units, "Code", "Name", item.UnitCode).FirstOrDefault().Text;
                 }
                 var pagedModel = new PagedViewModel<ProductQuantityRequestViewModel>
                 {
                     Model = vm,
                     CurrentPage = page,
                     PageSize = pageSize,
-                    TotalItems = await _productService.CountProductsAsync()
+                    TotalItems = await _productQuantityRequestService.CountProductQuantityAsync()
                 };
 
                 return View(pagedModel);
@@ -200,6 +201,29 @@ namespace SupplyChain.App.Controllers
             {
                 return Json(new ApiResponse<bool>(false, false, $"Please enter Additional Quantity!"));
             }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetRequestProductCardData()
+        {
+            const int page = 1;
+            const int pageSize = 10;
+            var productQuantityRequests = await _productQuantityRequestService.GetAllPagedProductQuantityRequestsAsync(page, pageSize);
+            var vm = _mapper.Map<List<ProductQuantityRequestViewModel>>(productQuantityRequests);
+            foreach (var item in vm)
+            {
+                var user = await _userService.GetUserByIdAsync(item.RequestedBy);
+                item.RequestedByName = user != null ? user.Name : "";
+                item.UnitName = new SelectList(_lookup.Units, "Code", "Name", item.UnitCode).FirstOrDefault().Text;
+            }
+            var pagedModel = new PagedViewModel<ProductQuantityRequestViewModel>
+            {
+                Model = vm,
+                CurrentPage = page,
+                PageSize = pageSize,
+                TotalItems = await _productQuantityRequestService.CountProductQuantityAsync()
+            };
+            return PartialView("~/Views/Product/PartialViews/_RequestsCardPatialView.cshtml", pagedModel);
         }
         #endregion Additional Quantity Requests
     }

@@ -11,11 +11,11 @@ namespace SupplyChain.App.Profiles
             CreateMap<Product, ProductViewModel>()
                 .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Name))
                 .ReverseMap();
-            
+
             CreateMap<ProductCategory, ProductCategoryViewModel>().ReverseMap();
 
             CreateMap<Manufacturer, ManufacturerViewModel>().ReverseMap();
-            
+
 
             CreateMap<User, UserViewModel>()
                 .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.Name))
@@ -38,7 +38,8 @@ namespace SupplyChain.App.Profiles
             //.ForMember(dest => dest.EventId, opt => opt.MapFrom(src => src.AssociatedEvent.Id))
             //.ForMember(dest => dest.EventName, opt => opt.MapFrom(src => src.AssociatedEvent.Title))
             .ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => src.Product.Id))
-            .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.Name));
+            .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.Name))
+            .ForMember(dest => dest.UnitCode, opt => opt.MapFrom(src => src.Product.UnitCode));
 
             CreateMap<ProductQuantityRequestViewModel, ProductQuantityRequest>()
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => Enum.Parse(typeof(RequestStatus), src.Status)));
