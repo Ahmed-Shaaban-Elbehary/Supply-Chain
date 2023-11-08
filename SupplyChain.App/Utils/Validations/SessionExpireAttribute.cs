@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -15,50 +16,37 @@ namespace SupplyChain.App.Utils.Validations
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
     public class SessionExpireAttribute : ActionFilterAttribute
     {
-
         private readonly IUrlHelperFactory _urlHelperFactory;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IServiceProvider _serviceProvider;
-        private readonly IUserSessionService _userSessionService;
 
-        public SessionExpireAttribute(IUrlHelperFactory urlHelperFactory,
-            IServiceProvider serviceProvider,
-            IUserSessionService userSessionService)
+        public SessionExpireAttribute(IUrlHelperFactory urlHelperFactory, IHttpContextAccessor httpContextAccessor, IServiceProvider serviceProvider)
         {
             _urlHelperFactory = urlHelperFactory;
+            _httpContextAccessor = httpContextAccessor;
             _serviceProvider = serviceProvider;
-            _userSessionService = userSessionService;
         }
 
         /// <summary>
         /// check session object is null or not, then redirect to TimeOut, also clear static user data.
         /// </summary>
         /// <param name="filterContext"></param>
-        public override void OnActionExecuting(ActionExecutingContext filterContext)
+        public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            HttpContext context = filterContext.HttpContext;
-
-            bool isAjaxRequest = filterContext.HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
-            var actionDescriptor = filterContext.ActionDescriptor as ControllerActionDescriptor;
+            var isAjaxRequest = context.HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
+            var actionDescriptor = context.ActionDescriptor as ControllerActionDescriptor;
 
             bool isTimeoutAction = actionDescriptor?.ActionName == "TimeOut" && actionDescriptor?.ControllerName == "Auth";
             bool isLoginAction = actionDescriptor?.ActionName == "Login" && actionDescriptor?.ControllerName == "Auth";
             bool isLogoutAction = actionDescriptor?.ActionName == "Logout" && actionDescriptor?.ControllerName == "Auth";
-            bool isSessionNotNull = _userSessionService.IsUserLoggedInAsync().Result;
 
-            if (isTimeoutAction && !isSessionNotNull)
+            // Check if a user-specific session token or cookie exists
+            if (!UserHasSessionToken() && !isLoginAction && !isTimeoutAction && !isLogoutAction)
             {
-                var urlHelper = _urlHelperFactory.GetUrlHelper(filterContext);
-                filterContext.Result = new RedirectResult(urlHelper.Action("Logout", "Auth"));
-            }
-            else if (!isLoginAction && !isTimeoutAction && !isLogoutAction && !isSessionNotNull)
-            {
-                // CurrentUser.Logout();
-
                 if (isAjaxRequest)
                 {
-                    // For AJAX requests, render a partial view and return its HTML content.
-                    var result = RenderPartialViewToString("_TimeOutPartialView", filterContext);
-                    filterContext.Result = new ContentResult
+                    var result = RenderPartialViewToString("_TimeOutPartialView", context);
+                    context.Result = new ContentResult
                     {
                         Content = result,
                         ContentType = "text/html",
@@ -66,14 +54,14 @@ namespace SupplyChain.App.Utils.Validations
                 }
                 else
                 {
-                    var urlHelper = _urlHelperFactory.GetUrlHelper(filterContext);
-                    filterContext.Result = new RedirectResult(urlHelper.Action("TimeOut", "Auth"));
+                    var urlHelper = _urlHelperFactory.GetUrlHelper(context);
+                    context.Result = new RedirectResult(urlHelper.Action("TimeOut", "Auth"));
                 }
 
                 return;
             }
 
-            base.OnActionExecuting(filterContext);
+            await next();
         }
 
         private string RenderPartialViewToString(string viewName, ActionExecutingContext filterContext)
@@ -98,6 +86,13 @@ namespace SupplyChain.App.Utils.Validations
                 // Handle the case where the view cannot be found.
                 return "View not found: " + viewName;
             }
+        }
+
+        private bool UserHasSessionToken()
+        {
+            // Check if the user has a session token (you may need to modify this logic based on your specific implementation)
+            var sessionToken = _httpContextAccessor.HttpContext.Request.Cookies["UserSessionToken"];
+            return !string.IsNullOrEmpty(sessionToken);
         }
     }
 }

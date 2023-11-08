@@ -8,124 +8,55 @@ namespace SupplyChain.Services
 {
     public class UserSessionService : IUserSessionService
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
-
-        private List<string> userPermissions = new List<string>();
-        private List<string> userRoles = new List<string>();
-
-        // Private field to store the user ID
-        private int _userId = -1;
+        private IHttpContextAccessor _httpContextAccessor;
 
         public UserSessionService(IHttpContextAccessor httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public UserSession CurrentUser
+        public async Task<List<string>> GetUserRolesAsync()
         {
-            get
+            var userRoles = _httpContextAccessor.HttpContext.Request.Cookies["UserRoles"];
+
+            if (string.IsNullOrEmpty(userRoles))
             {
-                byte[] userData;
-                if (_httpContextAccessor.HttpContext.Session.TryGetValue(UserSessionKey, out userData))
-                {
-                    return Deserialize<UserSession>(userData);
-                }
-                return new UserSession();
+                return new List<string>();
             }
-            set
+
+            return userRoles.Split(',').ToList();
+        }
+
+        public async Task<List<string>> GetUserPermissionsAsync()
+        {
+            var userPermissions = _httpContextAccessor.HttpContext.Request.Cookies["UserPermissions"];
+
+            if (string.IsNullOrEmpty(userPermissions))
             {
-                var userJson = Serialize(value);
-                _userId = value.UserId;
-                _httpContextAccessor.HttpContext.Session.Set(UserSessionKey, userJson);
+                return new List<string>();
             }
+
+            return userPermissions.Split(',').ToList();
         }
 
-        private string UserSessionKey => $"UserData_{_userId}";
-
-        public async Task<bool> HasPermissionAsync(string permissionName)
+        public async Task<string> GetUserIdAsync()
         {
-            return await Task.FromResult(this.userPermissions.Contains(permissionName));
+            return _httpContextAccessor.HttpContext.Request.Cookies["UserId"];
         }
 
-        public async Task<bool> IsInRoleAsync(string roleName)
+        public async Task<string> GetUserNameAsync()
         {
-            return await Task.FromResult(this.userRoles.Contains(roleName));
-        }
-
-        public async Task<bool> IsUserLoggedInAsync(int currentUserId)
-        {
-            byte[] userData;
-            UserSession userSession;
-            bool isLoggedIn = false;
-            if (await Task.FromResult(_httpContextAccessor.HttpContext.Session.TryGetValue(UserSessionKey, out userData)))
-            {
-                userSession = Deserialize<UserSession>(userData);
-                isLoggedIn = userSession.UserId == currentUserId;
-            }
-            return isLoggedIn;
-        }
-
-        public async Task<bool> IsUserLoggedInAsync()
-        {
-            byte[] userData;
-            return await Task.FromResult(_httpContextAccessor.HttpContext.Session.TryGetValue(UserSessionKey, out userData));
-        }
-
-        public async Task SetUserAsync(User user)
-        {
-            var _user = new UserSession
-            {
-                UserId = user.Id,
-                UserName = user.Name,
-                Email = user.Email,
-                IsSupplier = user.IsSupplier
-            };
-            this._userId = user.Id;
-            this.CurrentUser = _user;
-            await Task.CompletedTask;
+            return await Task.FromResult( _httpContextAccessor.HttpContext.Request.Cookies["UserName"]);
         }
 
         public async Task ClearUserSessionAsync()
         {
-            _httpContextAccessor.HttpContext.Session.Remove(UserSessionKey);
-            this.CurrentUser = new UserSession(); // Clear the current user
-            await Task.CompletedTask;
+            // Clear the session data when the user logs out or the session expires
+            _httpContextAccessor.HttpContext.Response.Cookies.Delete("UserSessionToken");
+            _httpContextAccessor.HttpContext.Response.Cookies.Delete("UserId");
+            _httpContextAccessor.HttpContext.Response.Cookies.Delete("UserRoles");
+            _httpContextAccessor.HttpContext.Response.Cookies.Delete("UserPermissions");
+            _httpContextAccessor.HttpContext.Response.Cookies.Delete("UserName");
         }
-
-        public async Task SetLoggedInUserRoles(List<string> userRoles)
-        {
-            this.userRoles = userRoles;
-            await Task.CompletedTask;
-        }
-
-        public async Task SetLoggedInUserPermissions(List<string> userPermissions)
-        {
-            this.userPermissions = userPermissions;
-            await Task.CompletedTask;
-        }
-
-        // Helper methods for serializing and deserializing data
-        private byte[] Serialize<T>(T obj)
-        {
-            var json = JsonConvert.SerializeObject(obj);
-            return Encoding.UTF8.GetBytes(json);
-        }
-
-        private T Deserialize<T>(byte[] data)
-        {
-            var json = Encoding.UTF8.GetString(data);
-#pragma warning disable CS8603 // Possible null reference return.
-            return JsonConvert.DeserializeObject<T>(json);
-#pragma warning restore CS8603 // Possible null reference return.
-        }
-        
-    }
-
-    public record UserSession
-    {
-        public int UserId { get; set; }
-        public string UserName { get; set; } = string.Empty;
-        public string Email { get; set; } = string.Empty;
-        public bool IsSupplier { get; set; }
     }
 }

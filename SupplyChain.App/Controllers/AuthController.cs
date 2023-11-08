@@ -46,43 +46,43 @@ namespace SupplyChain.App.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    ViewBag.ErrorMessage = "Invalid Username Or Password!";
+                    ViewBag.ErrorMessage = "Invalid Username or Password!";
                     return View();
                 }
                 bool isValid = await _userService.ValidateUserCredentialsAsync(user.Email, user.Password);
                 if (!isValid)
                 {
-                    ViewBag.ErrorMessage = "Invalid User, Try again with different Credential";
+                    ViewBag.ErrorMessage = "Invalid User, try again with different credentials";
                     return View();
                 }
                 else
                 {
-                    bool ImSupplier = user.IsSupplier; //I supplier checked.
+                    bool IsSupplier = user.IsSupplier; // Check if the user is a supplier.
                     var loggedInUser = await _userService.GetUserByEmailAsync(user.Email);
 
-                    if (loggedInUser.IsSupplier == true && ImSupplier != true)
+                    if (loggedInUser.IsSupplier && !IsSupplier)
                     {
-                        ViewBag.ErrorMessage = "You are supplier, please login as a supplier!";
+                        ViewBag.ErrorMessage = "You are a supplier, please log in as a supplier!";
                         return View();
                     }
+
+                    // Create a unique session token (you should implement this part)
+                    string userSessionToken = GenerateUserSessionToken();
+
                     var _user = _mapper.Map<User>(loggedInUser);
                     var roles = await _userService.GetUserRolesAsync(_user.Id);
-                    if (roles.Any())
-                    {
-                        await _userSessionService.SetLoggedInUserRoles(roles.ToList());
-                    }
                     var permissions = await _userService.GetUserPermissionsAsync(_user.Id);
-                    if (permissions.Any())
-                    {
-                        await _userSessionService.SetLoggedInUserPermissions(permissions.ToList());
-                    }
-                    //set user 
-                    await _userSessionService.SetUserAsync(_user);
+
+                    // Store user-related data in the session token (e.g., in a cookie)
+                    SetUserSessionData(userSessionToken, _user, roles.ToList(), permissions.ToList());
+
+                    // Redirect the user to the desired page
                     return RedirectToAction("Index", "Product");
                 }
             }
             catch (Exception ex)
             {
+                // Handle exceptions and redirect to an error page
                 var errorResponse = ErrorResponse.PreException(ex);
                 var errorResponseJson = JsonConvert.SerializeObject(errorResponse);
                 TempData["ErrorResponse"] = errorResponseJson;
@@ -91,17 +91,37 @@ namespace SupplyChain.App.Controllers
             }
         }
 
-        [HttpGet]
-        public async Task<IActionResult> TimeOut()
+        // Generate a unique user session token (you should implement this part)
+        private string GenerateUserSessionToken()
         {
-            await _userSessionService.ClearUserSessionAsync();
+            // Generate a unique token, e.g., a GUID
+            return Guid.NewGuid().ToString();
+        }
+
+        // Store user-related data in the session token (e.g., in a cookie)
+        private void SetUserSessionData(string userSessionToken, User user, List<string> roles, List<string> permissions)
+        {
+            // Set user-specific session data in a cookie (you need to implement this)
+            Response.Cookies.Append("UserSessionToken", userSessionToken);
+
+            // You can store user-related data in the cookie or other session storage mechanisms.
+            // For example:
+            Response.Cookies.Append("UserId", user.Id.ToString());
+            Response.Cookies.Append("UserRoles", string.Join(",", roles));
+            Response.Cookies.Append("UserPermissions", string.Join(",", permissions));
+        }
+
+        [HttpGet]
+        public IActionResult TimeOut()
+        {
+            _userSessionService.ClearUserSession();
             return View();
         }
 
         [HttpGet]
-        public async Task<IActionResult> Logout()
+        public IActionResult Logout()
         {
-            await _userSessionService.ClearUserSessionAsync();
+            _userSessionService.ClearUserSession();
             return RedirectToAction("Login");
         }
 
