@@ -18,7 +18,7 @@ namespace SupplyChain.App.Notification
         public override async Task OnConnectedAsync()
         {
             // Get the user ID after authentication (replace with your own logic)
-            string userId = _userSessionService.CurrentUser.UserId.ToString();
+            string userId = _userSessionService.GetUserId().ToString();
 
             if (!string.IsNullOrEmpty(userId))
             {
@@ -31,7 +31,7 @@ namespace SupplyChain.App.Notification
         public override async Task OnDisconnectedAsync(Exception exception)
         {
             // Remove the association when a user disconnects
-            var userId = _userSessionService.CurrentUser.UserId.ToString();
+            var userId = _userSessionService.GetUserId().ToString();
 
             if (!string.IsNullOrEmpty(userId))
             {

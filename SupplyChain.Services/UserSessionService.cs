@@ -15,7 +15,7 @@ namespace SupplyChain.Services
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<List<string>> GetUserRolesAsync()
+        private List<string> GetUserRoles()
         {
             var userRoles = _httpContextAccessor.HttpContext.Request.Cookies["UserRoles"];
 
@@ -27,7 +27,7 @@ namespace SupplyChain.Services
             return userRoles.Split(',').ToList();
         }
 
-        public async Task<List<string>> GetUserPermissionsAsync()
+        private List<string> GetUserPermissions()
         {
             var userPermissions = _httpContextAccessor.HttpContext.Request.Cookies["UserPermissions"];
 
@@ -39,17 +39,18 @@ namespace SupplyChain.Services
             return userPermissions.Split(',').ToList();
         }
 
-        public async Task<string> GetUserIdAsync()
+        public int GetUserId()
         {
-            return _httpContextAccessor.HttpContext.Request.Cookies["UserId"];
+            var userId = _httpContextAccessor.HttpContext.Request.Cookies["UserId"];
+            return int.Parse(userId);
         }
 
-        public async Task<string> GetUserNameAsync()
+        public string GetUserName()
         {
-            return await Task.FromResult( _httpContextAccessor.HttpContext.Request.Cookies["UserName"]);
+            return _httpContextAccessor.HttpContext.Request.Cookies["UserName"];
         }
 
-        public async Task ClearUserSessionAsync()
+        public void ClearUserSession()
         {
             // Clear the session data when the user logs out or the session expires
             _httpContextAccessor.HttpContext.Response.Cookies.Delete("UserSessionToken");
@@ -57,6 +58,18 @@ namespace SupplyChain.Services
             _httpContextAccessor.HttpContext.Response.Cookies.Delete("UserRoles");
             _httpContextAccessor.HttpContext.Response.Cookies.Delete("UserPermissions");
             _httpContextAccessor.HttpContext.Response.Cookies.Delete("UserName");
+        }
+
+        public bool HasPermissionAsync(string permissionName)
+        {
+            var permissions = GetUserPermissions();
+            return permissions.Contains(permissionName);
+        }
+
+        public bool IsInRoleAsync(string roleName)
+        {
+            var roles = GetUserRoles();
+            return roles.Contains(roleName);
         }
     }
 }

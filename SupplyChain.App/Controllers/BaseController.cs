@@ -26,12 +26,12 @@ namespace SupplyChain.App.Controllers
 
         public int GetLoggedInUserId()
         {
-            return _userSessionService.CurrentUser.UserId;
+            return _userSessionService.GetUserId();
         }
 
         public string GetLoggedInUserName()
         {
-            return _userSessionService.CurrentUser.UserName;
+            return _userSessionService.GetUserName();
         }
     }
 }

@@ -21,7 +21,7 @@
 }
 <div class="row justify-content-end">
     <div class="col-md-3 h2 mb-3 text-end">
-        @if (await iUserSession.HasPermissionAsync("CanAddEvent"))
+        @if (iUserSession.HasPermissionAsync("CanAddEvent"))
         {
             <button id="open-event-modal" class="btn btn-success btn-lg text-light"
                     data-toggle="modal" data-target="#general-partial-modal">

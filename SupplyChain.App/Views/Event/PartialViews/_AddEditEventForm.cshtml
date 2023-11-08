@@ -54,7 +54,7 @@
             </div>
         </div>
     </div>
-    @if (Model.IsInEditMode && await iUserSession.HasPermissionAsync("HasPermissionToPublishEvent"))
+    @if (Model.IsInEditMode && iUserSession.HasPermissionAsync("HasPermissionToPublishEvent"))
     {
         <div class="row">
             <div class="col-md-6">

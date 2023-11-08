@@ -9,7 +9,7 @@ namespace SupplyChain.App.Utils.Validations
     /// Specifies that the class or method that this attribute, to validate from user if user authority this action.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
-    public class InRoleAttribute : Attribute, IAsyncActionFilter
+    public class InRoleAttribute : Attribute
     {
         private readonly string _roleName;
 
@@ -18,7 +18,7 @@ namespace SupplyChain.App.Utils.Validations
             _roleName = roleName;
         }
 
-        public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
+        public void OnActionExecuting(ActionExecutingContext context)
         {
             // Retrieve the IUserSessionService from HttpContext
             var userSessionService = context.HttpContext.Items["UserSessionService"] as IUserSessionService;
@@ -29,15 +29,14 @@ namespace SupplyChain.App.Utils.Validations
                 return;
             }
 
-            bool isAuthorized = await userSessionService.IsInRoleAsync(_roleName);
+            bool isAuthorized = userSessionService.IsInRoleAsync(_roleName);
 
             if (!isAuthorized)
             {
                 context.Result = new HtmlActionResult("Unauthorized");
                 return;
             }
-
-            await next();
         }
+
     }
 }
