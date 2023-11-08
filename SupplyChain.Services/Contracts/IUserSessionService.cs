@@ -9,10 +9,11 @@ namespace SupplyChain.Services.Contracts
 {
     public interface IUserSessionService
     {
+        bool IsUserSupplier {  get; }
         int GetUserId();
         string GetUserName();
-        bool HasPermissionAsync(string permissionName);
-        bool IsInRoleAsync(string roleName);
+        bool HasPermission(string permissionName);
+        bool IsInRole(string roleName);
         void ClearUserSession();
     }
 }

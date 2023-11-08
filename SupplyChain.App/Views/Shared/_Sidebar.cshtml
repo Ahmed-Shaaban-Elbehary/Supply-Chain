@@ -32,7 +32,7 @@
                         </p>
                     </a>
                 </li>
-                @if (iUserSession.HasPermissionAsync("HasAccessToEvents"))
+                @if (iUserSession.HasPermission("HasAccessToEvents"))
                 {
                     <li class="nav-item">
                         <a asp-controller="Event" asp-action="index" data-nav="index" class="nav-link">
@@ -41,7 +41,7 @@
                         </a>
                     </li>
                 }
-                @if (iUserSession.HasPermissionAsync("HasAccessToRequests"))
+                @if (iUserSession.HasPermission("HasAccessToRequests"))
                 {
                     <li class="nav-item">
                         <a asp-controller="Product" asp-action="Requests" data-nav="index" class="nav-link">
@@ -53,7 +53,7 @@
                         </a>
                     </li>
                 }
-                @if (iUserSession.HasPermissionAsync("HasAccessToSetup"))
+                @if (iUserSession.HasPermission("HasAccessToSetup"))
                 {
                     <li class="nav-item">
                         <a asp-controller="Setup" asp-action="index" data-nav="index" class="nav-link">

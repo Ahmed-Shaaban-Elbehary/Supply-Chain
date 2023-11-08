@@ -58,6 +58,7 @@ namespace SupplyChain.App.Controllers
                 else
                 {
                     bool IsSupplier = user.IsSupplier; // Check if the user is a supplier.
+
                     var loggedInUser = await _userService.GetUserByEmailAsync(user.Email);
 
                     if (loggedInUser.IsSupplier && !IsSupplier)
@@ -107,6 +108,8 @@ namespace SupplyChain.App.Controllers
             // You can store user-related data in the cookie or other session storage mechanisms.
             // For example:
             Response.Cookies.Append("UserId", user.Id.ToString());
+            Response.Cookies.Append("UserName", user.Name.ToString());
+            Response.Cookies.Append("Supplier", user.IsSupplier.ToString());
             Response.Cookies.Append("UserRoles", string.Join(",", roles));
             Response.Cookies.Append("UserPermissions", string.Join(",", permissions));
         }

@@ -1,15 +1,22 @@
 ﻿@using SupplyChain.App.ViewModels;
 @using SupplyChain.Core.Models;
+@using SupplyChain.Services.Contracts;
+@inject IUserSessionService iUserSession
 @model PagedViewModel<ProductQuantityRequestViewModel>
 @{
     ViewData["Title"] = "Additional Quantity Requests";
     Layout = "~/Views/Shared/_Layout.cshtml";
     int count = 1;
+    string displayer = iUserSession.IsUserSupplier == true ? "block" : "none";
 }
 @section Styles {
     <style>
         .badge-text-size {
             font-size: 100% !important;
+        }
+
+        .displayer {
+            display: @displayer;
         }
     </style>
 }
@@ -27,7 +34,7 @@
                     <th>Requested Quantity</th>
                     <th>Request Date</th>
                     <th>Request Status</th>
-                    <th>Actions</th>
+                    <th class="displayer">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -58,7 +65,7 @@
                                 }
                             }
 
-                        <td style="min-width:95px;">
+                        <td style="min-width:95px;" class="displayer">
                             <button id="edit-form-modal" type="button" class="btn btn-sm btn-warning text-white" data-id="@item.Id"
                                     onclick="products.accept_request(this.getAttribute('data-id'))">
                                 <i class="fas fa-check"></i>

@@ -15,7 +15,7 @@
     </style>
 }
 <div class="row">
-    @if (iUserSession.HasPermissionAsync("HasAccessToCategories"))
+    @if (iUserSession.HasPermission("HasAccessToCategories"))
     {
         <div class="col-md-3">
             <a asp-action="Category" class="btn btn-outline-success btn-lg setup-btn">
@@ -24,7 +24,7 @@
             </a>
         </div>
     }
-    @if (iUserSession.HasPermissionAsync("HasAccessToManufacturers"))
+    @if (iUserSession.HasPermission("HasAccessToManufacturers"))
     {
         <div class="col-md-3">
             <a asp-action="Manufacturer" class="btn btn-outline-success btn-lg setup-btn">
@@ -33,7 +33,7 @@
             </a>
         </div>
     }
-    @if (iUserSession.HasPermissionAsync("HasAccessToUsers"))
+    @if (iUserSession.HasPermission("HasAccessToUsers"))
     {
         <div class="col-md-3">
             <a asp-action="Users" class="btn btn-outline-success btn-lg setup-btn">
@@ -42,7 +42,7 @@
             </a>
         </div>
     }
-    @if (iUserSession.HasPermissionAsync("HasAccessToProducts"))
+    @if (iUserSession.HasPermission("HasAccessToProducts"))
     {
         <div class="col-md-3">
             <a asp-controller="Product" asp-action="Add" class="btn btn-outline-success btn-lg setup-btn">

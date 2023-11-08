@@ -29,7 +29,7 @@ namespace SupplyChain.App.Utils.Validations
                 return;
             }
 
-            bool isAuthorized = userSessionService.IsInRoleAsync(_roleName);
+            bool isAuthorized = userSessionService.IsInRole(_roleName);
 
             if (!isAuthorized)
             {

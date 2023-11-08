@@ -8,12 +8,13 @@ namespace SupplyChain.Services
 {
     public class UserSessionService : IUserSessionService
     {
-        private IHttpContextAccessor _httpContextAccessor;
-
+        private readonly IHttpContextAccessor _httpContextAccessor;
         public UserSessionService(IHttpContextAccessor httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;
         }
+
+        public bool IsUserSupplier => IsSupplier();
 
         private List<string> GetUserRoles()
         {
@@ -60,16 +61,30 @@ namespace SupplyChain.Services
             _httpContextAccessor.HttpContext.Response.Cookies.Delete("UserName");
         }
 
-        public bool HasPermissionAsync(string permissionName)
+        public bool HasPermission(string permissionName)
         {
             var permissions = GetUserPermissions();
             return permissions.Contains(permissionName);
         }
 
-        public bool IsInRoleAsync(string roleName)
+        public bool IsInRole(string roleName)
         {
             var roles = GetUserRoles();
             return roles.Contains(roleName);
+        }
+
+        private bool IsSupplier()
+        {
+            string supplierCookie = _httpContextAccessor.HttpContext.Request.Cookies["Supplier"];
+
+            // Check if the "Supplier" cookie exists and has a valid boolean value
+            if (!string.IsNullOrEmpty(supplierCookie) && bool.TryParse(supplierCookie, out bool isSupplier))
+            {
+                return isSupplier;
+            }
+
+            // If the cookie doesn't exist or can't be parsed, use the default value from IsUserSupplier
+            return IsUserSupplier;
         }
     }
 }
