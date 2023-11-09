@@ -19,20 +19,17 @@ const events = (() => {
                 if (!response.success) {
                     app.fillErrorMessageContainer(response.message);
                     app.reEnterFormData(formElement, formData);
-                    //push notification.
-                    let message = `You have a new event for a ${response.data.messageTitle}, from ${response.data.sender}, 
-                                  ${response.data.messageBody}`;
-                    SignalRModule.send_message(response.data.receiver.toString(), message);
-                    //edit notification menu.
-                    const publishedIn = app.getDateTimeFormat(date);
 
                 } else {
                     app.showhideModal('general-partial-modal');
                     app.SuccessAlertMessage(response.message);
                     if (calendar) {
                         calendar.refetchEvents();
-                        /*setTimeout(() => { hideloader() }, 1000)*/
                     }
+                    //push notification.
+                    let message = `You have a new event for a ${response.data.messageTitle}, from ${response.data.sender}, 
+                                  ${response.data.messageBody}`;
+                    SignalRModule.send_message(null, message);
                 }
             })
             .catch((xhr, status, error) => {
