@@ -1,0 +1,8 @@
+.app-brand-text.demo {
+    font-size: 1.5rem !important;
+}
+
+.app-brand-logo.demo svg {
+    width: 40px !important;
+    height: 40px !important;
+}

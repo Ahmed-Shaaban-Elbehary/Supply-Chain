@@ -12,6 +12,7 @@
         var formElement = e.target.closest('form');
         var formData = new FormData(formElement);
         let url = $(formElement).attr('action');
+
         app.SubmitForm(url, formData)
             .then((response) => {
                 if (!response.success) {
@@ -89,7 +90,6 @@
                 } else {
                     console.error(xhr)
                     app.FailAlertMessage("Oops, Error Occurred, Please Try Again!", xhr);
-                    //hideloader();
                 }
             })
     }

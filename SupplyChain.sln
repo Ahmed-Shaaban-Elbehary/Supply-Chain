@@ -11,6 +11,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SupplyChain.Infrastructure"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SupplyChain.Services", "SupplyChain.Services\SupplyChain.Services.csproj", "{3E2B1AB0-972E-4AD5-BD30-06E2D812A45F}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SupplyChain.Blazor", "SupplyChain.Blazor\SupplyChain.Blazor\SupplyChain.Blazor.csproj", "{B9107054-BF5F-4EAC-82E7-659234AD2D4C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SupplyChain.Blazor.Client", "SupplyChain.Blazor\SupplyChain.Blazor.Client\SupplyChain.Blazor.Client.csproj", "{405C9BE4-2FBF-4956-BF0E-A0B6CE8DAEC0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,14 @@ Global
 		{3E2B1AB0-972E-4AD5-BD30-06E2D812A45F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3E2B1AB0-972E-4AD5-BD30-06E2D812A45F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3E2B1AB0-972E-4AD5-BD30-06E2D812A45F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9107054-BF5F-4EAC-82E7-659234AD2D4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9107054-BF5F-4EAC-82E7-659234AD2D4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9107054-BF5F-4EAC-82E7-659234AD2D4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9107054-BF5F-4EAC-82E7-659234AD2D4C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{405C9BE4-2FBF-4956-BF0E-A0B6CE8DAEC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{405C9BE4-2FBF-4956-BF0E-A0B6CE8DAEC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{405C9BE4-2FBF-4956-BF0E-A0B6CE8DAEC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{405C9BE4-2FBF-4956-BF0E-A0B6CE8DAEC0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
